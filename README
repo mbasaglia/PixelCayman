@@ -1,0 +1,45 @@
+Color Dialog and Widgets
+========================
+
+Here is a Tab widget that on which the user can close its tab using the 
+middle mouse button and tabs gan be dragged away.
+    
+    
+Demonstration
+-------------
+
+A simple demo of the widget is provided in ./tabwidget_demo
+
+
+Using it in a project
+---------------------
+
+Include color_widgets.pri in the QMake project file. 
+All the required files are in ./src
+
+
+Installing as a Qt Designer/Creator Plugin
+------------------------------------------
+
+The sources for the designer plugin are in ./tabwidget_designer_plugin
+
+Compile the library and install in
+(Qt SDK)/Tools/QtCreator/bin/designer/
+(Qt SDK)/(Qt Version)/(Toolchain)/plugins/designer
+
+cd tabwidget_designer_plugin && qmake && make && make install
+
+
+Latest Version
+--------------
+
+The latest version of the sources can be found at the following locations
+https://github.com/mbasaglia/Qt-Extended-TabWidget
+git://github.com/mbasaglia/Qt-Extended-TabWidget.git
+
+
+License
+-------
+
+LGPLv3+, See COPYING
+Copyright (C) 2012-2013 Mattia Basaglia <mattia.basaglia@gmail.com>
