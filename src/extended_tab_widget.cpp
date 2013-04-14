@@ -31,6 +31,6 @@ Extended_TabWidget::Extended_TabWidget(QWidget *parent) :
     Extended_TabBar* tbb = new Extended_TabBar;
     setTabBar(tbb);
     connect(tbb,SIGNAL(dragAway(int)),SIGNAL(dragAway(int)));
-    connect(tbb,SIGNAL(tabCloseRequested(int)),SIGNAL(tabCloseRequested(int)));
+    //connect(tbb,SIGNAL(tabCloseRequested(int)),SIGNAL(tabCloseRequested(int)));
 }
 
