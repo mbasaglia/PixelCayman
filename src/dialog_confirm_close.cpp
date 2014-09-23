@@ -21,14 +21,14 @@
 #include "dialog_confirm_close.hpp"
 #include <QCheckBox>
 
-Dialog_Confirm_Close::Dialog_Confirm_Close(QWidget *parent) :
+ConfirmCloseDialog::ConfirmCloseDialog(QWidget *parent) :
     QDialog(parent)
 {
     setupUi(this);
     connect(&mapper,SIGNAL(mapped(int)),SLOT(file_toogled(int)));
 }
 
-void Dialog_Confirm_Close::add_file(int index, QString name)
+void ConfirmCloseDialog::add_file(int index, QString name)
 {
      files[index] = name;
      int row = tableWidget->rowCount();
@@ -40,7 +40,7 @@ void Dialog_Confirm_Close::add_file(int index, QString name)
      tableWidget->setCellWidget(row,0,cb);
 }
 
-QList<int> Dialog_Confirm_Close::save_files()
+QList<int> ConfirmCloseDialog::save_files()
 {
     QList<int> r;
     foreach(int i, files.keys())
@@ -51,7 +51,7 @@ QList<int> Dialog_Confirm_Close::save_files()
     return r;
 }
 
-void Dialog_Confirm_Close::changeEvent(QEvent *e)
+void ConfirmCloseDialog::changeEvent(QEvent *e)
 {
     QDialog::changeEvent(e);
     switch (e->type()) {
@@ -63,13 +63,13 @@ void Dialog_Confirm_Close::changeEvent(QEvent *e)
     }
 }
 
-void Dialog_Confirm_Close::file_toogled(int i)
+void ConfirmCloseDialog::file_toogled(int i)
 {
     if ( files.contains(i) )
         files[i].save = !files[i].save;
 }
 
-void Dialog_Confirm_Close::on_button_dont_save_clicked()
+void ConfirmCloseDialog::on_button_dont_save_clicked()
 {
     done(DontSave);
 }

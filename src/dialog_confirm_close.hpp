@@ -25,7 +25,7 @@
 #include <QSignalMapper>
 
 
-class Dialog_Confirm_Close : public QDialog, private Ui::Dialog_Confirm_Close
+class ConfirmCloseDialog : public QDialog, private Ui::ConfirmCloseDialog
 {
     Q_OBJECT
 
@@ -45,7 +45,7 @@ class Dialog_Confirm_Close : public QDialog, private Ui::Dialog_Confirm_Close
 public:
     static const int DontSave = Accepted+1;
 
-    explicit Dialog_Confirm_Close(QWidget *parent = 0);
+    explicit ConfirmCloseDialog(QWidget *parent = 0);
 
     /**
      * \brief Insert file to be saved
