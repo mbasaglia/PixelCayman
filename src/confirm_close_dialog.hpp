@@ -21,7 +21,7 @@
 #ifndef DIALOG_CONFIRM_CLOSE_HPP
 #define DIALOG_CONFIRM_CLOSE_HPP
 
-#include "ui_dialog_confirm_close.h"
+#include "ui_confirm_close_dialog.h"
 #include <QSignalMapper>
 
 
