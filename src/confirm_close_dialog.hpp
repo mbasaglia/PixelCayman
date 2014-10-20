@@ -21,31 +21,17 @@
 #ifndef DIALOG_CONFIRM_CLOSE_HPP
 #define DIALOG_CONFIRM_CLOSE_HPP
 
-#include "ui_confirm_close_dialog.h"
-#include <QSignalMapper>
+#include <QDialog>
 
-
-class ConfirmCloseDialog : public QDialog, private Ui::ConfirmCloseDialog
+class ConfirmCloseDialog : public QDialog
 {
     Q_OBJECT
-
-    /**
-     * \brief Simple helper class
-     */
-    struct Save_File
-    {
-        QString file_name;
-        bool save;
-        Save_File(QString file_name="") : file_name(file_name), save(true) {}
-    };
-
-    QMap<int,Save_File> files;
-    QSignalMapper mapper;
     
 public:
     static const int DontSave = Accepted+1;
 
     explicit ConfirmCloseDialog(QWidget *parent = 0);
+    ~ConfirmCloseDialog();
 
     /**
      * \brief Insert file to be saved
@@ -56,7 +42,7 @@ public:
      */
     void add_file(int index, QString name);
 
-    bool has_files() const { return !files.empty(); }
+    bool has_files() const;
 
     /**
      * \brief Get files to be saved
@@ -70,6 +56,10 @@ protected:
 private slots:
     void file_toogled(int i);
     void on_button_dont_save_clicked();
+    
+private:
+    class Private;
+    Private* p;
 };
 
 #endif // DIALOG_CONFIRM_CLOSE_HPP

@@ -19,33 +19,63 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 #include "confirm_close_dialog.hpp"
-#include <QCheckBox>
+#include "ui_confirm_close_dialog.h"
 
-ConfirmCloseDialog::ConfirmCloseDialog(QWidget *parent) :
-    QDialog(parent)
+#include <QCheckBox>
+#include <QSignalMapper>
+
+class ConfirmCloseDialog::Private : public Ui::ConfirmCloseDialog
 {
-    setupUi(this);
-    connect(&mapper,SIGNAL(mapped(int)),SLOT(file_toogled(int)));
+public:
+    /**
+     * \brief Simple helper class
+     */
+    struct Save_File
+    {
+        QString file_name;
+        bool save;
+        Save_File(QString file_name="") : file_name(file_name), save(true) {}
+    };
+
+    QMap<int,Save_File> files;
+    QSignalMapper mapper;
+};   
+    
+ConfirmCloseDialog::ConfirmCloseDialog(QWidget *parent) :
+    QDialog(parent), p(new Private)
+{
+    p->setupUi(this);
+    connect(&p->mapper,SIGNAL(mapped(int)),SLOT(file_toogled(int)));
+}
+
+ConfirmCloseDialog::~ConfirmCloseDialog()
+{
+    delete p;
 }
 
 void ConfirmCloseDialog::add_file(int index, QString name)
 {
-     files[index] = name;
-     int row = tableWidget->rowCount();
-     tableWidget->insertRow(row);
+     p->files[index] = name;
+     int row = p->tableWidget->rowCount();
+     p->tableWidget->insertRow(row);
      QCheckBox* cb = new QCheckBox(name);
      cb->setChecked(true);
-     mapper.setMapping(cb,index);
-     connect(cb,SIGNAL(toggled(bool)),&mapper,SLOT(map()));
-     tableWidget->setCellWidget(row,0,cb);
+     p->mapper.setMapping(cb,index);
+     connect(cb,SIGNAL(toggled(bool)),&p->mapper,SLOT(map()));
+     p->tableWidget->setCellWidget(row,0,cb);
+}
+
+bool ConfirmCloseDialog::has_files() const
+{ 
+    return !p->files.empty();
 }
 
 QList<int> ConfirmCloseDialog::save_files()
 {
     QList<int> r;
-    foreach(int i, files.keys())
+    foreach(int i, p->files.keys())
     {
-        if ( files[i].save )
+        if ( p->files[i].save )
             r.push_back(i);
     }
     return r;
@@ -56,7 +86,7 @@ void ConfirmCloseDialog::changeEvent(QEvent *e)
     QDialog::changeEvent(e);
     switch (e->type()) {
         case QEvent::LanguageChange:
-            retranslateUi(this);
+            p->retranslateUi(this);
             break;
         default:
             break;
@@ -65,8 +95,8 @@ void ConfirmCloseDialog::changeEvent(QEvent *e)
 
 void ConfirmCloseDialog::file_toogled(int i)
 {
-    if ( files.contains(i) )
-        files[i].save = !files[i].save;
+    if ( p->files.contains(i) )
+        p->files[i].save = !p->files[i].save;
 }
 
 void ConfirmCloseDialog::on_button_dont_save_clicked()
