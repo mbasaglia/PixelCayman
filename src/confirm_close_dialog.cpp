@@ -30,14 +30,14 @@ public:
     /**
      * \brief Simple helper class
      */
-    struct Save_File
+    struct SaveFile
     {
         QString file_name;
         bool save;
-        Save_File(QString file_name="") : file_name(file_name), save(true) {}
+        SaveFile(QString file_name="") : file_name(file_name), save(true) {}
     };
 
-    QMap<int,Save_File> files;
+    QMap<int,SaveFile> files;
     QSignalMapper mapper;
 };   
     
