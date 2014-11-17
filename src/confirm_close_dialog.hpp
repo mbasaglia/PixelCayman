@@ -48,7 +48,7 @@ public:
      * \brief Get files to be saved
      * \return A list of indices representing the files that need to be saved
      */
-    QList<int> save_files();
+    QList<int> save_files() const;
     
 protected:
     void changeEvent(QEvent *e);

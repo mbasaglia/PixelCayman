@@ -70,7 +70,7 @@ bool ConfirmCloseDialog::has_files() const
     return !p->files.empty();
 }
 
-QList<int> ConfirmCloseDialog::save_files()
+QList<int> ConfirmCloseDialog::save_files() const
 {
     QList<int> ret;
     foreach(int i, p->files.keys())
