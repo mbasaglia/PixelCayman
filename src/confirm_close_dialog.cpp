@@ -45,7 +45,7 @@ ConfirmCloseDialog::ConfirmCloseDialog(QWidget *parent) :
     QDialog(parent), p(new Private)
 {
     p->setupUi(this);
-    connect(&p->mapper, SIGNAL(mapped(int)), SLOT(file_toogled(int)));
+    connect(&p->mapper, SIGNAL(mapped(int)), SLOT(fileToogled(int)));
 }
 
 ConfirmCloseDialog::~ConfirmCloseDialog()
@@ -53,7 +53,7 @@ ConfirmCloseDialog::~ConfirmCloseDialog()
     delete p;
 }
 
-void ConfirmCloseDialog::add_file(int index, QString name)
+void ConfirmCloseDialog::addFile(int index, QString name)
 {
      p->files[index] = name;
      int row = p->tableWidget->rowCount();
@@ -65,12 +65,12 @@ void ConfirmCloseDialog::add_file(int index, QString name)
      p->tableWidget->setCellWidget(row, 0, checkbox);
 }
 
-bool ConfirmCloseDialog::has_files() const
+bool ConfirmCloseDialog::hasFiles() const
 { 
     return !p->files.empty();
 }
 
-QList<int> ConfirmCloseDialog::save_files() const
+QList<int> ConfirmCloseDialog::saveFiles() const
 {
     QList<int> ret;
     foreach(int i, p->files.keys())
@@ -93,7 +93,7 @@ void ConfirmCloseDialog::changeEvent(QEvent *e)
     }
 }
 
-void ConfirmCloseDialog::file_toogled(int i)
+void ConfirmCloseDialog::fileToogled(int i)
 {
     if ( p->files.contains(i) )
         p->files[i].save = !p->files[i].save;

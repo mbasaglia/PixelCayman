@@ -40,21 +40,21 @@ public:
      * \post  has_file() == true
      * \note  \c index should be unique, for a single file
      */
-    void add_file(int index, QString name);
+    void addFile(int index, QString name);
 
-    bool has_files() const;
+    bool hasFiles() const;
 
     /**
      * \brief Get files to be saved
      * \return A list of indices representing the files that need to be saved
      */
-    QList<int> save_files() const;
+    QList<int> saveFiles() const;
     
 protected:
     void changeEvent(QEvent *e);
 
 private slots:
-    void file_toogled(int i);
+    void fileToogled(int i);
     void on_button_dont_save_clicked();
     
 private:
