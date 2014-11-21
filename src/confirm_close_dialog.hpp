@@ -23,6 +23,18 @@
 
 #include <QDialog>
 
+/**
+ * \brief A dialog asking to whether to save multiple files
+ * 
+ * exec() might return QDialog::Accepted, QDialog::Rejected or 
+ * ConfirmCloseDialog::DontSave.
+ * 
+ * * \b Accepted is used when the user wants to close the files and
+ *               save the selected ones.
+ * * \b DontSave is used when the user wants to close all the files
+ *               but they don't want to save any of them.
+ * * \b Rejected means that the user doesn't want to close after all.
+ */
 class ConfirmCloseDialog : public QDialog
 {
     Q_OBJECT
