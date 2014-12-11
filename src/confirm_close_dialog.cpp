@@ -101,5 +101,10 @@ void ConfirmCloseDialog::fileToogled(int i)
 
 void ConfirmCloseDialog::on_button_dont_save_clicked()
 {
-    done(DontSave);
+    foreach(int i, p->files.keys())
+    {
+        p->files[i].save = false;
+    }
+    
+    accept();
 }
