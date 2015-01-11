@@ -32,7 +32,7 @@ class ConfirmCloseDialog : public QDialog
     
 public:
 
-    explicit ConfirmCloseDialog(QWidget *parent = 0);
+    explicit ConfirmCloseDialog(QWidget *parent = nullptr);
     ~ConfirmCloseDialog();
 
     /**
@@ -53,10 +53,9 @@ public:
     QList<int> saveFiles() const;
     
 protected:
-    void changeEvent(QEvent *e);
+    void changeEvent(QEvent *e) override;
 
 private slots:
-    void fileToogled(int i);
     void on_button_dont_save_clicked();
     
 private:

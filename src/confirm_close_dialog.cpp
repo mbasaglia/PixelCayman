@@ -22,7 +22,6 @@
 #include "ui_confirm_close_dialog.h"
 
 #include <QCheckBox>
-#include <QSignalMapper>
 
 class ConfirmCloseDialog::Private : public Ui::ConfirmCloseDialog
 {
@@ -38,14 +37,12 @@ public:
     };
 
     QMap<int,SaveFile> files;
-    QSignalMapper mapper;
 };   
     
 ConfirmCloseDialog::ConfirmCloseDialog(QWidget *parent) :
     QDialog(parent), p(new Private)
 {
     p->setupUi(this);
-    connect(&p->mapper, SIGNAL(mapped(int)), SLOT(fileToogled(int)));
 }
 
 ConfirmCloseDialog::~ConfirmCloseDialog()
@@ -60,8 +57,10 @@ void ConfirmCloseDialog::addFile(int index, QString name)
      p->tableWidget->insertRow(row);
      QCheckBox* checkbox = new QCheckBox(name);
      checkbox->setChecked(true);
-     p->mapper.setMapping(checkbox, index);
-     connect(checkbox, SIGNAL(toggled(bool)), &p->mapper, SLOT(map()));
+     connect(checkbox, &QCheckBox::toggled, [this, index](bool toggled){
+        if ( p->files.contains(index) )
+            p->files[index].save = toggled;
+     });
      p->tableWidget->setCellWidget(row, 0, checkbox);
 }
 
@@ -73,7 +72,7 @@ bool ConfirmCloseDialog::hasFiles() const
 QList<int> ConfirmCloseDialog::saveFiles() const
 {
     QList<int> ret;
-    foreach(int i, p->files.keys())
+    for ( int i : p->files.keys() )
     {
         if ( p->files[i].save )
             ret.push_back(i);
@@ -93,15 +92,9 @@ void ConfirmCloseDialog::changeEvent(QEvent *e)
     }
 }
 
-void ConfirmCloseDialog::fileToogled(int i)
-{
-    if ( p->files.contains(i) )
-        p->files[i].save = !p->files[i].save;
-}
-
 void ConfirmCloseDialog::on_button_dont_save_clicked()
 {
-    foreach(int i, p->files.keys())
+    for ( int i : p->files.keys() )
     {
         p->files[i].save = false;
     }
