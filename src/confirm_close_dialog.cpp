@@ -52,16 +52,16 @@ ConfirmCloseDialog::~ConfirmCloseDialog()
 
 void ConfirmCloseDialog::addFile(int index, QString name)
 {
-     p->files[index] = name;
-     int row = p->tableWidget->rowCount();
-     p->tableWidget->insertRow(row);
-     QCheckBox* checkbox = new QCheckBox(name);
-     checkbox->setChecked(true);
-     connect(checkbox, &QCheckBox::toggled, [this, index](bool toggled){
+    p->files[index] = name;
+    int row = p->tableWidget->rowCount();
+    p->tableWidget->insertRow(row);
+    QCheckBox* checkbox = new QCheckBox(name);
+    checkbox->setChecked(true);
+    connect(checkbox, &QCheckBox::toggled, [this, index](bool toggled){
         if ( p->files.contains(index) )
             p->files[index].save = toggled;
-     });
-     p->tableWidget->setCellWidget(row, 0, checkbox);
+    });
+    p->tableWidget->setCellWidget(row, 0, checkbox);
 }
 
 bool ConfirmCloseDialog::hasFiles() const
