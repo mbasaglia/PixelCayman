@@ -17,20 +17,21 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *
  */
-#include <QtWidgets/QApplication>
-#include "ui/main_window.hpp"
+#ifndef MAIN_WINDOW_HPP
+#define MAIN_WINDOW_HPP
 
-int main(int argc, char** argv)
+#include "ui_main_window.h"
+
+class MainWindow : public QMainWindow, Ui::MainWindow
 {
-    QApplication app(argc, argv);
-    /// \todo Set them in a configured header
-    QApplication::setApplicationName("pixelcayman");
-    QApplication::setApplicationDisplayName("Pixel Cayman");
-    QApplication::setOrganizationName("pixelcayman");
+    Q_OBJECT
 
-    MainWindow window;
-    window.show();
-    return app.exec();
-}
+public:
+    MainWindow(QWidget* parent = nullptr);
+
+protected:
+    void changeEvent(QEvent* event) override;
+};
+
+#endif // MAIN_WINDOW_HPP

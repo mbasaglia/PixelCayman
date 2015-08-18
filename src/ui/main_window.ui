@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>MainWindow</class>
+ <widget class="QMainWindow" name="MainWindow">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>836</width>
+    <height>637</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>MainWindow</string>
+  </property>
+  <widget class="QWidget" name="centralwidget">
+   <layout class="QVBoxLayout" name="verticalLayout">
+    <item>
+     <widget class="QGraphicsView" name="graphicsView"/>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QMenuBar" name="menubar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>836</width>
+     <height>30</height>
+    </rect>
+   </property>
+   <widget class="QMenu" name="menu_File">
+    <property name="title">
+     <string>&amp;File</string>
+    </property>
+   </widget>
+   <widget class="QMenu" name="menu_Edit">
+    <property name="title">
+     <string>&amp;Edit</string>
+    </property>
+   </widget>
+   <widget class="QMenu" name="menu_Image">
+    <property name="title">
+     <string>&amp;Image</string>
+    </property>
+   </widget>
+   <widget class="QMenu" name="menu_Animation">
+    <property name="title">
+     <string>A&amp;nimation</string>
+    </property>
+   </widget>
+   <widget class="QMenu" name="menu_Help">
+    <property name="title">
+     <string>&amp;Help</string>
+    </property>
+   </widget>
+   <widget class="QMenu" name="menu_View">
+    <property name="title">
+     <string>&amp;View</string>
+    </property>
+    <widget class="QMenu" name="menu_docks">
+     <property name="title">
+      <string>&amp;Docks</string>
+     </property>
+    </widget>
+    <widget class="QMenu" name="menu_toolbars">
+     <property name="title">
+      <string>Tool&amp;bars</string>
+     </property>
+    </widget>
+    <addaction name="menu_docks"/>
+    <addaction name="menu_toolbars"/>
+   </widget>
+   <addaction name="menu_File"/>
+   <addaction name="menu_Edit"/>
+   <addaction name="menu_Image"/>
+   <addaction name="menu_Animation"/>
+   <addaction name="menu_View"/>
+   <addaction name="menu_Help"/>
+  </widget>
+  <widget class="QStatusBar" name="statusbar"/>
+  <widget class="QDockWidget" name="dock_color">
+   <property name="windowIcon">
+    <iconset theme="format-stroke-color">
+     <normaloff/>
+    </iconset>
+   </property>
+   <property name="windowTitle">
+    <string>&amp;Color</string>
+   </property>
+   <attribute name="dockWidgetArea">
+    <number>1</number>
+   </attribute>
+   <widget class="QWidget" name="dockWidgetContents"/>
+  </widget>
+  <widget class="QDockWidget" name="dock_animation">
+   <property name="windowIcon">
+    <iconset theme="tool-animator">
+     <normaloff/>
+    </iconset>
+   </property>
+   <property name="windowTitle">
+    <string>Ani&amp;mation</string>
+   </property>
+   <attribute name="dockWidgetArea">
+    <number>2</number>
+   </attribute>
+   <widget class="QWidget" name="dockWidgetContents_2"/>
+  </widget>
+  <widget class="QDockWidget" name="dock_tools">
+   <property name="windowIcon">
+    <iconset theme="preferences-system"/>
+   </property>
+   <property name="windowTitle">
+    <string>&amp;Tools</string>
+   </property>
+   <attribute name="dockWidgetArea">
+    <number>1</number>
+   </attribute>
+   <widget class="QWidget" name="dockWidgetContents_3"/>
+  </widget>
+  <widget class="QDockWidget" name="dock_layers">
+   <property name="windowIcon">
+    <iconset theme="format-list-unordered">
+     <normaloff/>
+    </iconset>
+   </property>
+   <property name="windowTitle">
+    <string>&amp;Layers</string>
+   </property>
+   <attribute name="dockWidgetArea">
+    <number>2</number>
+   </attribute>
+   <widget class="QWidget" name="dockWidgetContents_4"/>
+  </widget>
+  <widget class="QDockWidget" name="dock_edit_history">
+   <property name="windowIcon">
+    <iconset theme="view-history">
+     <normaloff/>
+    </iconset>
+   </property>
+   <property name="windowTitle">
+    <string>Edit Histor&amp;y</string>
+   </property>
+   <attribute name="dockWidgetArea">
+    <number>2</number>
+   </attribute>
+   <widget class="QWidget" name="dockWidgetContents_5"/>
+  </widget>
+  <widget class="QDockWidget" name="dock_palette">
+   <property name="windowIcon">
+    <iconset theme="preferences-desktop-icons"/>
+   </property>
+   <property name="windowTitle">
+    <string>&amp;Palette</string>
+   </property>
+   <attribute name="dockWidgetArea">
+    <number>1</number>
+   </attribute>
+   <widget class="QWidget" name="dockWidgetContents_6"/>
+  </widget>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>

@@ -17,20 +17,31 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *
  */
-#include <QtWidgets/QApplication>
-#include "ui/main_window.hpp"
 
-int main(int argc, char** argv)
+#include "main_window.hpp"
+#include "style/dockwidget_style_icon.hpp"
+
+MainWindow::MainWindow(QWidget* parent)
+    : QMainWindow(parent)
 {
-    QApplication app(argc, argv);
-    /// \todo Set them in a configured header
-    QApplication::setApplicationName("pixelcayman");
-    QApplication::setApplicationDisplayName("Pixel Cayman");
-    QApplication::setOrganizationName("pixelcayman");
+    setupUi(this);
 
-    MainWindow window;
-    window.show();
-    return app.exec();
+    for( QDockWidget* dock : findChildren<QDockWidget*>() )
+    {
+        QAction* action = dock->toggleViewAction();
+        action->setIcon(dock->windowIcon());
+        menu_docks->addAction(action);
+        dock->setStyle(new DockWidgetStyleIcon(dock));
+    }
+}
+
+void MainWindow::changeEvent(QEvent* event)
+{
+    if ( event->type() == QEvent::LanguageChange )
+    {
+        retranslateUi(this);
+    }
+
+    QMainWindow::changeEvent(event);
 }

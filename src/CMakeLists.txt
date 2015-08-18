@@ -17,10 +17,12 @@
 
 include_directories(${CMAKE_CURRENT_SOURCE_DIR})
 
-set(SOURCES main.cpp)
+set(SOURCES main.cpp ui/main_window.cpp ui/main_window.hpp style/dockwidget_style_icon.hpp)
 
 # Enable extra Qt tools
 find_package(Qt5Widgets REQUIRED)
+set(CMAKE_AUTOMOC ON)
+set(CMAKE_AUTOUIC ON)
 
 #Executable
 set(EXECUTABLE_NAME pixelcayman) # repeated otherwise kdevelop messes up
