@@ -1,4 +1,4 @@
-PyxelCayman
+PixelCayman
 ===========
 
 Work in progress
