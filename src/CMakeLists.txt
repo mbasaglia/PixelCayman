@@ -24,11 +24,15 @@ find_package(Qt5Widgets REQUIRED)
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTOUIC ON)
 
-#Executable
+# Executable
 set(EXECUTABLE_NAME pixelcayman) # repeated otherwise kdevelop messes up
 add_executable(${EXECUTABLE_NAME} ${SOURCES})
 
 # Libraries
+
+# Color widgets
+include_directories(../submodules/ColorWidgets/include)
+target_link_libraries(${EXECUTABLE_NAME} ColorWidgets-qt5)
 
 # Qt
 target_link_libraries(${EXECUTABLE_NAME} Qt5::Widgets)

@@ -1,0 +1,3 @@
+[submodule "submodules/ColorWidgets"]
+	path = submodules/ColorWidgets
+	url = https://github.com/mbasaglia/Qt-Color-Widgets.git

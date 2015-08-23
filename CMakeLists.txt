@@ -66,8 +66,7 @@ if(CMAKE_BUILD_TYPE STREQUAL "Debug")
 endif()
 
 add_subdirectory(src bin)
-
-
+add_subdirectory(submodules/ColorWidgets)
 
 # Doxygen target
 find_package(Doxygen)
