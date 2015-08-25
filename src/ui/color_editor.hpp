@@ -39,6 +39,11 @@ public:
 public slots:
     void setColor(const QColor& color);
 
+private slots:
+    void color_from_wheel();
+    void color_from_rgb();
+    void color_from_hsv();
+
 signals:
     void colorChanged(const QColor& color);
 

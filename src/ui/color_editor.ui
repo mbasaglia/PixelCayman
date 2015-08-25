@@ -25,7 +25,7 @@
    </attribute>
    <layout class="QVBoxLayout" name="verticalLayout">
     <item>
-     <widget class="color_widgets::ColorWheel" name="colorWheel">
+     <widget class="color_widgets::ColorWheel" name="color_wheel">
       <property name="sizePolicy">
        <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
         <horstretch>0</horstretch>
@@ -165,7 +165,7 @@
      </widget>
     </item>
     <item row="0" column="1">
-     <widget class="color_widgets::HueSlider" name="HueSlider">
+     <widget class="color_widgets::HueSlider" name="slider_hue">
       <property name="maximum">
        <number>359</number>
       </property>
@@ -186,7 +186,7 @@
      </widget>
     </item>
     <item row="1" column="1">
-     <widget class="color_widgets::GradientSlider" name="GradientSlider">
+     <widget class="color_widgets::GradientSlider" name="slider_sat">
       <property name="maximum">
        <number>255</number>
       </property>
@@ -207,7 +207,7 @@
      </widget>
     </item>
     <item row="2" column="1">
-     <widget class="color_widgets::GradientSlider" name="GradientSlider_2">
+     <widget class="color_widgets::GradientSlider" name="slider_value">
       <property name="maximum">
        <number>255</number>
       </property>
@@ -228,7 +228,7 @@
      </widget>
     </item>
     <item row="3" column="1">
-     <widget class="color_widgets::GradientSlider" name="GradientSlider_3">
+     <widget class="color_widgets::GradientSlider" name="slider_alpha_hsv">
       <property name="maximum">
        <number>255</number>
       </property>
@@ -264,7 +264,7 @@
  <resources/>
  <connections>
   <connection>
-   <sender>HueSlider</sender>
+   <sender>slider_hue</sender>
    <signal>valueChanged(int)</signal>
    <receiver>spinBox</receiver>
    <slot>setValue(int)</slot>
@@ -282,7 +282,7 @@
   <connection>
    <sender>spinBox</sender>
    <signal>valueChanged(int)</signal>
-   <receiver>HueSlider</receiver>
+   <receiver>slider_hue</receiver>
    <slot>setValue(int)</slot>
    <hints>
     <hint type="sourcelabel">
@@ -296,7 +296,7 @@
    </hints>
   </connection>
   <connection>
-   <sender>GradientSlider</sender>
+   <sender>slider_sat</sender>
    <signal>valueChanged(int)</signal>
    <receiver>spinBox_2</receiver>
    <slot>setValue(int)</slot>
@@ -314,7 +314,7 @@
   <connection>
    <sender>spinBox_2</sender>
    <signal>valueChanged(int)</signal>
-   <receiver>GradientSlider</receiver>
+   <receiver>slider_sat</receiver>
    <slot>setValue(int)</slot>
    <hints>
     <hint type="sourcelabel">
@@ -328,7 +328,7 @@
    </hints>
   </connection>
   <connection>
-   <sender>GradientSlider_2</sender>
+   <sender>slider_value</sender>
    <signal>valueChanged(int)</signal>
    <receiver>spinBox_3</receiver>
    <slot>setValue(int)</slot>
@@ -346,7 +346,7 @@
   <connection>
    <sender>spinBox_3</sender>
    <signal>valueChanged(int)</signal>
-   <receiver>GradientSlider_2</receiver>
+   <receiver>slider_value</receiver>
    <slot>setValue(int)</slot>
    <hints>
     <hint type="sourcelabel">
@@ -360,7 +360,7 @@
    </hints>
   </connection>
   <connection>
-   <sender>GradientSlider_3</sender>
+   <sender>slider_alpha_hsv</sender>
    <signal>valueChanged(int)</signal>
    <receiver>spinBox_4</receiver>
    <slot>setValue(int)</slot>
@@ -378,7 +378,7 @@
   <connection>
    <sender>spinBox_4</sender>
    <signal>valueChanged(int)</signal>
-   <receiver>GradientSlider_3</receiver>
+   <receiver>slider_alpha_hsv</receiver>
    <slot>setValue(int)</slot>
    <hints>
     <hint type="sourcelabel">
