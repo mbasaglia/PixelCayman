@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>836</width>
-    <height>637</height>
+    <width>800</width>
+    <height>600</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -25,7 +25,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>836</width>
+     <width>800</width>
      <height>30</height>
     </rect>
    </property>
@@ -79,86 +79,6 @@
    <addaction name="menu_Help"/>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
-  <widget class="QDockWidget" name="dock_color">
-   <property name="windowIcon">
-    <iconset theme="format-stroke-color">
-     <normaloff/>
-    </iconset>
-   </property>
-   <property name="windowTitle">
-    <string>&amp;Color</string>
-   </property>
-   <attribute name="dockWidgetArea">
-    <number>1</number>
-   </attribute>
-   <widget class="QWidget" name="dockWidgetContents"/>
-  </widget>
-  <widget class="QDockWidget" name="dock_animation">
-   <property name="windowIcon">
-    <iconset theme="tool-animator">
-     <normaloff/>
-    </iconset>
-   </property>
-   <property name="windowTitle">
-    <string>Ani&amp;mation</string>
-   </property>
-   <attribute name="dockWidgetArea">
-    <number>2</number>
-   </attribute>
-   <widget class="QWidget" name="dockWidgetContents_2"/>
-  </widget>
-  <widget class="QDockWidget" name="dock_tools">
-   <property name="windowIcon">
-    <iconset theme="preferences-system"/>
-   </property>
-   <property name="windowTitle">
-    <string>&amp;Tools</string>
-   </property>
-   <attribute name="dockWidgetArea">
-    <number>1</number>
-   </attribute>
-   <widget class="QWidget" name="dockWidgetContents_3"/>
-  </widget>
-  <widget class="QDockWidget" name="dock_layers">
-   <property name="windowIcon">
-    <iconset theme="format-list-unordered">
-     <normaloff/>
-    </iconset>
-   </property>
-   <property name="windowTitle">
-    <string>&amp;Layers</string>
-   </property>
-   <attribute name="dockWidgetArea">
-    <number>2</number>
-   </attribute>
-   <widget class="QWidget" name="dockWidgetContents_4"/>
-  </widget>
-  <widget class="QDockWidget" name="dock_edit_history">
-   <property name="windowIcon">
-    <iconset theme="view-history">
-     <normaloff/>
-    </iconset>
-   </property>
-   <property name="windowTitle">
-    <string>Edit Histor&amp;y</string>
-   </property>
-   <attribute name="dockWidgetArea">
-    <number>2</number>
-   </attribute>
-   <widget class="QWidget" name="dockWidgetContents_5"/>
-  </widget>
-  <widget class="QDockWidget" name="dock_palette">
-   <property name="windowIcon">
-    <iconset theme="preferences-desktop-icons"/>
-   </property>
-   <property name="windowTitle">
-    <string>&amp;Palette</string>
-   </property>
-   <attribute name="dockWidgetArea">
-    <number>1</number>
-   </attribute>
-   <widget class="QWidget" name="dockWidgetContents_6"/>
-  </widget>
  </widget>
  <resources/>
  <connections/>

@@ -17,7 +17,14 @@
 
 include_directories(${CMAKE_CURRENT_SOURCE_DIR})
 
-set(SOURCES main.cpp ui/main_window.cpp ui/main_window.hpp style/dockwidget_style_icon.hpp)
+set(SOURCES
+main.cpp
+ui/main_window.cpp
+ui/main_window.hpp
+style/dockwidget_style_icon.hpp
+ui/color_editor.cpp
+ui/color_editor.hpp
+)
 
 # Enable extra Qt tools
 find_package(Qt5Widgets REQUIRED)

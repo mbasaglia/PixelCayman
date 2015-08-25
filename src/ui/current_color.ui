@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>CurrentColor</class>
+ <widget class="QWidget" name="CurrentColor">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>235</width>
+    <height>32</height>
+   </rect>
+  </property>
+  <property name="sizePolicy">
+   <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+    <horstretch>0</horstretch>
+    <verstretch>0</verstretch>
+   </sizepolicy>
+  </property>
+  <layout class="QHBoxLayout" name="horizontalLayout">
+   <property name="leftMargin">
+    <number>0</number>
+   </property>
+   <property name="topMargin">
+    <number>0</number>
+   </property>
+   <property name="rightMargin">
+    <number>0</number>
+   </property>
+   <property name="bottomMargin">
+    <number>0</number>
+   </property>
+   <item>
+    <widget class="color_widgets::ColorSelector" name="ColorSelector">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="minimumSize">
+      <size>
+       <width>64</width>
+       <height>32</height>
+      </size>
+     </property>
+     <property name="display_mode" stdset="0">
+      <enum>color_widgets::ColorPreview::SplitAlpha</enum>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="color_widgets::ColorLineEdit" name="color_line_edit">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="maximumSize">
+      <size>
+       <width>96</width>
+       <height>16777215</height>
+      </size>
+     </property>
+     <property name="font">
+      <font>
+       <family>Monospace</family>
+      </font>
+     </property>
+     <property name="showAlpha">
+      <bool>true</bool>
+     </property>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <customwidgets>
+  <customwidget>
+   <class>color_widgets::ColorPreview</class>
+   <extends>QWidget</extends>
+   <header>color_preview.hpp</header>
+  </customwidget>
+  <customwidget>
+   <class>color_widgets::ColorSelector</class>
+   <extends>color_widgets::ColorPreview</extends>
+   <header>color_selector.hpp</header>
+  </customwidget>
+  <customwidget>
+   <class>color_widgets::ColorLineEdit</class>
+   <extends>QLineEdit</extends>
+   <header>color_line_edit.hpp</header>
+  </customwidget>
+ </customwidgets>
+ <resources/>
+ <connections>
+  <connection>
+   <sender>ColorSelector</sender>
+   <signal>colorChanged(QColor)</signal>
+   <receiver>color_line_edit</receiver>
+   <slot>setColor(QColor)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>113</x>
+     <y>9</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>177</x>
+     <y>18</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>color_line_edit</sender>
+   <signal>colorChanged(QColor)</signal>
+   <receiver>ColorSelector</receiver>
+   <slot>setColor(QColor)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>150</x>
+     <y>9</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>98</x>
+     <y>7</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+</ui>
