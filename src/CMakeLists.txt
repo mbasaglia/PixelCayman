@@ -24,6 +24,7 @@ ui/main_window.hpp
 style/dockwidget_style_icon.hpp
 ui/color_editor.cpp
 ui/color_editor.hpp
+util.hpp
 )
 
 # Enable extra Qt tools

@@ -54,6 +54,7 @@ private:
     void update_color();
 
     QColor color_;
+    bool updating_color_ = false;
 };
 
 #endif // COLOR_EDITOR_HPP

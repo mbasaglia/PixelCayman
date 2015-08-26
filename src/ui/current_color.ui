@@ -30,7 +30,7 @@
     <number>0</number>
    </property>
    <item>
-    <widget class="color_widgets::ColorSelector" name="ColorSelector">
+    <widget class="color_widgets::ColorSelector" name="color">
      <property name="sizePolicy">
       <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
        <horstretch>0</horstretch>
@@ -94,7 +94,7 @@
  <resources/>
  <connections>
   <connection>
-   <sender>ColorSelector</sender>
+   <sender>color</sender>
    <signal>colorChanged(QColor)</signal>
    <receiver>color_line_edit</receiver>
    <slot>setColor(QColor)</slot>
@@ -112,7 +112,7 @@
   <connection>
    <sender>color_line_edit</sender>
    <signal>colorChanged(QColor)</signal>
-   <receiver>ColorSelector</receiver>
+   <receiver>color</receiver>
    <slot>setColor(QColor)</slot>
    <hints>
     <hint type="sourcelabel">

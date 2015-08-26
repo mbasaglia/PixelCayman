@@ -21,6 +21,24 @@
 
 #include "main_window.hpp"
 #include "style/dockwidget_style_icon.hpp"
+#include "util.hpp"
+
+/**
+ * \brief link colorChanged and setColor between two classes
+ */
+template<class A, class B>
+    static void link_color(A* a, B* b)
+    {
+        QObject::connect(a, &A::colorChanged, b, &B::setColor);
+        QObject::connect(b, &B::colorChanged, a, &A::setColor);
+    }
+
+template<class A, class R1, class R2, class Arg>
+    static void link_same(A* a, A* b, R1 (A::*signal)(Arg), R2 (A::*slot)(Arg) )
+    {
+        QObject::connect(a, signal, b, slot);
+        QObject::connect(b, signal, a, slot);
+    }
 
 MainWindow::MainWindow(QWidget* parent)
     : QMainWindow(parent)
@@ -29,6 +47,8 @@ MainWindow::MainWindow(QWidget* parent)
 
     init_docks();
     load_settings();
+
+    current_color_selector.color->setColor(Qt::black);
 }
 
 QDockWidget* MainWindow::create_dock(QWidget* widget, const QString& theme_icon)
@@ -59,19 +79,33 @@ void MainWindow::init_docks()
         current_color_selector.setupUi(container);
         dock_current_color = create_dock(container, "format-stroke-color");
         addDockWidget(Qt::RightDockWidgetArea, dock_current_color);
+        link_color(color_editor, current_color_selector.color);
     }
-    palette_widget = new color_widgets::ColorPaletteWidget;
+
+    using PalWid = color_widgets::ColorPaletteWidget;
+    palette_widget = new PalWid;
     palette_widget->setModel(&palette_model);
     palette_widget->setReadOnly(true);
     dock_palette = create_dock(palette_widget, "preferences-desktop-icons");
     addDockWidget(Qt::RightDockWidgetArea, dock_palette);
+    connect(palette_widget, util::overload<const QColor&>(&PalWid::currentColorChanged),
+            current_color_selector.color, &color_widgets::ColorSelector::setColor);
+    connect(current_color_selector.color, &color_widgets::ColorSelector::colorChanged,
+        [this](const QColor& color){
+            if ( color != palette_widget->currentColor() )
+                palette_widget->setCurrentColor(-1);
+    });
 
-    palette_editor = new color_widgets::ColorPaletteWidget;
+    palette_editor = new PalWid;
     palette_editor->setModel(&palette_model);
     dock_palette_editor = create_dock(palette_editor, "preferences-desktop-icons");
     addDockWidget(Qt::RightDockWidgetArea, dock_palette_editor);
     tabifyDockWidget(dock_palette, dock_palette_editor);
     dock_palette->raise();
+    link_same(palette_widget, palette_editor, &PalWid::currentRowChanged, &PalWid::setCurrentRow);
+    link_same(palette_widget, palette_editor,
+        util::overload<int>(&PalWid::currentColorChanged),
+        util::overload<int>(&PalWid::setCurrentColor));
 
 
     translate_docks();

@@ -70,10 +70,7 @@ void ColorEditor::changeEvent(QEvent* event)
 
 void ColorEditor::update_color()
 {
-    bool blocked = signalsBlocked();
-    blockSignals(true);
-    foreach(QWidget* w, findChildren<QWidget*>())
-        w->blockSignals(true);
+    updating_color_ = true;
 
     // wheel
     color_wheel->setColor(color_);
@@ -116,13 +113,12 @@ void ColorEditor::update_color()
     slider_alpha_hsv->setFirstColor(QColor(color_.red(),color_.green(),color_.blue(),0));
     slider_alpha_hsv->setLastColor(QColor(color_.red(),color_.green(),color_.blue(),255));
 
-    blockSignals(blocked);
-    foreach(QWidget* w, findChildren<QWidget*>())
-        w->blockSignals(false);
+    updating_color_ = false;
 }
 
 void ColorEditor::color_from_wheel()
 {
+    if ( updating_color_ ) return;
     QColor color = color_wheel->color();
     color.setAlpha(slider_alpha_wheel->value());
     setColor(color);
@@ -130,6 +126,7 @@ void ColorEditor::color_from_wheel()
 
 void ColorEditor::color_from_hsv()
 {
+    if ( updating_color_ ) return;
     setColor(QColor::fromHsv(
         slider_hue->value(),
         slider_sat->value(),
@@ -140,6 +137,7 @@ void ColorEditor::color_from_hsv()
 
 void ColorEditor::color_from_rgb()
 {
+    if ( updating_color_ ) return;
     setColor(QColor(
         slider_red->value(),
         slider_green->value(),
