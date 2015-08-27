@@ -27,14 +27,14 @@
 #include <QStyleOption>
 #include <QPainter>
 #include <QDockWidget>
+#include <QMainWindow>
 
 class DockWidgetStyleIcon: public QProxyStyle
 {
     Q_OBJECT
-
 public:
     DockWidgetStyleIcon(QDockWidget* target)
-        : QProxyStyle(target->style())
+        : QProxyStyle(target->style()), target(target)
     {}
 
     void drawControl(ControlElement element,
@@ -42,22 +42,44 @@ public:
                      QPainter* painter,
                      const QWidget* widget = 0) const override
     {
-        if( element == QStyle::CE_DockWidgetTitle )
+        if ( element == CE_DockWidgetTitle )
         {
-            int width = pixelMetric(QStyle::PM_SmallIconSize);
+            if ( const QStyleOptionDockWidget* dock_option =
+                    qstyleoption_cast<const QStyleOptionDockWidget *>(option) )
+            {
+                QStyleOptionDockWidget my_option = *dock_option;
 
-            int margin = baseStyle()->pixelMetric(QStyle::PM_DockWidgetTitleMargin);
+                int width = pixelMetric(PM_SmallIconSize);
+                int margin_base = pixelMetric(PM_DockWidgetTitleMargin);
+                int margin_h = margin_base + pixelMetric(PM_TabBarTabHSpace) / 2;
+                int margin_v = margin_base;
 
-            QPoint icon_point(margin + option->rect.left(),
-                              margin + option->rect.center().y()-width/2);
+                QPoint icon_point(margin_h + my_option.rect.left(),
+                                  margin_v + my_option.rect.center().y()-width/2);
 
-            painter->drawPixmap(icon_point, widget->windowIcon().pixmap(width, width));
+                painter->drawPixmap(icon_point, widget->windowIcon().pixmap(width, width));
 
-            const_cast<QStyleOption*>(option)->rect = option->rect.adjusted(width+margin, 0, 0, 0);
+                my_option.rect.adjust(width+margin_h, 0, 0, 0);
+
+                return QProxyStyle::drawControl(element, &my_option, painter, widget);;
+            }
+        }
+        else if ( element == CE_TabBarTabLabel && qobject_cast<const QMainWindow*>(widget->parentWidget()) )
+        {
+            if ( const QStyleOptionTab* tab_option = qstyleoption_cast<const QStyleOptionTab *>(option) )
+            {
+                QStyleOptionTab my_option(*tab_option);
+                my_option.icon = target->windowIcon();
+                return QProxyStyle::drawControl(element, &my_option, painter, widget);
+            }
         }
 
-        baseStyle()->drawControl(element, option, painter, widget);
+        QProxyStyle::drawControl(element, option, painter, widget);
     }
+
+private:
+    QDockWidget* target;
+
 };
 
 #endif // DOCKWIDGET_STYLE_ICON_HPP
