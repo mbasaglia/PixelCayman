@@ -18,12 +18,17 @@
 include_directories(${CMAKE_CURRENT_SOURCE_DIR})
 
 set(SOURCES
-main.cpp
-ui/main_window.cpp
-ui/main_window.hpp
+document/document.hpp
+document/document_frame.hpp
+document/document_layer.cpp
+document/document_layer.hpp
+document/layer_operation.hpp
 style/dockwidget_style_icon.hpp
 ui/color_editor.cpp
 ui/color_editor.hpp
+ui/main_window.cpp
+ui/main_window.hpp
+main.cpp
 util.hpp
 )
 
