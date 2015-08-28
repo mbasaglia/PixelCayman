@@ -18,37 +18,36 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-#ifndef PIXEL_CAYMAN_DOCUMENT_HPP
-#define PIXEL_CAYMAN_DOCUMENT_HPP
+#ifndef PIXEL_CAYMAN_DOCUMENT_LAYER_HPP
+#define PIXEL_CAYMAN_DOCUMENT_LAYER_HPP
 
-#include "animation.hpp"
+#include "image.hpp"
 
 namespace document {
 
-class Document : public DocumentElement
+class Layer : public DocumentElement
 {
 public:
-    explicit Document(const QSize& size = {},
-                      const QString& file_name = {},
-                      const Metadata& metadata = {});
+    QList<const Layer*> children() const;
+    QList<Layer*> children();
 
-    QString filename() const;
-    void setFilename(const QString& file_name);
+    QString name() const;
+    void setName(const QString& name);
 
-    QSize imageSize() const;
+    qreal opacity() const;
+    void setOpacity(qreal opacity);
 
-    QList<const Animation*> animations() const;
-    QList<Animation*> animations();
-    const Animation* animation(const QString & name) const;
-    Animation* animation(const QString & name);
-    Animation* addAnimation(const QString& name);
-    void removeAnimation(Animation* animation);
+    bool visible() const;
+    void setVisible(bool visible);
 
-    const Layer* rootLayer() const;
-    Layer* rootLayer();
+    bool locked() const;
+    void setLocked(bool locked);
+
+    QList<Image*> frameImages();
+    QList<const Image*> frameImages() const;
 
     void apply(Visitor& visitor) override;
 };
 
 } // namespace document
-#endif // PIXEL_CAYMAN_DOCUMENT_HPP
+#endif // PIXEL_CAYMAN_DOCUMENT_LAYER_HPP

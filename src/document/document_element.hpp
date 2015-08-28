@@ -18,37 +18,41 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-#ifndef PIXEL_CAYMAN_DOCUMENT_FRAME_HPP
-#define PIXEL_CAYMAN_DOCUMENT_FRAME_HPP
+#ifndef PIXEL_CAYMAN_DOCUMENT_ELEMENT_HPP
+#define PIXEL_CAYMAN_DOCUMENT_ELEMENT_HPP
+#include <QHash>
 
-#include <QList>
-#include <QStringList>
+namespace document {
 
-#include "document_layer.hpp"
+class Visitor;
+
+using Metadata = QHash<QString, QString>;
 
 /**
- * \brief A frame in an animation
+ * \brief Base class for all document components
  */
-class DocumentFrame
+class DocumentElement
 {
 public:
-    DocumentFrame(const QList<LayerMetadata*>& layers = {},
-                  const QSize& size = QSize(),
-                  const QColor& color = Qt::transparent)
+    explicit DocumentElement(const Metadata& metadata = {})
+        : metadata_(metadata) {}
+
+    virtual ~DocumentElement() {}
+
+    virtual void apply(Visitor& visitor) = 0;
+
+    const Metadata& metadata() const
     {
-        for ( const LayerMetadata& md : layers )
-            layers_.push_back(DocumentLayer(&md, size, color));
+        return metadata_;
+    }
+    Metadata& metadata()
+    {
+        return metadata_;
     }
 
-    /**
-     * \brief Layers in the frame
-     */
-    const std::list<DocumentLayer>& layers() const { return layers_; }
-    std::list<DocumentLayer>& layers() { return layers_; }
-
-
 private:
-    std::list<DocumentLayer> layers_;
+    Metadata metadata_;
 };
 
-#endif // PIXEL_CAYMAN_DOCUMENT_FRAME_HPP
+} // namespace document
+#endif // PIXEL_CAYMAN_DOCUMENT_ELEMENT_HPP

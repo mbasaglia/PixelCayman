@@ -18,37 +18,32 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-#ifndef PIXEL_CAYMAN_DOCUMENT_HPP
-#define PIXEL_CAYMAN_DOCUMENT_HPP
+#ifndef PIXEL_CAYMAN_ANIMATION_HPP
+#define PIXEL_CAYMAN_ANIMATION_HPP
 
-#include "animation.hpp"
+#include "frame.hpp"
 
 namespace document {
 
-class Document : public DocumentElement
+class Animation : public DocumentElement
 {
 public:
-    explicit Document(const QSize& size = {},
-                      const QString& file_name = {},
-                      const Metadata& metadata = {});
+    explicit Animation(const QString& name = {}, int frames_per_second = 24);
 
-    QString filename() const;
-    void setFilename(const QString& file_name);
+    QString name() const;
+    void setName(const QString& name);
 
-    QSize imageSize() const;
+    int framesPerSecond() const;
+    void setFramesPerSecond(int fps);
 
-    QList<const Animation*> animations() const;
-    QList<Animation*> animations();
-    const Animation* animation(const QString & name) const;
-    Animation* animation(const QString & name);
-    Animation* addAnimation(const QString& name);
-    void removeAnimation(Animation* animation);
-
-    const Layer* rootLayer() const;
-    Layer* rootLayer();
+    QList<Frame*> frames() const;
+    int count() const;
+    Frame* frame(int i);
+    Frame* createFrame(int position = -1, int copy = -1);
+    void removeFrame(int position);
 
     void apply(Visitor& visitor) override;
 };
 
 } // namespace document
-#endif // PIXEL_CAYMAN_DOCUMENT_HPP
+#endif // PIXEL_CAYMAN_ANIMATION_HPP

@@ -18,37 +18,27 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-#ifndef PIXEL_CAYMAN_DOCUMENT_HPP
-#define PIXEL_CAYMAN_DOCUMENT_HPP
+#ifndef PIXEL_CAYMAN_DOCUMENT_FRAME_LAYER_HPP
+#define PIXEL_CAYMAN_DOCUMENT_FRAME_LAYER_HPP
 
-#include "animation.hpp"
+#include "layer.hpp"
 
 namespace document {
 
-class Document : public DocumentElement
+class FrameLayer : public DocumentElement
 {
 public:
-    explicit Document(const QSize& size = {},
-                      const QString& file_name = {},
-                      const Metadata& metadata = {});
+    QList<FrameLayer*> children();
+    QList<const FrameLayer*> children() const;
 
-    QString filename() const;
-    void setFilename(const QString& file_name);
+    Layer* layer();
+    const Layer* layer() const;
 
-    QSize imageSize() const;
-
-    QList<const Animation*> animations() const;
-    QList<Animation*> animations();
-    const Animation* animation(const QString & name) const;
-    Animation* animation(const QString & name);
-    Animation* addAnimation(const QString& name);
-    void removeAnimation(Animation* animation);
-
-    const Layer* rootLayer() const;
-    Layer* rootLayer();
+    Image* image();
+    const Image* image() const;
 
     void apply(Visitor& visitor) override;
 };
 
 } // namespace document
-#endif // PIXEL_CAYMAN_DOCUMENT_HPP
+#endif // PIXEL_CAYMAN_DOCUMENT_FRAME_LAYER_HPP
