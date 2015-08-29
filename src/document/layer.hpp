@@ -25,28 +25,81 @@
 
 namespace document {
 
+class Document;
+
+/**
+ * \brief A layer in the document
+ */
 class Layer : public DocumentElement
 {
 public:
-    QList<const Layer*> children() const;
-    QList<Layer*> children();
+    explicit Layer(Document* owner, const QString& name);
+    Layer(const Layer&) = delete;
+    Layer& operator=(const Layer&) = delete;
+    ~Layer();
 
+    /**
+     * \brief Child layers
+     */
+    QList<Layer*> children();
+    QList<const Layer*> children() const;
+
+    /**
+     * \brief Human-readable name for the layer
+     */
     QString name() const;
     void setName(const QString& name);
 
+    /**
+     * \brief Layer opacity [0-1]
+     */
     qreal opacity() const;
     void setOpacity(qreal opacity);
 
+    /**
+     * \brief Whether the layer is visible or not
+     */
     bool visible() const;
     void setVisible(bool visible);
 
+    /**
+     * \brief Whether the layer allows edits to its image and children
+     */
     bool locked() const;
     void setLocked(bool locked);
 
+    /**
+     * \brief Images for this layer
+     */
     QList<Image*> frameImages();
     QList<const Image*> frameImages() const;
 
+    /**
+     * \brief Creates a new frame for this layer
+     * \returns The created image, the layer keeps its ownership
+     */
+    Image* addFrameImage();
+
     void apply(Visitor& visitor) override;
+
+    /**
+     * \brief Paint the layer
+     */
+    void paint(QPainter& painter) const;
+
+    /**
+     * \brief Paint the layer, disregarding \c visible and \c opacity
+     */
+    void paintFullAlpha(QPainter& painter) const;
+
+private:
+    QList<Layer*> children_;
+    QString name_;
+    QList<Image*> frames_;
+    bool visible_ = true;
+    qreal opacity_ = 1;
+    bool locked_ = false;
+    Document* owner_;
 };
 
 } // namespace document

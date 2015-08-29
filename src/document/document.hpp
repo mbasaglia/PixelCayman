@@ -22,6 +22,7 @@
 #define PIXEL_CAYMAN_DOCUMENT_HPP
 
 #include "animation.hpp"
+#include "layer.hpp"
 
 namespace document {
 
@@ -31,6 +32,10 @@ public:
     explicit Document(const QSize& size = {},
                       const QString& file_name = {},
                       const Metadata& metadata = {});
+
+    ~Document();
+    Document(const Document&) = delete;
+    Document& operator=(const Document&) = delete;
 
     QString filename() const;
     void setFilename(const QString& file_name);
@@ -48,6 +53,12 @@ public:
     Layer* rootLayer();
 
     void apply(Visitor& visitor) override;
+
+private:
+    Layer* root;
+    QList<Animation*> animations_;
+    QSize image_size;
+    QString file_name;
 };
 
 } // namespace document

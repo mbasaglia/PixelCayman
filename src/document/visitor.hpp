@@ -25,17 +25,73 @@
 
 namespace document {
 
+/**
+ * \brief Visitor for document elements
+ */
 class Visitor
 {
 public:
     virtual ~Visitor() {}
 
-    virtual bool visit(Document& document) = 0;
-    virtual bool visit(Animation& animation) = 0;
-    virtual bool visit(Layer& layer) = 0;
-    virtual bool visit(Frame& frame) = 0;
-    virtual bool visit(FrameLayer& frame_layer) = 0;
-    virtual bool visit(Image& image) = 0;
+    /**
+     * \brief Visit a generic element, makes the virtual call
+     */
+    void visit(DocumentElement& element)
+    {
+        element.apply(*this);
+    }
+
+    /**
+     * \brief Begin processing a document
+     *
+     * \return \b true if the document should be processed
+     *
+     * If returns true, the document's children will be visited
+     * and after that, leave() will be called for that document
+     */
+    virtual bool enter(Document& document) = 0;
+    /**
+     * \brief Finish processing a document
+     */
+    virtual void leave(Document& document) = 0;
+
+    /**
+     * \brief Begin processing a layer
+     *
+     * \return \b true if the layer should be processed
+     *
+     * If returns true, the layer's children will be visited
+     * and after that, leave() will be called for that layer
+     */
+    virtual bool enter(Layer& layer) = 0;
+    /**
+     * \brief Finish processing a layer
+     */
+    virtual void leave(Layer& layer) = 0;
+
+    /**
+     * \brief Process an image
+     */
+    virtual void visit(Image& image) = 0;
+
+    /**
+     * \brief Begin processing an animation
+     *
+     * \return \b true if the animation should be processed
+     *
+     * If returns true, the animation's children will be visited
+     * and after that, leave() will be called for that animation
+     */
+    virtual bool enter(Animation& animation) = 0;
+    /**
+     * \brief Finish processing an animation
+     */
+    virtual void leave(Animation& animation) = 0;
+
+    /**
+     * \brief Process a frame
+     */
+    virtual void visit(Frame& frame) = 0;
 };
 
 } // namespace document

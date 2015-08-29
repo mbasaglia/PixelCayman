@@ -23,18 +23,36 @@
 
 #include "document_element.hpp"
 #include <QImage>
+#include <QColor>
 
 namespace document {
 
+/**
+ * \brief Lead image, a single frame in a single layer
+ */
 class Image : public DocumentElement
 {
 public:
+    explicit Image(const QImage& image);
+    explicit Image(const QSize& size, const QColor& color = Qt::transparent);
+
     const QImage& image() const;
     QImage& image();
 
-    void paint(QPainter& painter, qreal opacity = 1) const;
+    /**
+     * \brief Paints the image with the given opacity [0,1]
+     */
+    void paint(QPainter& painter, qreal opacity) const;
+
+    /**
+     * \brief Paints the image
+     */
+    void paint(QPainter& painter) const;
 
     void apply(Visitor& visitor) override;
+
+private:
+    QImage image_;
 };
 
 } // namespace document

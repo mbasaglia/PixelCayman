@@ -21,15 +21,20 @@
 #ifndef PIXEL_CAYMAN_DOCUMENT_FRAME_HPP
 #define PIXEL_CAYMAN_DOCUMENT_FRAME_HPP
 
-#include "frame_layer.hpp"
+#include "document_element.hpp"
 
 namespace document {
+
+class Animation;
 
 class Frame : public DocumentElement
 {
 public:
-    const FrameLayer& layer() const;
-    FrameLayer& layer();
+
+    Animation* animation();
+    const Animation* animation() const;
+
+    int frameNumber() const;
 
     void apply(Visitor& visitor) override;
 };

@@ -21,6 +21,7 @@
 #ifndef PIXEL_CAYMAN_DOCUMENT_ELEMENT_HPP
 #define PIXEL_CAYMAN_DOCUMENT_ELEMENT_HPP
 #include <QHash>
+#include <QString>
 
 namespace document {
 
