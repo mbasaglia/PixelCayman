@@ -21,11 +21,13 @@
 #ifndef PIXEL_CAYMAN_DOCUMENT_IMAGE_HPP
 #define PIXEL_CAYMAN_DOCUMENT_IMAGE_HPP
 
-#include "document_element.hpp"
+#include "frame.hpp"
 #include <QImage>
 #include <QColor>
 
 namespace document {
+
+class Layer;
 
 /**
  * \brief Lead image, a single frame in a single layer
@@ -33,26 +35,44 @@ namespace document {
 class Image : public DocumentElement
 {
 public:
-    explicit Image(const QImage& image);
-    explicit Image(const QSize& size, const QColor& color = Qt::transparent);
+    explicit Image(Layer* layer, const QImage& image, Frame* frame = nullptr);
+    explicit Image(Layer* layer,
+                   const QSize& size,
+                   const QColor& color = Qt::transparent,
+                   Frame* frame = nullptr);
 
     const QImage& image() const;
     QImage& image();
 
     /**
-     * \brief Paints the image with the given opacity [0,1]
-     */
+    * \brief Paints the image with the given opacity [0,1]
+    */
     void paint(QPainter& painter, qreal opacity) const;
 
     /**
-     * \brief Paints the image
-     */
+    * \brief Paints the image
+    */
     void paint(QPainter& painter) const;
 
     void apply(Visitor& visitor) override;
 
+    /**
+     * \brief Frame associated with this image
+     */
+    Frame* frame();
+    const Frame* frame() const;
+    void setFrame(Frame* frame);
+
+    /**
+     * \brief Layer associated with this image
+     */
+    Layer* layer();
+    const Layer* layer() const;
+
 private:
     QImage image_;
+    Frame* frame_;
+    Layer* layer_;
 };
 
 } // namespace document

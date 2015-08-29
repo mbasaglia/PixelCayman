@@ -94,5 +94,83 @@ public:
     virtual void visit(Frame& frame) = 0;
 };
 
+namespace visitor {
+
+/**
+ * \brief Abstract class to visit all images to render a single frame
+ */
+class FrameRenderer : public Visitor
+{
+public:
+    explicit FrameRenderer(Frame* frame) : frame_(frame) {}
+
+    /// \todo Check that the frame is part of the document
+    bool enter(Document& document) override
+    {
+        return true;
+    }
+
+    void leave(Document& document) override
+    {
+    }
+
+    bool enter(Layer& layer) override
+    {
+        return true;
+    }
+
+    void leave(Layer& layer) override
+    {
+    }
+
+    void visit(Image& image) override
+    {
+        if ( image.frame() == frame_ )
+            render(image);
+    }
+
+    bool enter(Animation& animation) override
+    {
+        return false;
+    }
+
+    void leave(Animation& animation) override
+    {
+    }
+
+    void visit(Frame& frame)
+    {
+    }
+
+protected:
+    virtual void render(const Image& image) = 0;
+
+private:
+    Frame* frame_;
+};
+
+class Paint : public FrameRenderer
+{
+public:
+    Paint(Frame* frame, QPainter* painter, bool full_alpha = false)
+        : FrameRenderer(frame), painter(painter), full_alpha(full_alpha)
+    {}
+
+protected:
+    void render(const Image& image) override
+    {
+        if ( full_alpha )
+            image.paint(*painter);
+        else if ( image.layer()->visible() )
+            image.paint(*painter, image.layer()->opacity());
+    }
+
+private:
+    QPainter* painter;
+    bool full_alpha;
+};
+
+} // namespace visitor
+
 } // namespace document
 #endif // PIXEL_CAYMAN_DOCUMENT_VISITOR_HPP

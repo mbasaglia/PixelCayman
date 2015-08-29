@@ -28,12 +28,12 @@
 
 namespace document {
 
-Image::Image(const QImage& image)
-    : image_(image)
+Image::Image(Layer* layer, const QImage& image,  Frame* frame)
+    : image_(image), frame_(frame), layer_(layer)
 {}
 
-Image::Image(const QSize& size, const QColor& color)
-    : image_(size, QImage::Format_ARGB32)
+Image::Image(Layer* layer, const QSize& size, const QColor& color,  Frame* frame)
+    : image_(size, QImage::Format_ARGB32), frame_(frame), layer_(layer)
 {
     image_.fill(color);
 }
@@ -64,6 +64,31 @@ void Image::paint(QPainter& painter, qreal opacity) const
 void Image::paint(QPainter& painter) const
 {
     painter.drawImage(0, 0, image_);
+}
+
+const Frame* Image::frame() const
+{
+    return frame_;
+}
+
+Frame* Image::frame()
+{
+    return frame_;
+}
+
+void Image::setFrame(Frame* frame)
+{
+    frame_ = frame;
+}
+
+const Layer* Image::layer() const
+{
+    return layer_;
+}
+
+Layer* Image::layer()
+{
+    return layer_;
 }
 
 } // namespace document

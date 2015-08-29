@@ -102,7 +102,7 @@ QList<const Image*> Layer::frameImages() const
 
 Image* Layer::addFrameImage()
 {
-    Image* image = new Image(owner_->imageSize());
+    Image* image = new Image(this, owner_->imageSize());
     frames_.push_back(image);
     return image;
 }
@@ -111,8 +111,12 @@ void Layer::apply(Visitor& visitor)
 {
     if ( visitor.enter(*this) )
     {
+        for ( Layer* child : children_ )
+            child->apply(visitor);
+
         for ( Image* img : frames_ )
             img->apply(visitor);
+
         visitor.leave(*this);
     }
 }
