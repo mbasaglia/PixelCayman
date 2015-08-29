@@ -22,6 +22,8 @@
 #include "main_window.hpp"
 #include "style/dockwidget_style_icon.hpp"
 #include "util.hpp"
+#include "ui_main_window.h"
+#include <QGraphicsView>
 
 /**
  * \brief link colorChanged and setColor between two classes
@@ -139,7 +141,13 @@ void MainWindow::changeEvent(QEvent* event)
     QMainWindow::changeEvent(event);
 }
 
-void MainWindow::set_active_color(const QColor& color)
+void MainWindow::setActiveColor(const QColor& color)
 {
     color_editor->setColor(color);
+}
+
+void MainWindow::documentNew()
+{
+    QGraphicsView *view = new QGraphicsView;
+    main_tab->addTab(view, tr("New Image"));
 }

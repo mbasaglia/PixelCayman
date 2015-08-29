@@ -39,7 +39,8 @@ public:
     MainWindow(QWidget* parent = nullptr);
 
 public slots:
-    void set_active_color(const QColor& color);
+    void setActiveColor(const QColor& color);
+    void documentNew();
 
 protected:
     void changeEvent(QEvent* event) override;
@@ -49,7 +50,6 @@ private:
     QDockWidget* create_dock(QWidget* widget, const QIcon& icon);
     void init_docks();
     void translate_docks();
-
     void init_menus();
 
     void load_settings();
