@@ -35,6 +35,7 @@ Document::Document(const QSize& size,
       file_name(file_name)
 {
     root = new Layer(this, QObject::tr("Layer"));
+    root->addFrameImage();
 }
 
 Document::~Document()

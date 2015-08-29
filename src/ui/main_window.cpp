@@ -24,6 +24,7 @@
 #include "util.hpp"
 #include "ui_main_window.h"
 #include <QGraphicsView>
+#include "document/graphics_widget.hpp"
 
 /**
  * \brief link colorChanged and setColor between two classes
@@ -48,6 +49,7 @@ MainWindow::MainWindow(QWidget* parent)
     setupUi(this);
 
     init_docks();
+    init_menus();
     load_settings();
 
     current_color_selector.color->setColor(Qt::black);
@@ -121,6 +123,17 @@ void MainWindow::translate_docks()
     dock_current_color->setWindowTitle(tr("Current Color"));
 }
 
+void MainWindow::init_menus()
+{
+    action_new->setShortcut(QKeySequence::New);
+    action_open->setShortcut(QKeySequence::Open);
+    action_save->setShortcut(QKeySequence::Save);
+    action_save_as->setShortcut(QKeySequence::SaveAs);
+    action_close->setShortcut(QKeySequence::Close);
+    action_print->setShortcut(QKeySequence::Print);
+    action_quit->setShortcut(QKeySequence::Quit);
+}
+
 void MainWindow::load_settings()
 {
     palette_model.addSearchPath("/usr/share/gimp/2.0/palettes/");
@@ -148,6 +161,8 @@ void MainWindow::setActiveColor(const QColor& color)
 
 void MainWindow::documentNew()
 {
-    QGraphicsView *view = new QGraphicsView;
-    main_tab->addTab(view, tr("New Image"));
+    /// \todo Show dialog to get the size
+    /// \todo Keep track of documents and clean up when the document is closed
+    document::Document* doc = new document::Document(QSize(32,32));
+    main_tab->addTab(new document::GraphicsWidget(doc), tr("New Image"));
 }

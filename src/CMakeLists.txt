@@ -29,6 +29,8 @@ document/layer.hpp
 document/layer.cpp
 document/visitor.hpp
 document/graphics_item.hpp
+document/graphics_widget.hpp
+document/graphics_widget.cpp
 style/dockwidget_style_icon.hpp
 ui/color_editor.cpp
 ui/color_editor.hpp
