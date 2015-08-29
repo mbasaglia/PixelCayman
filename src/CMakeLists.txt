@@ -41,6 +41,10 @@ util.hpp
 find_package(Qt5Widgets REQUIRED)
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTOUIC ON)
+if ( CMAKE_MAJOR_VERSION LESS 3 )
+    file(GLOB UI_FILES ui/*.ui)
+    qt5_wrap_ui(SOURCES ${UI_FILES})
+endif()
 
 # Executable
 set(EXECUTABLE_NAME pixelcayman) # repeated otherwise kdevelop messes up
