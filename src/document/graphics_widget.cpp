@@ -24,11 +24,29 @@
 
 #include "graphics_widget.hpp"
 
+#include <QMouseEvent>
+
 namespace document {
 
-GraphicsWidget::GraphicsWidget(Document* document)
-    : document_(document)
+namespace {
+enum MouseMode {
+    Resting,
+    Panning,
+};
+} // namespace
+
+class GraphicsWidget::Private
 {
+public:
+    Document* document;
+    QPoint drag_point;
+    MouseMode mouse_mode = Resting;
+};
+
+GraphicsWidget::GraphicsWidget(Document* document)
+    : p(new Private)
+{
+    p->document = document;
     QGraphicsScene* scene = new QGraphicsScene(this);
     scene->setSceneRect(QRectF(QPointF(),document->imageSize()));
     GraphicsItem* item = new GraphicsItem(document);
@@ -38,9 +56,59 @@ GraphicsWidget::GraphicsWidget(Document* document)
     setFrameStyle(QFrame::NoFrame);
 }
 
+GraphicsWidget::~GraphicsWidget()
+{
+    delete p;
+}
+
 Document* GraphicsWidget::document() const
 {
-    return document_;
+    return p->document;
+}
+
+qreal GraphicsWidget::zoomFactor() const
+{
+    return transform().m11();
+}
+
+void GraphicsWidget::setZoomFactor(qreal factor)
+{
+    if ( factor < 0.01 )
+        return;
+    QTransform new_transform (
+        factor,            transform().m12(), transform().m13(),
+        transform().m21(), factor,            transform().m23(),
+        transform().m31(), transform().m32(), transform().m33()
+    );
+    setTransform(new_transform);
+    emit zoomFactorChanged(factor);
+}
+
+void GraphicsWidget::zoom(qreal factor)
+{
+    if ( zoomFactor() * factor < 0.01 )
+        return;
+
+    QPoint mouse_pos = mapFromGlobal(QCursor::pos());
+    QPointF scene_pos = mapToScene(mouse_pos);
+
+    scale(factor,factor);
+
+    // Anchor on mouse
+    if ( rect().contains(mouse_pos) )
+    {
+        QPointF new_scene_pos = mapToScene(mouse_pos);
+        translate(new_scene_pos-scene_pos);
+    }
+
+    emit zoomFactorChanged(zoomFactor());
+}
+
+
+void GraphicsWidget::translate(const QPointF& delta)
+{
+    scrollContentsBy(delta.x(), delta.y());
+    update();
 }
 
 void GraphicsWidget::drawBackground(QPainter * painter, const QRectF & rect)
@@ -57,13 +125,65 @@ void GraphicsWidget::drawBackground(QPainter * painter, const QRectF & rect)
 
 void GraphicsWidget::drawForeground(QPainter * painter, const QRectF & rect)
 {
-    static QPen outline(Qt::gray, 1, Qt::DashLine);
+    QPen outline(Qt::gray, 1, Qt::DashLine);
+    outline.setCosmetic(true);
 
     QGraphicsView::drawForeground(painter, rect);
 
     painter->setBrush(Qt::transparent);
     painter->setPen(outline);
-    painter->drawRect(sceneRect().adjusted(-1,-1,0,0));
+    qreal adjust = -1.0/zoomFactor();
+    painter->drawRect(sceneRect().adjusted(adjust, adjust, 0, 0));
+}
+
+void GraphicsWidget::mousePressEvent(QMouseEvent *event)
+{
+    // Only accept new modes if the old one has been resolved
+    if ( p->mouse_mode != Resting )
+        return;
+
+    p->drag_point = event->pos();
+
+    if ( event->button() == Qt::MiddleButton )
+    {
+        // drag view
+        setCursor(Qt::ClosedHandCursor);
+        p->mouse_mode = Panning;
+    }
+}
+
+void GraphicsWidget::mouseMoveEvent(QMouseEvent *event)
+{
+    QPoint mouse_point = event->pos();
+
+    if ( p->mouse_mode == Panning )
+    {
+        // drag view
+        QPointF delta = mouse_point - p->drag_point;
+        translate(delta);
+    }
+
+    p->drag_point = mouse_point;
+}
+
+void GraphicsWidget::mouseReleaseEvent(QMouseEvent *event)
+{
+    if ( p->mouse_mode == Panning && event->button() == Qt::MiddleButton )
+    {
+        setCursor(Qt::ArrowCursor);
+        p->mouse_mode = Resting;
+    }
+}
+
+void GraphicsWidget::wheelEvent(QWheelEvent *event)
+{
+    if ( event->modifiers() & Qt::ControlModifier )
+    {
+        if ( event->delta() < 0 )
+            zoom(0.8);
+        else
+            zoom(1.25);
+    }
 }
 
 } // namespace document

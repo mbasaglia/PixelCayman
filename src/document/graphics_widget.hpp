@@ -30,17 +30,41 @@ class GraphicsWidget : public QGraphicsView
 {
     Q_OBJECT
 
+    /**
+     * \brief Zooming factor of the view (1 = real size)
+     */
+    Q_PROPERTY(qreal zoomFactor READ zoomFactor WRITE setZoomFactor NOTIFY zoomFactorChanged)
+
 public:
     explicit GraphicsWidget(Document* document);
+    ~GraphicsWidget();
 
     Document* document() const;
+
+    qreal zoomFactor() const;
+
+    using QGraphicsView::translate;
+    
+public slots:
+    void setZoomFactor(qreal factor);
+    void zoom(qreal factor);
+    void translate(const QPointF& delta);
+
+signals:
+    void zoomFactorChanged(qreal zoomFactor);
 
 protected:
     void drawBackground(QPainter * painter, const QRectF & rect) override;
     void drawForeground(QPainter * painter, const QRectF & rect) override;
 
+    void mousePressEvent(QMouseEvent *event) override;
+    void mouseMoveEvent(QMouseEvent *event) override;
+    void mouseReleaseEvent(QMouseEvent *event) override;
+    void wheelEvent(QWheelEvent *event) override;
+
 private:
-    Document* document_;
+    class Private;
+    Private* p;
 };
 
 } // namespace document
