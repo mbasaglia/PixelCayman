@@ -205,7 +205,7 @@ bool MainWindow::documentOpen()
     }
 
     QStringList file_formats = QStringList()
-        << tr("Bitmap (%1)").arg(image_formats)
+        << tr("All Bitmap Images (%1)").arg(image_formats)
         << tr("All Files (*)");
     QFileDialog open_dialog(this, tr("Open Image"), default_dir);
     open_dialog.setFileMode(QFileDialog::ExistingFiles);
@@ -243,3 +243,88 @@ document::Document* MainWindow::currentDocument()
         return widget->document();
     return nullptr;
 }
+
+bool MainWindow::documentSave()
+{
+    return save(main_tab->currentIndex(), false);
+}
+
+bool MainWindow::documentSaveAs()
+{
+    return save(main_tab->currentIndex(), true);
+}
+
+namespace {
+enum DocumentSaveFormat
+{
+    Cayman,
+    Bitmap,
+    Unknown
+};
+} // namespace
+
+bool MainWindow::save(int tab, bool prompt)
+{
+    view::GraphicsWidget* widget =
+        qobject_cast<view::GraphicsWidget*>(main_tab->currentWidget());
+
+    if ( !widget )
+        return false;
+
+    document::Document* doc = widget->document();
+
+    if ( !doc )
+        return false;
+
+    if ( doc->fileName().isEmpty() )
+        prompt = true;
+
+    DocumentSaveFormat format = Unknown;
+    if ( prompt )
+    {
+        // Ensure the the image is visible so the user knows what they are saving
+        if ( tab != main_tab->currentIndex() )
+            main_tab->setCurrentIndex(tab);
+
+        QStringList file_formats = QStringList()
+            << tr("Cayman Files (*.mela)")
+            /// \todo split "All Bitmap Images" in png etc
+            << tr("All Bitmap Images (%1)").arg(image_formats)
+            << tr("All Files (*)");
+
+        /// \todo if doc->filename is a bitmap, select that filter
+        QFileDialog save_dialog(this, tr("Save Image"), doc->fileName());
+        save_dialog.setFileMode(QFileDialog::AnyFile);
+        save_dialog.setAcceptMode(QFileDialog::AcceptSave);
+        save_dialog.setNameFilters(file_formats);
+
+        if ( !save_dialog.exec() )
+            return false;
+
+        format = DocumentSaveFormat(file_formats.indexOf(save_dialog.selectedNameFilter()));
+        doc->setFileName(save_dialog.selectedFiles().front());
+        main_tab->setTabText(tab, doc->fileName());
+        /// \todo update window title
+    }
+
+    /// \todo if format == Unknown, determine from file extension
+    /// \todo on paths that lead to a successful save, mark the document as clean
+
+    if ( format == Bitmap )
+    {
+        QImage image(doc->imageSize(), QImage::Format_ARGB32);
+        /// \todo if the format doesn't support alpha, read a color from the settings
+        image.fill(Qt::transparent);
+        QPainter painter(&image);
+        /// \todo detect frame (and fullAlpha from settings?)
+        document::visitor::Paint paint(nullptr, &painter, true);
+        doc->apply(paint);
+
+        /// \todo some way to determine quality for jpg
+        /// (low priority since Jpeg isn't a good format for pixel art)
+        return image.save(doc->fileName());
+    }
+
+    return false;
+}
+

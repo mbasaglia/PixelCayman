@@ -43,9 +43,18 @@ public slots:
     void setActiveColor(const QColor& color);
     void documentNew();
     bool documentOpen();
+    bool documentSave();
+    bool documentSaveAs();
 
 protected:
     void changeEvent(QEvent* event) override;
+    /**
+     * \brief Save the document
+     * \param tab Index of the tab with the document to be saved
+     * \param prompt Whether to always prompt for a file name
+     * \return Whether the file has been saved successfully
+     */
+    bool save(int tab, bool prompt);
 
     document::Document* currentDocument();
 
