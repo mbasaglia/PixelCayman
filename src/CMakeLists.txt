@@ -36,6 +36,7 @@ ui/main_window.hpp
 view/graphics_item.hpp
 view/graphics_widget.hpp
 view/graphics_widget.cpp
+view/edit_tool.hpp
 main.cpp
 util.hpp
 ${CMAKE_CURRENT_BINARY_DIR}/info.cpp

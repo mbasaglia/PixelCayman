@@ -41,6 +41,7 @@ public:
     GraphicsItem* document_item;
     QPoint drag_point;
     MouseMode mouse_mode = Resting;
+    EditTool* tool = nullptr;
 };
 
 GraphicsWidget::GraphicsWidget(::document::Document* document)
@@ -143,6 +144,11 @@ void GraphicsWidget::drawForeground(QPainter * painter, const QRectF & rect)
     painter->setBrush(Qt::transparent);
     painter->setPen(outline);
     painter->drawRect(p->document_item->sceneBoundingRect());
+
+    if ( p->tool )
+    {
+        p->tool->drawForeground(painter);
+    }
 }
 
 void GraphicsWidget::mousePressEvent(QMouseEvent *event)
@@ -159,6 +165,11 @@ void GraphicsWidget::mousePressEvent(QMouseEvent *event)
         setCursor(Qt::ClosedHandCursor);
         p->mouse_mode = Panning;
     }
+    else if ( p->tool )
+    {
+        /// \todo Maybe it needs info on the view/scene
+        p->tool->mousePressEvent(event, document());
+    }
 }
 
 void GraphicsWidget::mouseMoveEvent(QMouseEvent *event)
@@ -172,6 +183,11 @@ void GraphicsWidget::mouseMoveEvent(QMouseEvent *event)
         delta /= zoomFactor();
         translate(delta);
     }
+    else if ( p->tool )
+    {
+        /// \todo Maybe it needs info on the view/scene
+        p->tool->mouseMoveEvent(event, document());
+    }
 
     p->drag_point = mouse_point;
 }
@@ -182,6 +198,11 @@ void GraphicsWidget::mouseReleaseEvent(QMouseEvent *event)
     {
         setCursor(Qt::ArrowCursor);
         p->mouse_mode = Resting;
+    }
+    else if ( p->tool )
+    {
+        /// \todo Maybe it needs info on the view/scene
+        p->tool->mouseReleaseEvent(event, document());
     }
 }
 
@@ -194,6 +215,22 @@ void GraphicsWidget::wheelEvent(QWheelEvent *event)
         else
             zoom(1.25);
     }
+}
+
+EditTool* GraphicsWidget::currentTool() const
+{
+    return p->tool;
+}
+
+void GraphicsWidget::setCurrentTool(EditTool* tool)
+{
+    if ( p->tool )
+        p->tool->finalize(document());
+
+    p->tool = tool;
+
+    if ( p->tool )
+        p->tool->initialize(document());
 }
 
 } // namespace view
