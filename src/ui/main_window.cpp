@@ -29,7 +29,7 @@
 #include "style/dockwidget_style_icon.hpp"
 #include "util.hpp"
 #include "ui_main_window.h"
-#include "document/graphics_widget.hpp"
+#include "view/graphics_widget.hpp"
 
 /// Supported image formats, as the extension string for the file dialog
 static QString image_formats;
@@ -176,7 +176,7 @@ void MainWindow::documentNew()
     /// \todo Show dialog to get the size
     /// \todo Keep track of documents and clean up when the document is closed
     document::Document* doc= new document::Document(QSize(32,32));
-    main_tab->addTab(new document::GraphicsWidget(doc), tr("New Image"));
+    main_tab->addTab(new view::GraphicsWidget(doc), tr("New Image"));
 }
 
 bool MainWindow::documentOpen()
@@ -206,15 +206,15 @@ bool MainWindow::documentOpen()
         return false;
 
     document::Document* doc = new document::Document(image, file_name);
-    main_tab->addTab(new document::GraphicsWidget(doc), file_name);
+    main_tab->addTab(new view::GraphicsWidget(doc), file_name);
 
     return true;
 }
 
 document::Document* MainWindow::currentDocument()
 {
-    if ( document::GraphicsWidget* widget =
-            qobject_cast<document::GraphicsWidget*>(main_tab->currentWidget()) )
+    if ( view::GraphicsWidget* widget =
+            qobject_cast<view::GraphicsWidget*>(main_tab->currentWidget()) )
         return widget->document();
     return nullptr;
 }

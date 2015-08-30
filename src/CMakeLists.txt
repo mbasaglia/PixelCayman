@@ -28,14 +28,14 @@ document/image.cpp
 document/layer.hpp
 document/layer.cpp
 document/visitor.hpp
-document/graphics_item.hpp
-document/graphics_widget.hpp
-document/graphics_widget.cpp
 style/dockwidget_style_icon.hpp
 ui/color_editor.cpp
 ui/color_editor.hpp
 ui/main_window.cpp
 ui/main_window.hpp
+view/graphics_item.hpp
+view/graphics_widget.hpp
+view/graphics_widget.cpp
 main.cpp
 util.hpp
 ${CMAKE_CURRENT_BINARY_DIR}/info.cpp

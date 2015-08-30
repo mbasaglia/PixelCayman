@@ -18,13 +18,13 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-#ifndef PIXEL_CAYMAN_DOCUMENT_GRAPHICS_WIDGET_HPP
-#define PIXEL_CAYMAN_DOCUMENT_GRAPHICS_WIDGET_HPP
+#ifndef PIXEL_CAYMAN_VIEW_GRAPHICS_WIDGET_HPP
+#define PIXEL_CAYMAN_VIEW_GRAPHICS_WIDGET_HPP
 
 #include <QGraphicsView>
 #include "graphics_item.hpp"
 
-namespace document {
+namespace view {
 
 class GraphicsWidget : public QGraphicsView
 {
@@ -36,10 +36,10 @@ class GraphicsWidget : public QGraphicsView
     Q_PROPERTY(qreal zoomFactor READ zoomFactor WRITE setZoomFactor NOTIFY zoomFactorChanged)
 
 public:
-    explicit GraphicsWidget(Document* document);
+    explicit GraphicsWidget(::document::Document* document);
     ~GraphicsWidget();
 
-    Document* document() const;
+    ::document::Document* document() const;
 
     qreal zoomFactor() const;
 
@@ -70,5 +70,5 @@ private:
     Private* p;
 };
 
-} // namespace document
-#endif // PIXEL_CAYMAN_DOCUMENT_GRAPHICS_WIDGET_HPP
+} // namespace view
+#endif // PIXEL_CAYMAN_VIEW_GRAPHICS_WIDGET_HPP

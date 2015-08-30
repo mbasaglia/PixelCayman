@@ -26,7 +26,7 @@
 
 #include <QMouseEvent>
 
-namespace document {
+namespace view {
 
 namespace {
 enum MouseMode {
@@ -43,7 +43,7 @@ public:
     MouseMode mouse_mode = Resting;
 };
 
-GraphicsWidget::GraphicsWidget(Document* document)
+GraphicsWidget::GraphicsWidget(::document::Document* document)
     : p(new Private)
 {
     QGraphicsScene* scene = new QGraphicsScene(this);
@@ -62,7 +62,7 @@ GraphicsWidget::~GraphicsWidget()
     delete p;
 }
 
-Document* GraphicsWidget::document() const
+document::Document* GraphicsWidget::document() const
 {
     return p->document_item->document();
 }
@@ -196,4 +196,4 @@ void GraphicsWidget::wheelEvent(QWheelEvent *event)
     }
 }
 
-} // namespace document
+} // namespace view
