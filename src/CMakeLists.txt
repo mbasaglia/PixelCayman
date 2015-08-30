@@ -38,7 +38,10 @@ ui/main_window.cpp
 ui/main_window.hpp
 main.cpp
 util.hpp
+${CMAKE_CURRENT_BINARY_DIR}/info.cpp
 )
+
+configure_file(info.in.cpp info.cpp)
 
 # Enable extra Qt tools
 find_package(Qt5Widgets REQUIRED)

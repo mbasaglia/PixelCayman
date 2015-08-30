@@ -20,9 +20,9 @@ set(NICE_NAME PixelCayman)
 project(${NICE_NAME} CXX)
 set(PROJECT_VERSION 0.0)
 string(TOLOWER ${NICE_NAME} EXECUTABLE_NAME)
-set(PROJECT_DESCRIPTION "") # TODO
+set(PROJECT_DESCRIPTION "PixelCayman is an Open Source, highly customizable pixel editor and animation tool")
 set(MAINTAINER "Mattia Basaglia <mattia.basaglia@gmail.com>")
-set(PROJECT_WEBSITE "http://PixelCayman.org")
+set(PROJECT_WEBSITE "http://PixelCayman.org") # TODO: Actually make a website :-P
 set(PROJECT_VERSION_LONG ${PROJECT_VERSION})
 
 # C++11

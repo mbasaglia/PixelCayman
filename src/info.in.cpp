@@ -1,3 +1,4 @@
+#line 2 "${CMAKE_CURRENT_SOURCE_DIR}/info.in.cpp"
 /**
  * \file
  *
@@ -17,18 +18,16 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *
  */
-#include <QtWidgets/QApplication>
-#include "ui/main_window.hpp"
 #include "info.hpp"
+#include <QApplication>
+#include <QUrl>
 
-int main(int argc, char** argv)
+void init_info()
 {
-    QApplication app(argc, argv);
-    init_info();
-    
-    MainWindow window;
-    window.show();
-    return app.exec();
+    QApplication::setApplicationName("${EXECUTABLE_NAME}");
+    QApplication::setApplicationDisplayName("${NICE_NAME}");
+    QApplication::setApplicationVersion("${PROJECT_VERSION}");
+    QApplication::setOrganizationName("${EXECUTABLE_NAME}");
+    QApplication::setOrganizationDomain(QUrl("${PROJECT_WEBSITE}").host());
 }

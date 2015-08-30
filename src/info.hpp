@@ -17,18 +17,13 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *
  */
-#include <QtWidgets/QApplication>
-#include "ui/main_window.hpp"
-#include "info.hpp"
+#ifndef PIXEL_CAYMAN_INFO_HPP
+#define PIXEL_CAYMAN_INFO_HPP
 
-int main(int argc, char** argv)
-{
-    QApplication app(argc, argv);
-    init_info();
-    
-    MainWindow window;
-    window.show();
-    return app.exec();
-}
+/**
+ * \brief Initializes the QApplication information
+ */
+void init_info();
+
+#endif // PIXEL_CAYMAN_INFO_HPP
