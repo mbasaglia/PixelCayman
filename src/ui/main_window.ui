@@ -16,7 +16,7 @@
   <widget class="QWidget" name="centralwidget">
    <layout class="QVBoxLayout" name="verticalLayout">
     <item>
-     <widget class="QTabWidget" name="main_tab">
+     <widget class="ExtendedTabWidget" name="main_tab">
       <property name="elideMode">
        <enum>Qt::ElideLeft</enum>
       </property>
@@ -196,6 +196,13 @@
    </property>
   </action>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>ExtendedTabWidget</class>
+   <extends>QTabWidget</extends>
+   <header>extended_tab_widget.hpp</header>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections>
   <connection>

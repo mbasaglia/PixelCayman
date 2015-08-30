@@ -65,6 +65,7 @@ include_directories(../submodules/ColorWidgets/include)
 target_link_libraries(${EXECUTABLE_NAME} ColorWidgets-qt5)
 
 # Extended TabWidget
+include_directories(../submodules/Qt-Extended-TabWidget/src)
 target_link_libraries(${EXECUTABLE_NAME} ExtendedTabWidget)
 
 

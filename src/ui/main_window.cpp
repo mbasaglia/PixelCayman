@@ -60,6 +60,21 @@ MainWindow::MainWindow(QWidget* parent)
     init_menus();
     load_settings();
 
+    connect(main_tab, &QTabWidget::currentChanged, [this](int tab) {
+        if ( tab == -1 )
+        {
+            setWindowTitle(QString());
+            return;
+        }
+
+        /// \todo If the document is dirty, add a *
+        setWindowTitle(main_tab->tabText(tab));
+    });
+    connect(main_tab, &QTabWidget::tabCloseRequested, [this](int tab) {
+        /// \todo If the document is dirty, propmt to save
+        delete main_tab->widget(tab);
+    });
+
     current_color_selector.color->setColor(Qt::black);
 
     if ( image_formats.isEmpty() )
@@ -175,8 +190,9 @@ void MainWindow::documentNew()
 {
     /// \todo Show dialog to get the size
     /// \todo Keep track of documents and clean up when the document is closed
-    document::Document* doc= new document::Document(QSize(32,32));
-    main_tab->addTab(new view::GraphicsWidget(doc), tr("New Image"));
+    document::Document* doc = new document::Document(QSize(32,32));
+    int tab = main_tab->addTab(new view::GraphicsWidget(doc), tr("New Image"));
+    main_tab->setCurrentIndex(tab);
 }
 
 bool MainWindow::documentOpen()
@@ -192,23 +208,32 @@ bool MainWindow::documentOpen()
         << tr("Bitmap (%1)").arg(image_formats)
         << tr("All Files (*)");
     QFileDialog open_dialog(this, tr("Open Image"), default_dir);
-    open_dialog.setFileMode(QFileDialog::ExistingFile);
+    open_dialog.setFileMode(QFileDialog::ExistingFiles);
     open_dialog.setAcceptMode(QFileDialog::AcceptOpen);
     open_dialog.setNameFilters(file_formats);
 
     if ( !open_dialog.exec() )
         return false;
 
-    QString file_name = open_dialog.selectedFiles()[0];
-    QImage image(file_name);
+    int tab = -1;
+    for ( const QString& file_name : open_dialog.selectedFiles() )
+    {
+        QImage image(file_name);
 
-    if ( image.isNull() )
-        return false;
+        if ( !image.isNull() )
+        {
+            document::Document* doc = new document::Document(image, file_name);
+            tab = main_tab->addTab(new view::GraphicsWidget(doc), file_name);
+        }
+    }
 
-    document::Document* doc = new document::Document(image, file_name);
-    main_tab->addTab(new view::GraphicsWidget(doc), file_name);
+    if ( tab != -1 )
+    {
+        main_tab->setCurrentIndex(tab);
+        return true;
+    }
 
-    return true;
+    return false;
 }
 
 document::Document* MainWindow::currentDocument()
