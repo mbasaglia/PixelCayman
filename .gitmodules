@@ -1,3 +1,6 @@
 [submodule "submodules/ColorWidgets"]
 	path = submodules/ColorWidgets
 	url = https://github.com/mbasaglia/Qt-Color-Widgets.git
+[submodule "submodules/Qt-Extended-TabWidget"]
+	path = submodules/Qt-Extended-TabWidget
+	url = https://github.com/mbasaglia/Qt-Extended-TabWidget.git

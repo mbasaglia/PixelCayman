@@ -64,6 +64,10 @@ add_executable(${EXECUTABLE_NAME} ${SOURCES})
 include_directories(../submodules/ColorWidgets/include)
 target_link_libraries(${EXECUTABLE_NAME} ColorWidgets-qt5)
 
+# Extended TabWidget
+target_link_libraries(${EXECUTABLE_NAME} ExtendedTabWidget)
+
+
 # Qt
 target_link_libraries(${EXECUTABLE_NAME} Qt5::Widgets)
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
