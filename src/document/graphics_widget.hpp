@@ -44,7 +44,7 @@ public:
     qreal zoomFactor() const;
 
     using QGraphicsView::translate;
-    
+
 public slots:
     void setZoomFactor(qreal factor);
     void zoom(qreal factor);
@@ -61,6 +61,9 @@ protected:
     void mouseMoveEvent(QMouseEvent *event) override;
     void mouseReleaseEvent(QMouseEvent *event) override;
     void wheelEvent(QWheelEvent *event) override;
+
+private:
+    void expandSceneRect();
 
 private:
     class Private;

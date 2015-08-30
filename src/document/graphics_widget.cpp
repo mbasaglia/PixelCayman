@@ -38,7 +38,7 @@ enum MouseMode {
 class GraphicsWidget::Private
 {
 public:
-    Document* document;
+    GraphicsItem* document_item;
     QPoint drag_point;
     MouseMode mouse_mode = Resting;
 };
@@ -46,14 +46,15 @@ public:
 GraphicsWidget::GraphicsWidget(Document* document)
     : p(new Private)
 {
-    p->document = document;
     QGraphicsScene* scene = new QGraphicsScene(this);
     scene->setSceneRect(QRectF(QPointF(),document->imageSize()));
-    GraphicsItem* item = new GraphicsItem(document);
-    scene->addItem(item);
+    p->document_item = new GraphicsItem(document);
+    scene->addItem(p->document_item);
     setScene(scene);
 
     setFrameStyle(QFrame::NoFrame);
+    setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
+    setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
 }
 
 GraphicsWidget::~GraphicsWidget()
@@ -63,7 +64,7 @@ GraphicsWidget::~GraphicsWidget()
 
 Document* GraphicsWidget::document() const
 {
-    return p->document;
+    return p->document_item->document();
 }
 
 qreal GraphicsWidget::zoomFactor() const
@@ -104,11 +105,20 @@ void GraphicsWidget::zoom(qreal factor)
     emit zoomFactorChanged(zoomFactor());
 }
 
+void GraphicsWidget::expandSceneRect()
+{
+    QRectF viewport( mapToScene(0, 0), mapToScene(width(), height()));
+    QRectF scene_rect = sceneRect();
+    if ( !scene_rect.contains(viewport) )
+    {
+        setSceneRect(scene_rect.united(viewport));
+    }
+}
 
 void GraphicsWidget::translate(const QPointF& delta)
 {
-    scrollContentsBy(delta.x(), delta.y());
-    update();
+    p->document_item->setPos(p->document_item->pos()+delta);
+    expandSceneRect();
 }
 
 void GraphicsWidget::drawBackground(QPainter * painter, const QRectF & rect)
@@ -120,20 +130,19 @@ void GraphicsWidget::drawBackground(QPainter * painter, const QRectF & rect)
 
     painter->setBrush(transparency);
     painter->setPen(QPen(Qt::transparent));
-    painter->drawRect(sceneRect());
+    painter->drawRect(p->document_item->sceneBoundingRect());
 }
 
 void GraphicsWidget::drawForeground(QPainter * painter, const QRectF & rect)
 {
-    QPen outline(Qt::gray, 1, Qt::DashLine);
+    QPen outline(Qt::black, 1, Qt::DotLine);
     outline.setCosmetic(true);
 
     QGraphicsView::drawForeground(painter, rect);
 
     painter->setBrush(Qt::transparent);
     painter->setPen(outline);
-    qreal adjust = -1.0/zoomFactor();
-    painter->drawRect(sceneRect().adjusted(adjust, adjust, 0, 0));
+    painter->drawRect(p->document_item->sceneBoundingRect());
 }
 
 void GraphicsWidget::mousePressEvent(QMouseEvent *event)
@@ -160,6 +169,7 @@ void GraphicsWidget::mouseMoveEvent(QMouseEvent *event)
     {
         // drag view
         QPointF delta = mouse_point - p->drag_point;
+        delta /= zoomFactor();
         translate(delta);
     }
 

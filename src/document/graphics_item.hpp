@@ -49,6 +49,11 @@ public:
         document_->apply(renderer);
     }
 
+    Document* document() const
+    {
+        return document_;
+    }
+
 private:
     Document* document_;
 };
