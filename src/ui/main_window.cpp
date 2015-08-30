@@ -20,11 +20,19 @@
  */
 
 #include "main_window.hpp"
+
+#include <QGraphicsView>
+#include <QImageReader>
+#include <QFileInfo>
+#include <QFileDialog>
+
 #include "style/dockwidget_style_icon.hpp"
 #include "util.hpp"
 #include "ui_main_window.h"
-#include <QGraphicsView>
 #include "document/graphics_widget.hpp"
+
+/// Supported image formats, as the extension string for the file dialog
+static QString image_formats;
 
 /**
  * \brief link colorChanged and setColor between two classes
@@ -53,6 +61,10 @@ MainWindow::MainWindow(QWidget* parent)
     load_settings();
 
     current_color_selector.color->setColor(Qt::black);
+
+    if ( image_formats.isEmpty() )
+        for ( const auto& ba : QImageReader::supportedImageFormats() )
+            image_formats += " *."+QString(ba);
 }
 
 QDockWidget* MainWindow::create_dock(QWidget* widget, const QString& theme_icon)
@@ -163,6 +175,46 @@ void MainWindow::documentNew()
 {
     /// \todo Show dialog to get the size
     /// \todo Keep track of documents and clean up when the document is closed
-    document::Document* doc = new document::Document(QSize(32,32));
+    document::Document* doc= new document::Document(QSize(32,32));
     main_tab->addTab(new document::GraphicsWidget(doc), tr("New Image"));
+}
+
+bool MainWindow::documentOpen()
+{
+    QString default_dir;
+    if ( document::Document* current = currentDocument() )
+    {
+        if ( !current->fileName().isEmpty() )
+            default_dir = QFileInfo(current->fileName()).dir().path();
+    }
+
+    QStringList file_formats = QStringList()
+        << tr("Bitmap (%1)").arg(image_formats)
+        << tr("All Files (*)");
+    QFileDialog open_dialog(this, tr("Open Image"), default_dir);
+    open_dialog.setFileMode(QFileDialog::ExistingFile);
+    open_dialog.setAcceptMode(QFileDialog::AcceptOpen);
+    open_dialog.setNameFilters(file_formats);
+
+    if ( !open_dialog.exec() )
+        return false;
+
+    QString file_name = open_dialog.selectedFiles()[0];
+    QImage image(file_name);
+
+    if ( image.isNull() )
+        return false;
+
+    document::Document* doc = new document::Document(image, file_name);
+    main_tab->addTab(new document::GraphicsWidget(doc), file_name);
+
+    return true;
+}
+
+document::Document* MainWindow::currentDocument()
+{
+    if ( document::GraphicsWidget* widget =
+            qobject_cast<document::GraphicsWidget*>(main_tab->currentWidget()) )
+        return widget->document();
+    return nullptr;
 }

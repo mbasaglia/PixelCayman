@@ -30,6 +30,7 @@
 #include "color_selector.hpp"
 #include "color_line_edit.hpp"
 #include "ui_current_color.h"
+#include "document/document.hpp"
 
 class MainWindow : public QMainWindow, Ui::MainWindow
 {
@@ -41,9 +42,12 @@ public:
 public slots:
     void setActiveColor(const QColor& color);
     void documentNew();
+    bool documentOpen();
 
 protected:
     void changeEvent(QEvent* event) override;
+
+    document::Document* currentDocument();
 
 private:
     QDockWidget* create_dock(QWidget* widget, const QString& theme_icon);

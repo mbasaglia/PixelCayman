@@ -80,6 +80,8 @@ public:
      */
     Image* addFrameImage();
 
+    Image* addFrameImage(const QImage& image);
+
     void apply(Visitor& visitor) override;
 
     /**

@@ -38,6 +38,15 @@ Document::Document(const QSize& size,
     root->addFrameImage();
 }
 
+Document::Document(const QImage& image, const QString& file_name)
+    : image_size(image.size()),
+      file_name(file_name)
+{
+    /// \todo Read exif metadata (maybe with Exiv2?)
+    root = new Layer(this, file_name);
+    root->addFrameImage(image);
+}
+
 Document::~Document()
 {
     for ( auto anim : animations_ )
@@ -45,12 +54,12 @@ Document::~Document()
     delete root;
 }
 
-QString Document::filename() const
+QString Document::fileName() const
 {
     return file_name;
 }
 
-void Document::setFilename(const QString& file_name)
+void Document::setFileName(const QString& file_name)
 {
     this->file_name = file_name;
 }

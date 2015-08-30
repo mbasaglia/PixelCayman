@@ -33,12 +33,14 @@ public:
                       const QString& file_name = {},
                       const Metadata& metadata = {});
 
+    explicit Document(const QImage& image, const QString& file_name);
+
     ~Document();
     Document(const Document&) = delete;
     Document& operator=(const Document&) = delete;
 
-    QString filename() const;
-    void setFilename(const QString& file_name);
+    QString fileName() const;
+    void setFileName(const QString& file_name);
 
     QSize imageSize() const;
 

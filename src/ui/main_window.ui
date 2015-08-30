@@ -17,6 +17,9 @@
    <layout class="QVBoxLayout" name="verticalLayout">
     <item>
      <widget class="QTabWidget" name="main_tab">
+      <property name="elideMode">
+       <enum>Qt::ElideLeft</enum>
+      </property>
       <property name="documentMode">
        <bool>true</bool>
       </property>
@@ -48,7 +51,9 @@
       <string>Open &amp;Recent</string>
      </property>
      <property name="icon">
-      <iconset theme="document-open-recent"/>
+      <iconset theme="document-open-recent">
+       <normaloff/>
+      </iconset>
      </property>
     </widget>
     <addaction name="action_new"/>
@@ -112,7 +117,9 @@
   <widget class="QStatusBar" name="statusbar"/>
   <action name="action_new">
    <property name="icon">
-    <iconset theme="document-new"/>
+    <iconset theme="document-new">
+     <normaloff/>
+    </iconset>
    </property>
    <property name="text">
     <string>&amp;New</string>
@@ -120,7 +127,9 @@
   </action>
   <action name="action_open">
    <property name="icon">
-    <iconset theme="document-open"/>
+    <iconset theme="document-open">
+     <normaloff/>
+    </iconset>
    </property>
    <property name="text">
     <string>&amp;Open</string>
@@ -128,7 +137,9 @@
   </action>
   <action name="action_save">
    <property name="icon">
-    <iconset theme="document-save"/>
+    <iconset theme="document-save">
+     <normaloff/>
+    </iconset>
    </property>
    <property name="text">
     <string>&amp;Save</string>
@@ -136,7 +147,9 @@
   </action>
   <action name="action_save_as">
    <property name="icon">
-    <iconset theme="document-save-as"/>
+    <iconset theme="document-save-as">
+     <normaloff/>
+    </iconset>
    </property>
    <property name="text">
     <string>Save &amp;As...</string>
@@ -144,7 +157,9 @@
   </action>
   <action name="action_save_all">
    <property name="icon">
-    <iconset theme="document-save-all"/>
+    <iconset theme="document-save-all">
+     <normaloff/>
+    </iconset>
    </property>
    <property name="text">
     <string>Save A&amp;ll</string>
@@ -152,7 +167,9 @@
   </action>
   <action name="action_print">
    <property name="icon">
-    <iconset theme="document-print"/>
+    <iconset theme="document-print">
+     <normaloff/>
+    </iconset>
    </property>
    <property name="text">
     <string>&amp;Print...</string>
@@ -160,7 +177,9 @@
   </action>
   <action name="action_close">
    <property name="icon">
-    <iconset theme="document-close"/>
+    <iconset theme="document-close">
+     <normaloff/>
+    </iconset>
    </property>
    <property name="text">
     <string>&amp;Close</string>
@@ -168,7 +187,9 @@
   </action>
   <action name="action_quit">
    <property name="icon">
-    <iconset theme="application-exit"/>
+    <iconset theme="application-exit">
+     <normaloff/>
+    </iconset>
    </property>
    <property name="text">
     <string>&amp;Quit</string>
@@ -193,8 +214,25 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>action_open</sender>
+   <signal>triggered()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>documentOpen()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>399</x>
+     <y>299</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <slot>documentNew()</slot>
+  <slot>documentOpen()</slot>
  </slots>
 </ui>

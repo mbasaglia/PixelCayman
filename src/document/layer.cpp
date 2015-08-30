@@ -107,6 +107,13 @@ Image* Layer::addFrameImage()
     return image;
 }
 
+Image* Layer::addFrameImage(const QImage& qimage)
+{
+    Image* image = new Image(this, qimage);
+    frames_.push_back(image);
+    return image;
+}
+
 void Layer::apply(Visitor& visitor)
 {
     if ( visitor.enter(*this) )
