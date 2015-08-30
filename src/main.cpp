@@ -19,16 +19,36 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
+#include <exception>
 #include <QtWidgets/QApplication>
+#include <QDebug>
 #include "ui/main_window.hpp"
 #include "info.hpp"
+#include "settings.hpp"
 
 int main(int argc, char** argv)
 {
     QApplication app(argc, argv);
-    init_info();
-    
-    MainWindow window;
-    window.show();
-    return app.exec();
+    settings::Settings settings_object;
+
+    try
+    {
+        init_info();
+
+        MainWindow window;
+        window.show();
+        return app.exec();
+    }
+    catch ( const std::exception& exc )
+    {
+        qWarning() << "Exception: " << exc.what();
+    }
+    catch ( ... )
+    {
+        qWarning() << "Unknown Exception";
+    }
+
+    return 1;
 }
+
+settings::Settings* settings::Settings::singleton = nullptr;

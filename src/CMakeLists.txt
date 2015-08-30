@@ -39,6 +39,7 @@ view/graphics_widget.cpp
 view/edit_tool.hpp
 main.cpp
 util.hpp
+settings.hpp
 ${CMAKE_CURRENT_BINARY_DIR}/info.cpp
 )
 
