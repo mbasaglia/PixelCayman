@@ -25,4 +25,4 @@ HEADERS += \
     $$PWD/src/extended_tab_widget.hpp \
     $$PWD/src/extended_tab_bar.hpp
 
-
+CONFIG += c++11

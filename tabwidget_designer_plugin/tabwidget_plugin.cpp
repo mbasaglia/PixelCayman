@@ -42,12 +42,12 @@ bool Extended_Tabwidget_Plugin::isInitialized() const
 
 QWidget *Extended_Tabwidget_Plugin::createWidget(QWidget *parent)
 {
-    return new Extended_TabWidget(parent);
+    return new ExtendedTabWidget(parent);
 }
 
 QString Extended_Tabwidget_Plugin::name() const
 {
-    return "Extended_TabWidget";
+    return "ExtendedTabWidget";
 }
 
 QString Extended_Tabwidget_Plugin::group() const
@@ -78,7 +78,7 @@ bool Extended_Tabwidget_Plugin::isContainer() const
 QString Extended_Tabwidget_Plugin::domXml() const
 {
     return "<ui language=\"c++\">\n"
-           " <widget class=\"Extended_TabWidget\" name=\"Extended_TabWidget\">\n"
+           " <widget class=\"ExtendedTabWidget\" name=\"tabWidget\">\n"
            " </widget>\n"
            "</ui>\n";
 }
