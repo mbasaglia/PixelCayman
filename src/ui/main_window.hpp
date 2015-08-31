@@ -21,18 +21,10 @@
 #ifndef MAIN_WINDOW_HPP
 #define MAIN_WINDOW_HPP
 
-#include "ui_main_window.h"
-
-#include <QDockWidget>
-#include "color_editor.hpp"
-#include "color_palette_widget.hpp"
-#include "color_palette_model.hpp"
-#include "color_selector.hpp"
-#include "color_line_edit.hpp"
-#include "ui_current_color.h"
+#include <QMainWindow>
 #include "document/document.hpp"
 
-class MainWindow : public QMainWindow, Ui::MainWindow
+class MainWindow : public QMainWindow
 {
     Q_OBJECT
 
@@ -63,39 +55,8 @@ protected:
     document::Document* currentDocument();
 
 private:
-    QDockWidget* create_dock(QWidget* widget, const QString& theme_icon);
-    QDockWidget* create_dock(QWidget* widget, const QIcon& icon);
-    void init_docks();
-    void translate_docks();
-    void init_menus();
-    void load_settings();
-    void save_settings();
-
-    void pushRecentFile(const QString& name);
-
-    /**
-     * \brief Saves \p doc
-     */
-    bool doSave(document::Document* doc, int file_format);
-
-    /**
-     * \brief Converts a file name to a title suitable for a tab
-     */
-    QString tabText(QString file_name);
-
-    QDockWidget* dock_set_color;
-    ColorEditor* color_editor;
-
-    Ui::CurrentColor current_color_selector;
-    QDockWidget* dock_current_color;
-
-    color_widgets::ColorPaletteModel palette_model;
-    color_widgets::ColorPaletteWidget* palette_widget;
-    color_widgets::ColorPaletteWidget* palette_editor;
-    QDockWidget* dock_palette;
-    QDockWidget* dock_palette_editor;
-
-    QStringList recent_files;
+    class Private;
+    Private* p;
 };
 
 #endif // MAIN_WINDOW_HPP

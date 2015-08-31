@@ -26,62 +26,99 @@
 #include <QImageWriter>
 #include <QFileInfo>
 #include <QFileDialog>
+#include <QDockWidget>
 
+#include "color_editor.hpp"
+#include "color_palette_widget.hpp"
+#include "color_palette_model.hpp"
+#include "color_selector.hpp"
+#include "color_line_edit.hpp"
 #include "style/dockwidget_style_icon.hpp"
 #include "util.hpp"
-#include "ui_main_window.h"
 #include "view/graphics_widget.hpp"
 #include "document/io.hpp"
 #include "settings.hpp"
 
-/**
- * \brief link colorChanged and setColor between two classes
- */
-template<class A, class B>
-    static void link_color(A* a, B* b)
+#include "ui_main_window.h"
+#include "ui_current_color.h"
+
+class MainWindow::Private : public Ui_MainWindow
+{
+public:
+
+    enum DocumentSaveFormat
     {
-        QObject::connect(a, &A::colorChanged, b, &B::setColor);
-        QObject::connect(b, &B::colorChanged, a, &A::setColor);
-    }
+        Cayman,
+        Bitmap,
+        Unknown
+    };
 
-template<class A, class R1, class R2, class Arg>
-    static void link_same(A* a, A* b, R1 (A::*signal)(Arg), R2 (A::*slot)(Arg) )
-    {
-        QObject::connect(a, signal, b, slot);
-        QObject::connect(b, signal, a, slot);
-    }
+    Private(MainWindow* parent) : parent(parent) {}
 
-MainWindow::MainWindow(QWidget* parent)
-    : QMainWindow(parent)
+    QDockWidget* createDock(QWidget* widget, const QString& theme_icon);
+    QDockWidget* createDock(QWidget* widget, const QIcon& icon);
+    void initDocks();
+    void translateDocks();
+    void initMenus();
+    void loadSettings();
+    void saveSettings();
+
+    void pushRecentFile(const QString& name);
+
+    /**
+     * \brief Saves \p doc
+     */
+    bool doSave(document::Document* doc, DocumentSaveFormat file_format);
+
+
+    /**
+     * \brief link colorChanged and setColor between two classes
+     */
+    template<class A, class B>
+        static void linkColor(A* a, B* b)
+        {
+            QObject::connect(a, &A::colorChanged, b, &B::setColor);
+            QObject::connect(b, &B::colorChanged, a, &A::setColor);
+        }
+
+    template<class A, class R1, class R2, class Arg>
+        static void linkSame(A* a, A* b, R1 (A::*signal)(Arg), R2 (A::*slot)(Arg) )
+        {
+            QObject::connect(a, signal, b, slot);
+            QObject::connect(b, signal, a, slot);
+        }
+
+
+    /**
+     * \brief Converts a file name to a title suitable for a tab
+     */
+    QString tabText(QString file_name);
+
+    QDockWidget* dock_set_color;
+    ColorEditor* color_editor;
+
+    Ui::CurrentColor current_color_selector;
+    QDockWidget* dock_current_color;
+
+    color_widgets::ColorPaletteModel palette_model;
+    color_widgets::ColorPaletteWidget* palette_widget;
+    color_widgets::ColorPaletteWidget* palette_editor;
+    QDockWidget* dock_palette;
+    QDockWidget* dock_palette_editor;
+
+    QStringList recent_files;
+
+    MainWindow* parent;
+};
+
+QDockWidget* MainWindow::Private::createDock(QWidget* widget, const QString& theme_icon)
 {
-    setupUi(this);
-
-    init_docks();
-    init_menus();
-    load_settings();
-
-    connect(main_tab, &QTabWidget::tabCloseRequested, [this](int tab) {
-        /// \todo If the document is dirty, propmt to save
-        delete main_tab->widget(tab);
-    });
-
-    current_color_selector.color->setColor(Qt::black);
-
+    return createDock(widget, QIcon::fromTheme(theme_icon));
 }
 
-MainWindow::~MainWindow()
+QDockWidget* MainWindow::Private::createDock(QWidget* widget, const QIcon& icon)
 {
-    save_settings();
-}
-
-QDockWidget* MainWindow::create_dock(QWidget* widget, const QString& theme_icon)
-{
-    return create_dock(widget, QIcon::fromTheme(theme_icon));
-}
-
-QDockWidget* MainWindow::create_dock(QWidget* widget, const QIcon& icon)
-{
-    QDockWidget* dock = new QDockWidget(this);
+    QDockWidget* dock = new QDockWidget(parent);
     dock->setWidget(widget);
     dock->setWindowIcon(icon);
     QAction* action = dock->toggleViewAction();
@@ -91,26 +128,26 @@ QDockWidget* MainWindow::create_dock(QWidget* widget, const QIcon& icon)
     return dock;
 }
 
-void MainWindow::init_docks()
+void MainWindow::Private::initDocks()
 {
     color_editor = new ColorEditor;
-    dock_set_color = create_dock(color_editor, "format-stroke-color");
-    addDockWidget(Qt::RightDockWidgetArea, dock_set_color);
+    dock_set_color = createDock(color_editor, "format-stroke-color");
+    parent->addDockWidget(Qt::RightDockWidgetArea, dock_set_color);
 
     {
         QWidget* container = new QWidget;
         current_color_selector.setupUi(container);
-        dock_current_color = create_dock(container, "format-stroke-color");
-        addDockWidget(Qt::RightDockWidgetArea, dock_current_color);
-        link_color(color_editor, current_color_selector.color);
+        dock_current_color = createDock(container, "format-stroke-color");
+        parent->addDockWidget(Qt::RightDockWidgetArea, dock_current_color);
+        linkColor(color_editor, current_color_selector.color);
     }
 
     using PalWid = color_widgets::ColorPaletteWidget;
     palette_widget = new PalWid;
     palette_widget->setModel(&palette_model);
     palette_widget->setReadOnly(true);
-    dock_palette = create_dock(palette_widget, "preferences-desktop-icons");
-    addDockWidget(Qt::RightDockWidgetArea, dock_palette);
+    dock_palette = createDock(palette_widget, "preferences-desktop-icons");
+    parent->addDockWidget(Qt::RightDockWidgetArea, dock_palette);
     connect(palette_widget, util::overload<const QColor&>(&PalWid::currentColorChanged),
             current_color_selector.color, &color_widgets::ColorSelector::setColor);
     connect(current_color_selector.color, &color_widgets::ColorSelector::colorChanged,
@@ -121,20 +158,20 @@ void MainWindow::init_docks()
 
     palette_editor = new PalWid;
     palette_editor->setModel(&palette_model);
-    dock_palette_editor = create_dock(palette_editor, "preferences-desktop-icons");
-    addDockWidget(Qt::RightDockWidgetArea, dock_palette_editor);
-    tabifyDockWidget(dock_palette, dock_palette_editor);
+    dock_palette_editor = createDock(palette_editor, "preferences-desktop-icons");
+    parent->addDockWidget(Qt::RightDockWidgetArea, dock_palette_editor);
+    parent->tabifyDockWidget(dock_palette, dock_palette_editor);
     dock_palette->raise();
-    link_same(palette_widget, palette_editor, &PalWid::currentRowChanged, &PalWid::setCurrentRow);
-    link_same(palette_widget, palette_editor,
+    linkSame(palette_widget, palette_editor, &PalWid::currentRowChanged, &PalWid::setCurrentRow);
+    linkSame(palette_widget, palette_editor,
         util::overload<int>(&PalWid::currentColorChanged),
         util::overload<int>(&PalWid::setCurrentColor));
 
 
-    translate_docks();
+    translateDocks();
 }
 
-void MainWindow::translate_docks()
+void MainWindow::Private::translateDocks()
 {
     dock_set_color->setWindowTitle(tr("Select Color"));
     dock_palette->setWindowTitle(tr("Palette"));
@@ -142,7 +179,7 @@ void MainWindow::translate_docks()
     dock_current_color->setWindowTitle(tr("Current Color"));
 }
 
-void MainWindow::init_menus()
+void MainWindow::Private::initMenus()
 {
     action_new->setShortcut(QKeySequence::New);
     action_open->setShortcut(QKeySequence::Open);
@@ -153,7 +190,7 @@ void MainWindow::init_menus()
     action_quit->setShortcut(QKeySequence::Quit);
 }
 
-void MainWindow::load_settings()
+void MainWindow::Private::loadSettings()
 {
     palette_model.addSearchPath("/usr/share/gimp/2.0/palettes/");
     palette_model.addSearchPath("/usr/share/inkscape/palettes/");
@@ -171,18 +208,99 @@ void MainWindow::load_settings()
 }
 
 
-void MainWindow::save_settings()
+void MainWindow::Private::saveSettings()
 {
     settings::put("file/recent", recent_files);
+}
+
+bool MainWindow::Private::doSave(document::Document* doc, DocumentSaveFormat format)
+{
+    /// \todo if format == Unknown, determine from file extension
+
+    if ( format == Cayman )
+    {
+        return document::save_xml(*doc);
+    }
+    else if ( format == Bitmap )
+    {
+        QImage image(doc->imageSize(), QImage::Format_ARGB32);
+        /// \todo if the format doesn't support alpha, read a color from the settings
+        image.fill(Qt::transparent);
+        QPainter painter(&image);
+        /// \todo detect frame (and fullAlpha from settings?)
+        document::visitor::Paint paint(nullptr, &painter, true);
+        doc->apply(paint);
+
+        /// \todo some way to determine quality for jpg
+        /// (low priority since Jpeg isn't a good format for pixel art)
+        return image.save(doc->fileName());
+    }
+
+    return false;
+}
+
+QString MainWindow::Private::tabText(QString file_name)
+{
+    QFileInfo file(file_name);
+    /// \todo Options to display fileName() or the full path
+    return file.baseName();
+}
+
+void MainWindow::Private::pushRecentFile(const QString& name)
+{
+    recent_files.removeOne(name);
+    recent_files.push_front(name);
+    int max = settings::get("file/recent_max", 16);
+    if ( recent_files.size() > max )
+    {
+        recent_files.erase(recent_files.begin()+max, recent_files.end());
+        auto actions = menu_open_recent->actions();
+        for ( auto it = actions.begin()+max; it != actions.end(); ++it )
+        {
+            menu_open_recent->removeAction(*it);
+            delete *it;
+        }
+    }
+
+    menu_open_recent->removeAction(action_no_recent_files);
+
+    QAction *before = nullptr;
+    if ( !menu_open_recent->actions().empty() )
+        before = menu_open_recent->actions().front();
+    menu_open_recent->insertAction(before, new QAction(name, menu_open_recent));
+}
+
+
+MainWindow::MainWindow(QWidget* parent)
+    : QMainWindow(parent), p(new Private(this))
+{
+    p->setupUi(this);
+
+    p->initDocks();
+    p->initMenus();
+    p->loadSettings();
+
+    connect(p->main_tab, &QTabWidget::tabCloseRequested, [this](int tab) {
+        /// \todo If the document is dirty, propmt to save
+        delete p->main_tab->widget(tab);
+    });
+
+    p->current_color_selector.color->setColor(Qt::black);
+
+}
+
+MainWindow::~MainWindow()
+{
+    p->saveSettings();
 }
 
 void MainWindow::changeEvent(QEvent* event)
 {
     if ( event->type() == QEvent::LanguageChange )
     {
-        retranslateUi(this);
-        current_color_selector.retranslateUi(dock_current_color->widget());
-        translate_docks();
+        p->retranslateUi(this);
+        p->current_color_selector.retranslateUi(p->dock_current_color->widget());
+        p->translateDocks();
     }
 
     QMainWindow::changeEvent(event);
@@ -190,7 +308,7 @@ void MainWindow::changeEvent(QEvent* event)
 
 void MainWindow::setActiveColor(const QColor& color)
 {
-    color_editor->setColor(color);
+    p->color_editor->setColor(color);
 }
 
 void MainWindow::documentNew()
@@ -198,8 +316,8 @@ void MainWindow::documentNew()
     /// \todo Show dialog to get the size
     /// \todo Keep track of documents and clean up when the document is closed
     document::Document* doc = new document::Document(QSize(32,32));
-    int tab = main_tab->addTab(new view::GraphicsWidget(doc), tr("New Image"));
-    main_tab->setCurrentIndex(tab);
+    int tab = p->main_tab->addTab(new view::GraphicsWidget(doc), tr("New Image"));
+    p->main_tab->setCurrentIndex(tab);
 }
 
 bool MainWindow::documentOpen()
@@ -234,14 +352,14 @@ bool MainWindow::documentOpen()
         if ( !image.isNull() )
         {
             document::Document* doc = new document::Document(image, file_name);
-            tab = main_tab->addTab(new view::GraphicsWidget(doc), tabText(file_name));
-            pushRecentFile(doc->fileName());
+            tab = p->main_tab->addTab(new view::GraphicsWidget(doc), p->tabText(file_name));
+            p->pushRecentFile(doc->fileName());
         }
     }
 
     if ( tab != -1 )
     {
-        main_tab->setCurrentIndex(tab);
+        p->main_tab->setCurrentIndex(tab);
         return true;
     }
 
@@ -251,34 +369,25 @@ bool MainWindow::documentOpen()
 document::Document* MainWindow::currentDocument()
 {
     if ( view::GraphicsWidget* widget =
-            qobject_cast<view::GraphicsWidget*>(main_tab->currentWidget()) )
+            qobject_cast<view::GraphicsWidget*>(p->main_tab->currentWidget()) )
         return widget->document();
     return nullptr;
 }
 
 bool MainWindow::documentSave()
 {
-    return save(main_tab->currentIndex(), false);
+    return save(p->main_tab->currentIndex(), false);
 }
 
 bool MainWindow::documentSaveAs()
 {
-    return save(main_tab->currentIndex(), true);
+    return save(p->main_tab->currentIndex(), true);
 }
-
-namespace {
-enum DocumentSaveFormat
-{
-    Cayman,
-    Bitmap,
-    Unknown
-};
-} // namespace
 
 bool MainWindow::save(int tab, bool prompt)
 {
     view::GraphicsWidget* widget =
-        qobject_cast<view::GraphicsWidget*>(main_tab->currentWidget());
+        qobject_cast<view::GraphicsWidget*>(p->main_tab->currentWidget());
 
     if ( !widget )
         return false;
@@ -291,12 +400,12 @@ bool MainWindow::save(int tab, bool prompt)
     if ( doc->fileName().isEmpty() )
         prompt = true;
 
-    DocumentSaveFormat format = Unknown;
+    Private::DocumentSaveFormat format = Private::Unknown;
     if ( prompt )
     {
         // Ensure the the image is visible so the user knows what they are saving
-        if ( tab != main_tab->currentIndex() )
-            main_tab->setCurrentIndex(tab);
+        if ( tab != p->main_tab->currentIndex() )
+            p->main_tab->setCurrentIndex(tab);
 
         QString image_formats;
         for ( const auto& ba : QImageWriter::supportedImageFormats() )
@@ -318,43 +427,16 @@ bool MainWindow::save(int tab, bool prompt)
             return false;
 
         /// \todo Ask confirmation if the file exists
-        format = DocumentSaveFormat(file_formats.indexOf(save_dialog.selectedNameFilter()));
+        format = Private::DocumentSaveFormat(file_formats.indexOf(save_dialog.selectedNameFilter()));
         doc->setFileName(save_dialog.selectedFiles().front());
-        main_tab->setTabText(tab, tabText(doc->fileName()));
+        p->main_tab->setTabText(tab, p->tabText(doc->fileName()));
         updateTitle();
     }
 
-    if ( doSave(doc, format) )
+    if ( p->doSave(doc, format) )
     {
         /// \todo Mark the document as clean
-        pushRecentFile(doc->fileName());
-    }
-
-    return false;
-}
-
-
-bool MainWindow::doSave(document::Document* doc, int format)
-{
-    /// \todo if format == Unknown, determine from file extension
-
-    if ( format == Cayman )
-    {
-        return document::save_xml(*doc);
-    }
-    else if ( format == Bitmap )
-    {
-        QImage image(doc->imageSize(), QImage::Format_ARGB32);
-        /// \todo if the format doesn't support alpha, read a color from the settings
-        image.fill(Qt::transparent);
-        QPainter painter(&image);
-        /// \todo detect frame (and fullAlpha from settings?)
-        document::visitor::Paint paint(nullptr, &painter, true);
-        doc->apply(paint);
-
-        /// \todo some way to determine quality for jpg
-        /// (low priority since Jpeg isn't a good format for pixel art)
-        return image.save(doc->fileName());
+        p->pushRecentFile(doc->fileName());
     }
 
     return false;
@@ -362,7 +444,7 @@ bool MainWindow::doSave(document::Document* doc, int format)
 
 void MainWindow::updateTitle()
 {
-    int tab = main_tab->currentIndex();
+    int tab = p->main_tab->currentIndex();
 
     if ( tab == -1 )
     {
@@ -377,35 +459,3 @@ void MainWindow::updateTitle()
     else
         setWindowTitle(tr("New Image"));
 }
-
-QString MainWindow::tabText(QString file_name)
-{
-    QFileInfo file(file_name);
-    /// \todo Options to display fileName() or the full path
-    return file.baseName();
-}
-
-void MainWindow::pushRecentFile(const QString& name)
-{
-    recent_files.removeOne(name);
-    recent_files.push_front(name);
-    int max = settings::get("file/recent_max", 16);
-    if ( recent_files.size() > max )
-    {
-        recent_files.erase(recent_files.begin()+max, recent_files.end());
-        auto actions = menu_open_recent->actions();
-        for ( auto it = actions.begin()+max; it != actions.end(); ++it )
-        {
-            menu_open_recent->removeAction(*it);
-            delete *it;
-        }
-    }
-
-    menu_open_recent->removeAction(action_no_recent_files);
-
-    QAction *before = nullptr;
-    if ( !menu_open_recent->actions().empty() )
-        before = menu_open_recent->actions().front();
-    menu_open_recent->insertAction(before, new QAction(name, menu_open_recent));
-}
-
