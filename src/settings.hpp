@@ -53,9 +53,19 @@ public:
         typename std::remove_reference<T>::type get(const QString& name, T&& default_value = T())
         {
             using Type = typename std::remove_reference<T>::type;
+
             QVariant variant = settings_.value(name);
+
             if ( variant.canConvert<Type>() )
+            {
                 return variant.value<Type>();
+            }
+            else if ( !variant.isValid() )
+            {
+                // Ensure the first default value is used by all other calls
+                put(name, default_value);
+            }
+
             return std::forward<T>(default_value);
         }
 
@@ -101,6 +111,19 @@ public:
         return true;
     }
 };
+
+
+template<class T>
+    void put(const QString& name, T&& value)
+    {
+        Settings::instance().put(name, std::forward<T>(value));
+    }
+
+template<class T>
+    typename std::remove_reference<T>::type get(const QString& name, T&& default_value = T())
+    {
+        return Settings::instance().get(name, std::forward<T>(default_value));
+    }
 
 } // namespace settings
 

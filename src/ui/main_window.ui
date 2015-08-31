@@ -55,6 +55,7 @@
        <normaloff/>
       </iconset>
      </property>
+     <addaction name="action_no_recent_files"/>
     </widget>
     <addaction name="action_new"/>
     <addaction name="action_open"/>
@@ -193,6 +194,14 @@
    </property>
    <property name="text">
     <string>&amp;Quit</string>
+   </property>
+  </action>
+  <action name="action_no_recent_files">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="text">
+    <string>No Recent Files</string>
    </property>
   </action>
  </widget>

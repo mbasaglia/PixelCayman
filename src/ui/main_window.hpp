@@ -38,6 +38,7 @@ class MainWindow : public QMainWindow, Ui::MainWindow
 
 public:
     MainWindow(QWidget* parent = nullptr);
+    ~MainWindow();
 
 public slots:
     void setActiveColor(const QColor& color);
@@ -68,6 +69,14 @@ private:
     void translate_docks();
     void init_menus();
     void load_settings();
+    void save_settings();
+
+    void pushRecentFile(const QString& name);
+
+    /**
+     * \brief Saves \p doc
+     */
+    bool doSave(document::Document* doc, int file_format);
 
     /**
      * \brief Converts a file name to a title suitable for a tab
@@ -85,6 +94,8 @@ private:
     color_widgets::ColorPaletteWidget* palette_editor;
     QDockWidget* dock_palette;
     QDockWidget* dock_palette_editor;
+
+    QStringList recent_files;
 };
 
 #endif // MAIN_WINDOW_HPP

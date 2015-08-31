@@ -29,12 +29,11 @@
 int main(int argc, char** argv)
 {
     QApplication app(argc, argv);
+    init_info();
     settings::Settings settings_object;
 
     try
     {
-        init_info();
-
         MainWindow window;
         window.show();
         return app.exec();

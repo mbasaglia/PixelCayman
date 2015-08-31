@@ -32,6 +32,7 @@
 #include "ui_main_window.h"
 #include "view/graphics_widget.hpp"
 #include "document/io.hpp"
+#include "settings.hpp"
 
 /**
  * \brief link colorChanged and setColor between two classes
@@ -66,6 +67,11 @@ MainWindow::MainWindow(QWidget* parent)
 
     current_color_selector.color->setColor(Qt::black);
 
+}
+
+MainWindow::~MainWindow()
+{
+    save_settings();
 }
 
 QDockWidget* MainWindow::create_dock(QWidget* widget, const QString& theme_icon)
@@ -153,6 +159,21 @@ void MainWindow::load_settings()
     palette_model.addSearchPath("/usr/share/inkscape/palettes/");
     palette_model.addSearchPath("/usr/share/kde4/apps/calligra/palettes/");
     palette_model.load();
+
+    recent_files = settings::get("file/recent", QStringList{});
+    if ( !recent_files.empty() )
+    {
+
+        menu_open_recent->removeAction(action_no_recent_files);
+        for ( const QString& file : recent_files )
+            menu_open_recent->addAction(file);
+    }
+}
+
+
+void MainWindow::save_settings()
+{
+    settings::put("file/recent", recent_files);
 }
 
 void MainWindow::changeEvent(QEvent* event)
@@ -214,6 +235,7 @@ bool MainWindow::documentOpen()
         {
             document::Document* doc = new document::Document(image, file_name);
             tab = main_tab->addTab(new view::GraphicsWidget(doc), tabText(file_name));
+            pushRecentFile(doc->fileName());
         }
     }
 
@@ -302,8 +324,19 @@ bool MainWindow::save(int tab, bool prompt)
         updateTitle();
     }
 
+    if ( doSave(doc, format) )
+    {
+        /// \todo Mark the document as clean
+        pushRecentFile(doc->fileName());
+    }
+
+    return false;
+}
+
+
+bool MainWindow::doSave(document::Document* doc, int format)
+{
     /// \todo if format == Unknown, determine from file extension
-    /// \todo on paths that lead to a successful save, mark the document as clean
 
     if ( format == Cayman )
     {
@@ -351,3 +384,28 @@ QString MainWindow::tabText(QString file_name)
     /// \todo Options to display fileName() or the full path
     return file.baseName();
 }
+
+void MainWindow::pushRecentFile(const QString& name)
+{
+    recent_files.removeOne(name);
+    recent_files.push_front(name);
+    int max = settings::get("file/recent_max", 16);
+    if ( recent_files.size() > max )
+    {
+        recent_files.erase(recent_files.begin()+max, recent_files.end());
+        auto actions = menu_open_recent->actions();
+        for ( auto it = actions.begin()+max; it != actions.end(); ++it )
+        {
+            menu_open_recent->removeAction(*it);
+            delete *it;
+        }
+    }
+
+    menu_open_recent->removeAction(action_no_recent_files);
+
+    QAction *before = nullptr;
+    if ( !menu_open_recent->actions().empty() )
+        before = menu_open_recent->actions().front();
+    menu_open_recent->insertAction(before, new QAction(name, menu_open_recent));
+}
+
