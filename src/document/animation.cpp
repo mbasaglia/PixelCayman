@@ -3,7 +3,9 @@
  *
  * \author Mattia Basaglia
  *
- * \copyright Copyright (C) 2015 Mattia Basaglia
+ * \section License
+ *
+ * Copyright (C) 2015 Mattia Basaglia
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,38 +19,48 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
  */
-#ifndef PIXEL_CAYMAN_ANIMATION_HPP
-#define PIXEL_CAYMAN_ANIMATION_HPP
 
-#include "frame.hpp"
+#include "animation.hpp"
+#include "visitor.hpp"
 
 namespace document {
 
-class Animation : public DocumentElement
+Animation::Animation(const QString& name, int frames_per_second)
+    : name_(name), fps_(frames_per_second)
 {
-public:
-    explicit Animation(const QString& name = {}, int frames_per_second = 24);
+}
 
-    QString name() const;
-    void setName(const QString& name);
+void Animation::apply(Visitor& visitor)
+{
+    if ( visitor.enter(*this) )
+    {
+        for ( auto frame : frames_ )
+            frame->apply(visitor);
 
-    int framesPerSecond() const;
-    void setFramesPerSecond(int fps);
+        visitor.leave(*this);
+    }
+}
 
-    QList<Frame*> frames() const;
-    int count() const;
-    Frame* frame(int i);
-    Frame* createFrame(int position = -1, int copy = -1);
-    void removeFrame(int position);
+QString Animation::name() const
+{
+    return name_;
+}
 
-    void apply(Visitor& visitor) override;
+void Animation::setName(const QString& name)
+{
+    name_ = name;
+}
 
-private:
-    QString name_;
-    int fps_;
-    QList<Frame*> frames_;
-};
+int Animation::framesPerSecond() const
+{
+    return fps_;
+}
+
+void Animation::setFramesPerSecond(int fps)
+{
+    fps_ = fps;
+}
 
 } // namespace document
-#endif // PIXEL_CAYMAN_ANIMATION_HPP

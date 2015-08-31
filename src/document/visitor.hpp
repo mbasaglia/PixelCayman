@@ -149,6 +149,9 @@ private:
     Frame* frame_;
 };
 
+/**
+ * \brief Visitor that draws a single frame on a painter
+ */
 class Paint : public FrameRenderer
 {
 public:

@@ -24,6 +24,7 @@
 
 #include "document.hpp"
 #include "visitor.hpp"
+#include <QFileInfo>
 
 namespace document {
 
@@ -43,7 +44,7 @@ Document::Document(const QImage& image, const QString& file_name)
       file_name(file_name)
 {
     /// \todo Read exif metadata (maybe with Exiv2?)
-    root = new Layer(this, file_name);
+    root = new Layer(this, QFileInfo(file_name).baseName());
     root->addFrameImage(image);
 }
 

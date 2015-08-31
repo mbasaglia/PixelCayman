@@ -19,6 +19,7 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR})
 
 set(SOURCES
 document/animation.hpp
+document/animation.cpp
 document/document.hpp
 document/document.cpp
 document/document_element.hpp
@@ -28,6 +29,8 @@ document/image.cpp
 document/layer.hpp
 document/layer.cpp
 document/visitor.hpp
+document/io.hpp
+document/io.cpp
 style/dockwidget_style_icon.hpp
 ui/color_editor.cpp
 ui/color_editor.hpp

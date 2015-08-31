@@ -31,6 +31,7 @@
 #include "util.hpp"
 #include "ui_main_window.h"
 #include "view/graphics_widget.hpp"
+#include "document/io.hpp"
 
 /**
  * \brief link colorChanged and setColor between two classes
@@ -294,6 +295,7 @@ bool MainWindow::save(int tab, bool prompt)
         if ( !save_dialog.exec() )
             return false;
 
+        /// \todo Ask confirmation if the file exists
         format = DocumentSaveFormat(file_formats.indexOf(save_dialog.selectedNameFilter()));
         doc->setFileName(save_dialog.selectedFiles().front());
         main_tab->setTabText(tab, tabText(doc->fileName()));
@@ -303,7 +305,11 @@ bool MainWindow::save(int tab, bool prompt)
     /// \todo if format == Unknown, determine from file extension
     /// \todo on paths that lead to a successful save, mark the document as clean
 
-    if ( format == Bitmap )
+    if ( format == Cayman )
+    {
+        return document::save_xml(*doc);
+    }
+    else if ( format == Bitmap )
     {
         QImage image(doc->imageSize(), QImage::Format_ARGB32);
         /// \todo if the format doesn't support alpha, read a color from the settings
