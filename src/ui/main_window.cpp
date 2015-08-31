@@ -39,8 +39,8 @@
 #include "document/io.hpp"
 #include "settings.hpp"
 
-#include "ui_main_window.h"
 #include "ui_current_color.h"
+#include "ui_main_window.h"
 
 class MainWindow::Private : public Ui_MainWindow
 {
