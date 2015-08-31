@@ -51,6 +51,12 @@ protected:
      * \return Whether the file has been saved successfully
      */
     bool save(int tab, bool prompt);
+    
+    /**
+     * \brief Open a file
+     * \return The index of the newly opened tab, -1 on failure
+     */
+    int openTab(const QString& file_name);
 
     document::Document* currentDocument();
 

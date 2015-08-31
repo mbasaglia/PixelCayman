@@ -62,14 +62,14 @@ public:
     void initMenus();
     void loadSettings();
     void saveSettings();
+    QAction* recentFileAction(const QString& file_name);
 
     void pushRecentFile(const QString& name);
 
     /**
      * \brief Saves \p doc
      */
-    bool doSave(document::Document* doc, DocumentSaveFormat file_format);
-
+    bool save(document::Document* doc, DocumentSaveFormat file_format);
 
     /**
      * \brief link colorChanged and setColor between two classes
@@ -203,7 +203,7 @@ void MainWindow::Private::loadSettings()
 
         menu_open_recent->removeAction(action_no_recent_files);
         for ( const QString& file : recent_files )
-            menu_open_recent->addAction(file);
+            menu_open_recent->addAction(recentFileAction(file));
     }
 }
 
@@ -213,7 +213,7 @@ void MainWindow::Private::saveSettings()
     settings::put("file/recent", recent_files);
 }
 
-bool MainWindow::Private::doSave(document::Document* doc, DocumentSaveFormat format)
+bool MainWindow::Private::save(document::Document* doc, DocumentSaveFormat format)
 {
     /// \todo if format == Unknown, determine from file extension
 
@@ -246,6 +246,15 @@ QString MainWindow::Private::tabText(QString file_name)
     return file.baseName();
 }
 
+QAction* MainWindow::Private::recentFileAction(const QString& file_name)
+{
+    QAction* action = new QAction(file_name, menu_open_recent);
+    connect(action, &QAction::triggered, [this, file_name]{
+        parent->openTab(file_name);
+    });
+    return action;
+}
+
 void MainWindow::Private::pushRecentFile(const QString& name)
 {
     recent_files.removeOne(name);
@@ -267,7 +276,7 @@ void MainWindow::Private::pushRecentFile(const QString& name)
     QAction *before = nullptr;
     if ( !menu_open_recent->actions().empty() )
         before = menu_open_recent->actions().front();
-    menu_open_recent->insertAction(before, new QAction(name, menu_open_recent));
+    menu_open_recent->insertAction(before, recentFileAction(name));
 }
 
 
@@ -347,14 +356,9 @@ bool MainWindow::documentOpen()
     int tab = -1;
     for ( const QString& file_name : open_dialog.selectedFiles() )
     {
-        QImage image(file_name);
-
-        if ( !image.isNull() )
-        {
-            document::Document* doc = new document::Document(image, file_name);
-            tab = p->main_tab->addTab(new view::GraphicsWidget(doc), p->tabText(file_name));
-            p->pushRecentFile(doc->fileName());
-        }
+        int new_tab = openTab(file_name);
+        if ( new_tab != -1 )
+            tab = new_tab;
     }
 
     if ( tab != -1 )
@@ -433,7 +437,7 @@ bool MainWindow::save(int tab, bool prompt)
         updateTitle();
     }
 
-    if ( p->doSave(doc, format) )
+    if ( p->save(doc, format) )
     {
         /// \todo Mark the document as clean
         p->pushRecentFile(doc->fileName());
@@ -458,4 +462,20 @@ void MainWindow::updateTitle()
         setWindowTitle(doc->fileName());
     else
         setWindowTitle(tr("New Image"));
+}
+
+int MainWindow::openTab(const QString& file_name)
+{
+    int tab = -1;
+
+    QImage image(file_name);
+
+    if ( !image.isNull() )
+    {
+        document::Document* doc = new document::Document(image, file_name);
+        tab = p->main_tab->addTab(new view::GraphicsWidget(doc), p->tabText(file_name));
+        p->pushRecentFile(doc->fileName());
+    }
+
+    return tab;
 }
