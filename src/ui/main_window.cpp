@@ -23,6 +23,7 @@
 
 #include <QGraphicsView>
 #include <QImageReader>
+#include <QImageWriter>
 #include <QFileInfo>
 #include <QFileDialog>
 
@@ -30,9 +31,6 @@
 #include "util.hpp"
 #include "ui_main_window.h"
 #include "view/graphics_widget.hpp"
-
-/// Supported image formats, as the extension string for the file dialog
-static QString image_formats;
 
 /**
  * \brief link colorChanged and setColor between two classes
@@ -60,16 +58,6 @@ MainWindow::MainWindow(QWidget* parent)
     init_menus();
     load_settings();
 
-    connect(main_tab, &QTabWidget::currentChanged, [this](int tab) {
-        if ( tab == -1 )
-        {
-            setWindowTitle(QString());
-            return;
-        }
-
-        /// \todo If the document is dirty, add a *
-        setWindowTitle(main_tab->tabText(tab));
-    });
     connect(main_tab, &QTabWidget::tabCloseRequested, [this](int tab) {
         /// \todo If the document is dirty, propmt to save
         delete main_tab->widget(tab);
@@ -77,9 +65,6 @@ MainWindow::MainWindow(QWidget* parent)
 
     current_color_selector.color->setColor(Qt::black);
 
-    if ( image_formats.isEmpty() )
-        for ( const auto& ba : QImageReader::supportedImageFormats() )
-            image_formats += " *."+QString(ba);
 }
 
 QDockWidget* MainWindow::create_dock(QWidget* widget, const QString& theme_icon)
@@ -204,6 +189,10 @@ bool MainWindow::documentOpen()
             default_dir = QFileInfo(current->fileName()).dir().path();
     }
 
+    QString image_formats;
+    for ( const auto& ba : QImageReader::supportedImageFormats() )
+        image_formats += " *."+QString(ba);
+
     QStringList file_formats = QStringList()
         << tr("All Bitmap Images (%1)").arg(image_formats)
         << tr("All Files (*)");
@@ -223,7 +212,7 @@ bool MainWindow::documentOpen()
         if ( !image.isNull() )
         {
             document::Document* doc = new document::Document(image, file_name);
-            tab = main_tab->addTab(new view::GraphicsWidget(doc), file_name);
+            tab = main_tab->addTab(new view::GraphicsWidget(doc), tabText(file_name));
         }
     }
 
@@ -286,6 +275,10 @@ bool MainWindow::save(int tab, bool prompt)
         if ( tab != main_tab->currentIndex() )
             main_tab->setCurrentIndex(tab);
 
+        QString image_formats;
+        for ( const auto& ba : QImageWriter::supportedImageFormats() )
+            image_formats += " *."+QString(ba);
+
         QStringList file_formats = QStringList()
             << tr("Cayman Files (*.mela)")
             /// \todo split "All Bitmap Images" in png etc
@@ -303,8 +296,8 @@ bool MainWindow::save(int tab, bool prompt)
 
         format = DocumentSaveFormat(file_formats.indexOf(save_dialog.selectedNameFilter()));
         doc->setFileName(save_dialog.selectedFiles().front());
-        main_tab->setTabText(tab, doc->fileName());
-        /// \todo update window title
+        main_tab->setTabText(tab, tabText(doc->fileName()));
+        updateTitle();
     }
 
     /// \todo if format == Unknown, determine from file extension
@@ -328,3 +321,27 @@ bool MainWindow::save(int tab, bool prompt)
     return false;
 }
 
+void MainWindow::updateTitle()
+{
+    int tab = main_tab->currentIndex();
+
+    if ( tab == -1 )
+    {
+        setWindowTitle(QString());
+        return;
+    }
+
+    /// \todo If the document is dirty, add a *
+    document::Document* doc = currentDocument();
+    if ( !doc->fileName().isEmpty() )
+        setWindowTitle(doc->fileName());
+    else
+        setWindowTitle(tr("New Image"));
+}
+
+QString MainWindow::tabText(QString file_name)
+{
+    QFileInfo file(file_name);
+    /// \todo Options to display fileName() or the full path
+    return file.baseName();
+}

@@ -269,11 +269,28 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>main_tab</sender>
+   <signal>currentChanged(int)</signal>
+   <receiver>MainWindow</receiver>
+   <slot>updateTitle()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>305</x>
+     <y>326</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>373</x>
+     <y>690</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <slot>documentNew()</slot>
   <slot>documentOpen()</slot>
   <slot>documentSave()</slot>
   <slot>documentSaveAs()</slot>
+  <slot>updateTitle()</slot>
  </slots>
 </ui>

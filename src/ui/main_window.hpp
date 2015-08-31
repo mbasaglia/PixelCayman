@@ -46,6 +46,9 @@ public slots:
     bool documentSave();
     bool documentSaveAs();
 
+private slots:
+    void updateTitle();
+
 protected:
     void changeEvent(QEvent* event) override;
     /**
@@ -64,8 +67,12 @@ private:
     void init_docks();
     void translate_docks();
     void init_menus();
-
     void load_settings();
+
+    /**
+     * \brief Converts a file name to a title suitable for a tab
+     */
+    QString tabText(QString file_name);
 
     QDockWidget* dock_set_color;
     ColorEditor* color_editor;
