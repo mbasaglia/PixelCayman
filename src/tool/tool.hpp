@@ -18,21 +18,21 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-#ifndef PIXEL_CAYMAN_VIEW_EDIT_TOOL_HPP
-#define PIXEL_CAYMAN_VIEW_EDIT_TOOL_HPP
+#ifndef PIXEL_CAYMAN_TOOL_HPP
+#define PIXEL_CAYMAN_TOOL_HPP
 
 #include "document/visitor.hpp"
 #include <QMouseEvent>
 
-namespace view {
+namespace tool {
 
 /**
  * \brief A tool that is used to edit a Document in a GraphicsWidget
  */
-class EditTool
+class Tool
 {
 public:
-    virtual ~EditTool(){}
+    virtual ~Tool(){}
 
     /**
      * \brief Tool button icon
@@ -91,7 +91,15 @@ public:
      * \brief Used to render the tool on the view
      */
     virtual void drawForeground(QPainter* painter) = 0;
+
+    /**
+     * \brief Returns a widget that ca be used to change the tool behaviour
+     *
+     * The tool is responsible to keep ownership
+     * and update it if the document changes
+     */
+    virtual QWidget* optionsWidget() = 0;
 };
 
-} // namespace view
-#endif // PIXEL_CAYMAN_VIEW_EDIT_TOOL_HPP
+} // namespace tool
+#endif // PIXEL_CAYMAN_TOOL_HPP

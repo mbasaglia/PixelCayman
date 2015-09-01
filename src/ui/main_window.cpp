@@ -89,10 +89,20 @@ public:
         }
 
 
+    view::GraphicsWidget* widget(int tab)
+    {
+        return qobject_cast<view::GraphicsWidget*>(main_tab->widget(tab));
+    }
+
     /**
      * \brief Converts a file name to a title suitable for a tab
      */
     QString tabText(QString file_name);
+
+    void updateTitle();
+
+    view::GraphicsWidget* current_view = nullptr;
+    tool::Tool* current_tool = nullptr;
 
     QDockWidget* dock_set_color;
     ColorEditor* color_editor;
@@ -109,6 +119,8 @@ public:
     QStringList recent_files;
 
     MainWindow* parent;
+
+    QList<tool::Tool*> tools;
 };
 
 QDockWidget* MainWindow::Private::createDock(QWidget* widget, const QString& theme_icon)
@@ -300,6 +312,20 @@ MainWindow::MainWindow(QWidget* parent)
     connect(p->main_tab, &QTabWidget::tabCloseRequested,
             this, &MainWindow::closeTab);
 
+    connect(p->main_tab, &QTabWidget::currentChanged, [this](int tab) {
+
+        if ( p->current_view )
+            p->current_view->setCurrentTool(nullptr);
+
+        if ( view::GraphicsWidget* widget = p->widget(p->main_tab->currentIndex()) )
+        {
+            widget->setCurrentTool(p->current_tool);
+            p->current_view = widget;
+        }
+
+        p->updateTitle();
+    });
+
     p->current_color_selector.color->setColor(Qt::black);
 
 }
@@ -379,9 +405,8 @@ bool MainWindow::documentOpen()
 
 document::Document* MainWindow::currentDocument()
 {
-    if ( view::GraphicsWidget* widget =
-            qobject_cast<view::GraphicsWidget*>(p->main_tab->currentWidget()) )
-        return widget->document();
+    if ( p->current_view )
+        return p->current_view->document();
     return nullptr;
 }
 
@@ -397,13 +422,10 @@ bool MainWindow::documentSaveAs()
 
 bool MainWindow::save(int tab, bool prompt)
 {
-    view::GraphicsWidget* widget =
-        qobject_cast<view::GraphicsWidget*>(p->main_tab->currentWidget());
-
-    if ( !widget )
+    if ( !p->current_view )
         return false;
 
-    document::Document* doc = widget->document();
+    document::Document* doc = p->current_view->document();
 
     if ( !doc )
         return false;
@@ -441,7 +463,7 @@ bool MainWindow::save(int tab, bool prompt)
         format = Private::DocumentSaveFormat(file_formats.indexOf(save_dialog.selectedNameFilter()));
         doc->setFileName(save_dialog.selectedFiles().front());
         p->main_tab->setTabText(tab, p->tabText(doc->fileName()));
-        updateTitle();
+        p->updateTitle();
     }
 
     if ( p->save(doc, format) )
@@ -453,31 +475,31 @@ bool MainWindow::save(int tab, bool prompt)
     return false;
 }
 
-void MainWindow::updateTitle()
+void MainWindow::Private::updateTitle()
 {
-    int tab = p->main_tab->currentIndex();
+    int tab = main_tab->currentIndex();
 
-    bool has_documents = p->main_tab->count();
+    bool has_documents = main_tab->count();
     bool has_active_document = tab != -1;
-    p->action_save->setEnabled(has_active_document);
-    p->action_save_as->setEnabled(has_active_document);
-    p->action_save_all->setEnabled(has_documents);
-    p->action_close->setEnabled(has_active_document);
-    p->action_close_all->setEnabled(has_documents);
-    p->action_print->setEnabled(has_active_document);
+    action_save->setEnabled(has_active_document);
+    action_save_as->setEnabled(has_active_document);
+    action_save_all->setEnabled(has_documents);
+    action_close->setEnabled(has_active_document);
+    action_close_all->setEnabled(has_documents);
+    action_print->setEnabled(has_active_document);
 
     if ( !has_active_document )
     {
-        setWindowTitle(QString());
+        parent->setWindowTitle(QString());
         return;
     }
 
     /// \todo If the document is dirty, add a *
-    document::Document* doc = currentDocument();
+    document::Document* doc = parent->currentDocument();
     if ( !doc->fileName().isEmpty() )
-        setWindowTitle(doc->fileName());
+        parent->setWindowTitle(doc->fileName());
     else
-        setWindowTitle(tr("New Image"));
+        parent->setWindowTitle(tr("New Image"));
 }
 
 int MainWindow::openTab(const QString& file_name)
@@ -503,16 +525,40 @@ bool MainWindow::documentClose()
 
 bool MainWindow::closeTab(int tab)
 {
-    view::GraphicsWidget* widget =
-        qobject_cast<view::GraphicsWidget*>(p->main_tab->widget(tab));
+    view::GraphicsWidget* widget = p->widget(tab);
 
     if ( !widget )
         return false;
 
     /// \todo if dirty => ask whether to save it
 
+    if ( widget == p->current_view )
+    {
+        p->current_view->setCurrentTool(nullptr);
+        p->current_view = nullptr;
+    }
+
     delete widget->document();
     delete widget;
 
     return true;
 }
+
+void MainWindow::addTool(::tool::Tool* tool)
+{
+    if ( !tool || p->tools.contains(tool) )
+        return;
+
+    p->tools.push_back(tool);
+    /// \todo Retranslate them
+    QAction* tool_action = new QAction(tool->icon(), tool->name(), this);
+    p->menu_tools->addAction(tool_action);
+    p->tool_bar->addAction(tool_action);
+    connect(tool_action, &QAction::triggered, [this, tool]{
+        if ( !p->current_view )
+            return;
+        p->current_view->setCurrentTool(tool);
+        p->current_tool = tool;
+    });
+}
+

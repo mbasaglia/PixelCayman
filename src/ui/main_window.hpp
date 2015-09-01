@@ -23,6 +23,7 @@
 
 #include <QMainWindow>
 #include "document/document.hpp"
+#include "tool/tool.hpp"
 
 class MainWindow : public QMainWindow
 {
@@ -31,6 +32,11 @@ class MainWindow : public QMainWindow
 public:
     MainWindow(QWidget* parent = nullptr);
     ~MainWindow();
+
+    /**
+     * \brief Makes a tool available to the window
+     */
+    void addTool(::tool::Tool* tool);
 
 public slots:
     /**
@@ -63,9 +69,6 @@ public slots:
      */
     bool documentClose();
 
-private slots:
-    void updateTitle();
-
 protected:
     void changeEvent(QEvent* event) override;
     /**
@@ -88,6 +91,9 @@ protected:
      */
     bool closeTab(int tab);
 
+    /**
+     * \brief Document at the current tab
+     */
     document::Document* currentDocument();
 
 private:

@@ -32,6 +32,7 @@ document/visitor.hpp
 document/io.hpp
 document/io.cpp
 style/dockwidget_style_icon.hpp
+tool/tool.hpp
 ui/color_editor.cpp
 ui/color_editor.hpp
 ui/main_window.cpp
@@ -39,7 +40,6 @@ ui/main_window.hpp
 view/graphics_item.hpp
 view/graphics_widget.hpp
 view/graphics_widget.cpp
-view/edit_tool.hpp
 main.cpp
 util.hpp
 settings.hpp

@@ -41,7 +41,7 @@ public:
     GraphicsItem* document_item;
     QPoint drag_point;
     MouseMode mouse_mode = Resting;
-    EditTool* tool = nullptr;
+    tool::Tool* tool = nullptr;
 };
 
 GraphicsWidget::GraphicsWidget(::document::Document* document)
@@ -217,12 +217,12 @@ void GraphicsWidget::wheelEvent(QWheelEvent *event)
     }
 }
 
-EditTool* GraphicsWidget::currentTool() const
+tool::Tool* GraphicsWidget::currentTool() const
 {
     return p->tool;
 }
 
-void GraphicsWidget::setCurrentTool(EditTool* tool)
+void GraphicsWidget::setCurrentTool(tool::Tool* tool)
 {
     if ( p->tool )
         p->tool->finalize(document());

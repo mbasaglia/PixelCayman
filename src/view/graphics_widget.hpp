@@ -23,7 +23,7 @@
 
 #include <QGraphicsView>
 #include "graphics_item.hpp"
-#include "edit_tool.hpp"
+#include "tool/tool.hpp"
 
 namespace view {
 
@@ -49,14 +49,14 @@ public:
     /**
      * \brief The currently active tool (\b nullptr to have no active tool)
      */
-    EditTool* currentTool() const;
+    tool::Tool* currentTool() const;
     
     /**
      * \brief Changes the currently active tool
      *
      * Finalizes the old tool and initializes the new one
      */
-    void setCurrentTool(EditTool* tool);
+    void setCurrentTool(tool::Tool* tool);
 
 public slots:
     void setZoomFactor(qreal factor);
