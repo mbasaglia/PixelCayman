@@ -27,6 +27,7 @@ namespace document {
 
 class Animation : public DocumentElement
 {
+    Q_OBJECT
 public:
     explicit Animation(const QString& name = {}, int frames_per_second = 24);
 

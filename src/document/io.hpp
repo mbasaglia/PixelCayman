@@ -49,6 +49,7 @@ public:
 
 private:
     void writeMetadata(const Metadata& data);
+    void writeId(const DocumentElement& element, const QString& attr = "id");
     QXmlStreamWriter writer;
 };
 

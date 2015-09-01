@@ -30,12 +30,15 @@ namespace document {
 
 Image::Image(Layer* layer, const QImage& image,  Frame* frame)
     : image_(image), frame_(frame), layer_(layer)
-{}
+{
+    layer->parentDocument()->registerElement(this);
+}
 
 Image::Image(Layer* layer, const QSize& size, const QColor& color,  Frame* frame)
     : image_(size, QImage::Format_ARGB32), frame_(frame), layer_(layer)
 {
     image_.fill(color);
+    layer->parentDocument()->registerElement(this);
 }
 
 void Image::apply(Visitor& visitor)
@@ -89,6 +92,11 @@ const Layer* Image::layer() const
 Layer* Image::layer()
 {
     return layer_;
+}
+
+Document* Image::parentDocument() const
+{
+    return layer_->parentDocument();
 }
 
 } // namespace document

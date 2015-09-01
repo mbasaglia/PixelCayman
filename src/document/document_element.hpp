@@ -22,30 +22,45 @@
 #define PIXEL_CAYMAN_DOCUMENT_ELEMENT_HPP
 #include <QHash>
 #include <QString>
+#include <QObject>
 
 namespace document {
 
 class Visitor;
+class Document;
 
 using Metadata = QHash<QString, QString>;
 
 /**
  * \brief Base class for all document components
  */
-class DocumentElement
+class DocumentElement : public QObject
 {
+    Q_OBJECT
+    Q_DISABLE_COPY(DocumentElement)
+
 public:
     explicit DocumentElement(const Metadata& metadata = {})
         : metadata_(metadata) {}
 
     virtual ~DocumentElement() {}
 
+    /**
+     * \brief Ensures the visitor visits the current object and all of its children
+     */
     virtual void apply(Visitor& visitor) = 0;
+
+
+    /**
+     * \brief Document this element belongs to
+     */
+    virtual Document* parentDocument() const = 0;
 
     const Metadata& metadata() const
     {
         return metadata_;
     }
+
     Metadata& metadata()
     {
         return metadata_;

@@ -30,7 +30,9 @@ namespace document {
 
 Layer::Layer(class Document* owner, const QString& name)
     : name_(name), owner_(owner)
-{}
+{
+    owner->registerElement(this);
+}
 
 Layer::~Layer()
 {
@@ -126,6 +128,11 @@ void Layer::apply(Visitor& visitor)
 
         visitor.leave(*this);
     }
+}
+
+Document* Layer::parentDocument() const
+{
+    return owner_;
 }
 
 } // namespace document

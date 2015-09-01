@@ -29,6 +29,7 @@ class Animation;
 
 class Frame : public DocumentElement
 {
+    Q_OBJECT
 public:
 
     Animation* animation();
@@ -36,7 +37,7 @@ public:
 
     int frameNumber() const;
 
-    void apply(Visitor& visitor) override;
+    //void apply(Visitor& visitor) override;
 };
 
 } // namespace document

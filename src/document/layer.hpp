@@ -32,6 +32,7 @@ class Document;
  */
 class Layer : public DocumentElement
 {
+    Q_OBJECT
 public:
     explicit Layer(Document* owner, const QString& name);
     Layer(const Layer&) = delete;
@@ -83,16 +84,7 @@ public:
     Image* addFrameImage(const QImage& image);
 
     void apply(Visitor& visitor) override;
-
-    /**
-     * \brief Paint the layer
-     */
-    void paint(QPainter& painter) const;
-
-    /**
-     * \brief Paint the layer, disregarding \c visible and \c opacity
-     */
-    void paintFullAlpha(QPainter& painter) const;
+    Document* parentDocument() const override;
 
 private:
     QList<Layer*> children_;

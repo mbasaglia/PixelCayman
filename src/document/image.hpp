@@ -34,6 +34,7 @@ class Layer;
  */
 class Image : public DocumentElement
 {
+    Q_OBJECT
 public:
     explicit Image(Layer* layer, const QImage& image, Frame* frame = nullptr);
     explicit Image(Layer* layer,
@@ -54,8 +55,6 @@ public:
     */
     void paint(QPainter& painter) const;
 
-    void apply(Visitor& visitor) override;
-
     /**
      * \brief Frame associated with this image
      */
@@ -68,6 +67,10 @@ public:
      */
     Layer* layer();
     const Layer* layer() const;
+
+
+    void apply(Visitor& visitor) override;
+    Document* parentDocument() const override;
 
 private:
     QImage image_;

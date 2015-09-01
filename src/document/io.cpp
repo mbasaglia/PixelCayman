@@ -57,6 +57,7 @@ SaverXml::~SaverXml()
 bool SaverXml::enter(Document& document)
 {
     writer.writeStartElement("document");
+    writeId(document);
     writer.writeAttribute("width", QString::number(document.imageSize().width()));
     writer.writeAttribute("height", QString::number(document.imageSize().height()));
     writeMetadata(document.metadata());
@@ -71,6 +72,7 @@ void SaverXml::leave(Document& document)
 bool SaverXml::enter(Layer& layer)
 {
     writer.writeStartElement("layer");
+    writeId(layer);
     writer.writeAttribute("name",layer.name());
     writer.writeAttribute("opacity",QString::number(layer.opacity()));
     writer.writeAttribute("visible",QString::number(layer.visible()));
@@ -86,12 +88,11 @@ void SaverXml::leave(Layer& layer)
 
 void SaverXml::visit(Image& image)
 {
-    /// \todo Filter out images not in the document
     writer.writeStartElement("image");
+    writeId(image);
 
-    /// \todo Have a proper id system
     if ( image.frame() )
-        writer.writeAttribute("frame",QString("frame_%1").arg(qintptr(image.frame())));
+        writeId(*image.frame(), "frame");
 
     if ( !image.metadata().empty() )
     {
@@ -117,6 +118,7 @@ void SaverXml::visit(Image& image)
 bool SaverXml::enter(Animation& animation)
 {
     writer.writeStartElement("animation");
+    writeId(animation);
     writer.writeAttribute("name",animation.name());
     writer.writeAttribute("fps",QString::number(animation.framesPerSecond()));
     writeMetadata(animation.metadata());
@@ -131,8 +133,7 @@ void SaverXml::leave(Animation& animation)
 void SaverXml::visit(Frame& frame)
 {
     writer.writeStartElement("frame");
-    /// \todo Have a proper id system
-    writer.writeAttribute("id",QString("frame_%1").arg(qintptr(&frame)));
+    writeId(frame);
     writeMetadata(frame.metadata());
     writer.writeEndElement();
 }
@@ -152,6 +153,12 @@ void SaverXml::writeMetadata(const Metadata& data)
     }
 
     writer.writeEndElement();
+}
+
+void SaverXml::writeId(const DocumentElement& element, const QString& attr)
+{
+    if ( !element.objectName().isEmpty() && !attr.isEmpty() )
+        writer.writeAttribute(attr, element.objectName());
 }
 
 } // namespace visitor

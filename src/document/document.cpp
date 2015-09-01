@@ -91,4 +91,9 @@ void Document::apply(Visitor& visitor)
     }
 }
 
+Document* Document::parentDocument() const
+{
+    return const_cast<Document*>(this);
+}
+
 } // namespace document
