@@ -33,11 +33,35 @@ public:
     ~MainWindow();
 
 public slots:
+    /**
+     * \brief Changes the color used by drawing tools
+     */
     void setActiveColor(const QColor& color);
-    void documentNew();
+    /**
+     * \brief Creates a new document
+     * \returns \b true if the document has been created successfully
+     */
+    bool documentNew();
+    /**
+     * \brief Opens a file that the user has selected
+     * \returns \b true if the document has been opened successfully
+     */
     bool documentOpen();
+    /**
+     * \brief Saves the current document
+     * \returns \b true if the document has been saved
+     */
     bool documentSave();
+    /**
+     * \brief Saves the current document, always propmting for a file name
+     * \returns \b true if the document has been saved
+     */
     bool documentSaveAs();
+    /**
+     * \brief Closes the document
+     * \returns \b true if the document has been closed
+     */
+    bool documentClose();
 
 private slots:
     void updateTitle();
@@ -57,6 +81,12 @@ protected:
      * \return The index of the newly opened tab, -1 on failure
      */
     int openTab(const QString& file_name);
+
+    /**
+     * \brief Closes a tab
+     * \returns \b true if the tab has been closed
+     */
+    bool closeTab(int tab);
 
     document::Document* currentDocument();
 

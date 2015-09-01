@@ -200,7 +200,6 @@ void MainWindow::Private::loadSettings()
     recent_files = settings::get("file/recent", QStringList{});
     if ( !recent_files.empty() )
     {
-
         menu_open_recent->removeAction(action_no_recent_files);
         for ( const QString& file : recent_files )
             menu_open_recent->addAction(recentFileAction(file));
@@ -298,10 +297,8 @@ MainWindow::MainWindow(QWidget* parent)
     p->initMenus();
     p->loadSettings();
 
-    connect(p->main_tab, &QTabWidget::tabCloseRequested, [this](int tab) {
-        /// \todo If the document is dirty, propmt to save
-        delete p->main_tab->widget(tab);
-    });
+    connect(p->main_tab, &QTabWidget::tabCloseRequested,
+            this, &MainWindow::closeTab);
 
     p->current_color_selector.color->setColor(Qt::black);
 
@@ -329,13 +326,14 @@ void MainWindow::setActiveColor(const QColor& color)
     p->color_editor->setColor(color);
 }
 
-void MainWindow::documentNew()
+bool MainWindow::documentNew()
 {
     /// \todo Show dialog to get the size
     /// \todo Keep track of documents and clean up when the document is closed
     document::Document* doc = new document::Document(QSize(32,32));
     int tab = p->main_tab->addTab(new view::GraphicsWidget(doc), tr("New Image"));
     p->main_tab->setCurrentIndex(tab);
+    return true;
 }
 
 bool MainWindow::documentOpen()
@@ -459,7 +457,16 @@ void MainWindow::updateTitle()
 {
     int tab = p->main_tab->currentIndex();
 
-    if ( tab == -1 )
+    bool has_documents = p->main_tab->count();
+    bool has_active_document = tab != -1;
+    p->action_save->setEnabled(has_active_document);
+    p->action_save_as->setEnabled(has_active_document);
+    p->action_save_all->setEnabled(has_documents);
+    p->action_close->setEnabled(has_active_document);
+    p->action_close_all->setEnabled(has_documents);
+    p->action_print->setEnabled(has_active_document);
+
+    if ( !has_active_document )
     {
         setWindowTitle(QString());
         return;
@@ -487,4 +494,25 @@ int MainWindow::openTab(const QString& file_name)
     }
 
     return tab;
+}
+
+bool MainWindow::documentClose()
+{
+    return closeTab(p->main_tab->currentIndex());
+}
+
+bool MainWindow::closeTab(int tab)
+{
+    view::GraphicsWidget* widget =
+        qobject_cast<view::GraphicsWidget*>(p->main_tab->widget(tab));
+
+    if ( !widget )
+        return false;
+
+    /// \todo if dirty => ask whether to save it
+
+    delete widget->document();
+    delete widget;
+
+    return true;
 }
