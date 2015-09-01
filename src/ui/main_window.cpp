@@ -257,8 +257,24 @@ QAction* MainWindow::Private::recentFileAction(const QString& file_name)
 
 void MainWindow::Private::pushRecentFile(const QString& name)
 {
-    recent_files.removeOne(name);
+    menu_open_recent->removeAction(action_no_recent_files);
+
+    int already_there = recent_files.indexOf(name);
+    if ( already_there != -1 )
+    {
+        recent_files.removeAt(already_there);
+        QAction* old = menu_open_recent->actions().at(already_there);
+        menu_open_recent->removeAction(old);
+        delete old;
+    }
+
     recent_files.push_front(name);
+
+    QAction *before = nullptr;
+    if ( !menu_open_recent->actions().empty() )
+        before = menu_open_recent->actions().front();
+    menu_open_recent->insertAction(before, recentFileAction(name));
+
     int max = settings::get("file/recent_max", 16);
     if ( recent_files.size() > max )
     {
@@ -270,13 +286,6 @@ void MainWindow::Private::pushRecentFile(const QString& name)
             delete *it;
         }
     }
-
-    menu_open_recent->removeAction(action_no_recent_files);
-
-    QAction *before = nullptr;
-    if ( !menu_open_recent->actions().empty() )
-        before = menu_open_recent->actions().front();
-    menu_open_recent->insertAction(before, recentFileAction(name));
 }
 
 
