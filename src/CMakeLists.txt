@@ -53,7 +53,7 @@ find_package(Qt5Widgets REQUIRED)
 set(CMAKE_AUTOMOC ON)
 #set(CMAKE_AUTOUIC ON)
 #if ( CMAKE_MAJOR_VERSION LESS 3 )
-    file(GLOB UI_FILES ui/*.ui)
+    file(GLOB UI_FILES ui/color_editor.ui ui/current_color.ui ui/main_window.ui)
     qt5_wrap_ui(SOURCES ${UI_FILES})
 #endif()
 
