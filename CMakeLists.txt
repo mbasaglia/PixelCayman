@@ -68,6 +68,7 @@ endif()
 add_subdirectory(src bin)
 add_subdirectory(submodules/ColorWidgets)
 add_subdirectory(submodules/Qt-Extended-TabWidget)
+add_subdirectory(data share/${EXECUTABLE_NAME})
 
 # Doxygen target
 find_package(Doxygen)
