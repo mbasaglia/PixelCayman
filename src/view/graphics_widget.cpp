@@ -28,16 +28,15 @@
 
 namespace view {
 
-namespace {
+class GraphicsWidget::Private
+{
+public:
+
 enum MouseMode {
     Resting,
     Panning,
 };
-} // namespace
 
-class GraphicsWidget::Private
-{
-public:
     GraphicsItem* document_item;
     QPoint drag_point;
     MouseMode mouse_mode = Resting;
@@ -154,7 +153,7 @@ void GraphicsWidget::drawForeground(QPainter * painter, const QRectF & rect)
 void GraphicsWidget::mousePressEvent(QMouseEvent *event)
 {
     // Only accept new modes if the old one has been resolved
-    if ( p->mouse_mode != Resting )
+    if ( p->mouse_mode != Private::Resting )
         return;
 
     p->drag_point = event->pos();
@@ -163,7 +162,7 @@ void GraphicsWidget::mousePressEvent(QMouseEvent *event)
     {
         // drag view
         setCursor(Qt::ClosedHandCursor);
-        p->mouse_mode = Panning;
+        p->mouse_mode = Private::Panning;
     }
     else if ( p->tool )
     {
@@ -176,7 +175,7 @@ void GraphicsWidget::mouseMoveEvent(QMouseEvent *event)
 {
     QPoint mouse_point = event->pos();
 
-    if ( p->mouse_mode == Panning )
+    if ( p->mouse_mode == Private::Panning )
     {
         // drag view
         QPointF delta = mouse_point - p->drag_point;
@@ -194,10 +193,10 @@ void GraphicsWidget::mouseMoveEvent(QMouseEvent *event)
 
 void GraphicsWidget::mouseReleaseEvent(QMouseEvent *event)
 {
-    if ( p->mouse_mode == Panning && event->button() == Qt::MiddleButton )
+    if ( p->mouse_mode == Private::Panning && event->button() == Qt::MiddleButton )
     {
         setCursor(Qt::ArrowCursor);
-        p->mouse_mode = Resting;
+        p->mouse_mode = Private::Resting;
     }
     else if ( p->tool )
     {
