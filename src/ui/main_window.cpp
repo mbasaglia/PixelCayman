@@ -38,6 +38,7 @@
 #include "view/graphics_widget.hpp"
 #include "document/io.hpp"
 #include "settings.hpp"
+#include "data.hpp"
 
 #include "ui_current_color.h"
 #include "ui_main_window.h"
@@ -299,11 +300,12 @@ void MainWindow::Private::pushRecentFile(const QString& name)
     }
 }
 
-
 MainWindow::MainWindow(QWidget* parent)
     : QMainWindow(parent), p(new Private(this))
 {
     p->setupUi(this);
+    /// \todo Have a proper icon theme for Pixel Cayman
+    setWindowIcon(QIcon(::data().readable("icons/pixel-cayman-32.png")));
 
     p->initDocks();
     p->initMenus();
