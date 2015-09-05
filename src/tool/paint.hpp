@@ -29,9 +29,13 @@
 
 namespace tool {
 
-class Paint : public Tool
+class Paint : public Tool, protected document::visitor::FrameRenderer
 {
 public:
+    Paint() : Tool(), FrameRenderer(nullptr)
+    {
+    }
+
     QIcon icon() const override
     {
         return QIcon::fromTheme("draw-brush");
@@ -63,7 +67,13 @@ public:
 
     void mouseMoveEvent(const QMouseEvent* event, view::GraphicsWidget* widget) override
     {
-        point = widget->mapToScene(event->pos());
+        point = widget->mapToImage(event->pos());
+        /// \todo Find active layer, color and frame
+        if ( (event->buttons() & Qt::LeftButton) && widget->document()->imageRect().contains(point) )
+        {
+            color = widget->color();
+            widget->document()->apply(*this);
+        }
     }
 
     void mouseReleaseEvent(const QMouseEvent* event, view::GraphicsWidget* widget) override
@@ -94,8 +104,15 @@ public:
         return QCursor(Qt::CrossCursor);
     }
 
+protected:
+    void render(document::Image& image) override
+    {
+        image.image().setPixel(point, color.rgba());
+    }
+
 private:
-    QPointF point;
+    QPoint point;
+    QColor color;
 };
 
 } // namespace tool

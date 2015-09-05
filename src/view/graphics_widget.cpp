@@ -62,6 +62,7 @@ public:
     QPoint drag_point;
     MouseMode mouse_mode = Resting;
     tool::Tool* tool = nullptr;
+    QColor color = Qt::black;
 };
 
 GraphicsWidget::GraphicsWidget(::document::Document* document)
@@ -170,6 +171,7 @@ void GraphicsWidget::drawForeground(QPainter* painter, const QRectF & rect)
 
     if ( p->tool && !p->mouse_mode == Private::Panning )
     {
+        painter->translate(p->document_item->pos());
         p->tool->drawForeground(painter, this);
     }
 }
@@ -267,6 +269,28 @@ void GraphicsWidget::setCurrentTool(tool::Tool* tool)
     p->generateMouseEvent(this);
 
     viewport()->update();
+}
+
+QPoint GraphicsWidget::mapToImage(const QPoint& point)
+{
+    return p->document_item->mapFromScene(mapToScene(point)).toPoint();
+}
+
+QPoint GraphicsWidget::mapFromImage(const QPoint& point)
+{
+    return mapFromScene(p->document_item->mapToScene(point));
+}
+
+
+QColor GraphicsWidget::color() const
+{
+    return p->color;
+}
+
+void GraphicsWidget::setColor(const QColor& color)
+{
+    if ( color != p->color )
+        emit ( p->color = color );
 }
 
 } // namespace view

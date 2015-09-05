@@ -143,7 +143,7 @@ public:
     }
 
 protected:
-    virtual void render(const Image& image) = 0;
+    virtual void render(Image& image) = 0;
 
 private:
     Frame* frame_;
@@ -160,7 +160,7 @@ public:
     {}
 
 protected:
-    void render(const Image& image) override
+    void render(Image& image) override
     {
         if ( full_alpha )
             image.paint(*painter);

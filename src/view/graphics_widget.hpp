@@ -39,6 +39,11 @@ class GraphicsWidget : public QGraphicsView
      */
     Q_PROPERTY(qreal zoomFactor READ zoomFactor WRITE setZoomFactor NOTIFY zoomFactorChanged)
 
+    /**
+     * \brief Primary color used by tools
+     */
+    Q_PROPERTY(QColor color READ color WRITE setColor NOTIFY colorChanged)
+
 public:
     explicit GraphicsWidget(::document::Document* document);
     ~GraphicsWidget();
@@ -61,13 +66,27 @@ public:
      */
     void setCurrentTool(::tool::Tool* tool);
 
+    /**
+     * \brief Converts a point from local coordinates to image coordinates
+     */
+    QPoint mapToImage(const QPoint& point);
+
+    /**
+     * \brief Converts a point from image coordinates to local coordinates
+     */
+    QPoint mapFromImage(const QPoint& point);
+
+    QColor color() const;
+
 public slots:
     void setZoomFactor(qreal factor);
     void zoom(qreal factor);
     void translate(const QPointF& delta);
+    void setColor(const QColor& color);
 
 signals:
     void zoomFactorChanged(qreal zoomFactor);
+    void colorChanged(const QColor& color);
 
 protected:
     void drawBackground(QPainter * painter, const QRectF & rect) override;

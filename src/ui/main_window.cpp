@@ -74,7 +74,7 @@ public:
     bool save(document::Document* doc, DocumentSaveFormat file_format);
 
     /**
-     * \brief link colorChanged and setColor between two classes
+     * \brief Link colorChanged and setColor between two classes
      */
     template<class A, class B>
         static void linkColor(A* a, B* b)
@@ -83,6 +83,19 @@ public:
             QObject::connect(b, &B::colorChanged, a, &A::setColor);
         }
 
+    /**
+     * \brief Unlink colorChanged and setColor between two classes
+     */
+    template<class A, class B>
+        static void unlinkColor(A* a, B* b)
+        {
+            QObject::disconnect(a, &A::colorChanged, b, &B::setColor);
+            QObject::disconnect(b, &B::colorChanged, a, &A::setColor);
+        }
+
+    /**
+     * \brief Connect a signal/slot pair in both directions
+     */
     template<class A, class R1, class R2, class Arg>
         static void linkSame(A* a, A* b, R1 (A::*signal)(Arg), R2 (A::*slot)(Arg) )
         {
@@ -328,11 +341,16 @@ MainWindow::MainWindow(QWidget* parent)
     connect(p->main_tab, &QTabWidget::currentChanged, [this](int tab) {
 
         if ( p->current_view )
+        {
             p->current_view->setCurrentTool(nullptr);
+            Private::unlinkColor(p->current_view, p->current_color_selector.color);
+        }
 
         if ( view::GraphicsWidget* widget = p->widget(p->main_tab->currentIndex()) )
         {
             widget->setCurrentTool(p->current_tool);
+            p->current_color_selector.color->setColor(widget->color());
+            Private::linkColor(widget, p->current_color_selector.color);
             p->current_view = widget;
         }
 

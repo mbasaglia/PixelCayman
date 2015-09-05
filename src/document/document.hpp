@@ -53,6 +53,14 @@ public:
     QSize imageSize() const;
 
     /**
+     * \brief Rect at (0,0) with imageSize
+     */
+    QRect imageRect() const
+    {
+        return QRect(QPoint(), imageSize());
+    }
+
+    /**
      * \brief Animations available in this document
      */
     QList<const Animation*> animations() const;
