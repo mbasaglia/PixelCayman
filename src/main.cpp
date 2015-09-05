@@ -20,11 +20,14 @@
  *
  */
 #include <exception>
-#include <QtWidgets/QApplication>
+#include <QApplication>
 #include <QDebug>
+#include <QIcon>
+
 #include "ui/main_window.hpp"
 #include "info.hpp"
 #include "settings.hpp"
+#include "data.hpp"
 
 int main(int argc, char** argv)
 {
@@ -34,6 +37,14 @@ int main(int argc, char** argv)
 
     try
     {
+        // Initialize Icon theme
+        // NOTE: this is broken in Qt 5.4.1
+        QIcon::setThemeSearchPaths(
+            QIcon::themeSearchPaths()
+            << data().readable("icons")
+        );
+        QIcon::setThemeName("pixel-cayman");
+
         MainWindow window;
         window.show();
         return app.exec();

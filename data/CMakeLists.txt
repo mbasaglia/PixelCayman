@@ -28,6 +28,6 @@ macro(data_file file)
     list(APPEND DATA_TARGETS ${file})
 endmacro()
 
-data_file(icons/pixel-cayman-32.png)
+data_file(icons/pixel-cayman)
 
 add_custom_target(data ALL DEPENDS ${DATA_TARGETS})
