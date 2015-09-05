@@ -136,6 +136,7 @@ public:
     MainWindow* parent;
 
     QList<tool::Tool*> tools;
+    QActionGroup* tools_group;
 };
 
 QDockWidget* MainWindow::Private::createDock(QWidget* widget, const QString& theme_icon)
@@ -215,6 +216,9 @@ void MainWindow::Private::initMenus()
     action_close->setShortcut(QKeySequence::Close);
     action_print->setShortcut(QKeySequence::Print);
     action_quit->setShortcut(QKeySequence::Quit);
+
+    tools_group = new QActionGroup(parent);
+    tools_group->setExclusive(true);
 }
 
 void MainWindow::Private::loadSettings()
@@ -582,14 +586,15 @@ void MainWindow::addTool(::tool::Tool* tool)
 
     p->tools.push_back(tool);
     /// \todo Retranslate them
-    QAction* tool_action = new QAction(tool->icon(), tool->name(), this);
+    QAction* tool_action = new QAction(tool->icon(), tool->name(), p->tools_group);
+    tool_action->setCheckable(true);
     p->menu_tools->addAction(tool_action);
     p->tool_bar->addAction(tool_action);
-    connect(tool_action, &QAction::triggered, [this, tool]{
-        if ( !p->current_view )
-            return;
-        p->current_view->setCurrentTool(tool);
-        p->current_tool = tool;
+    connect(tool_action, &QAction::triggered, [this, tool](bool checked){
+        ::tool::Tool* used_tool = checked ? tool : nullptr;
+        p->current_tool = used_tool;
+        if ( p->current_view )
+            p->current_view->setCurrentTool(used_tool);
     });
 }
 
