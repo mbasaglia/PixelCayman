@@ -63,6 +63,8 @@ public:
 
     void mousePressEvent(const QMouseEvent* event, view::GraphicsWidget* widget) override
     {
+        if ( event->buttons() == Qt::LeftButton )
+            mouseMoveEvent(event, widget);
     }
 
     void mouseMoveEvent(const QMouseEvent* event, view::GraphicsWidget* widget) override
@@ -82,16 +84,17 @@ public:
 
     void drawForeground(QPainter* painter, view::GraphicsWidget* widget) override
     {
+        QRectF area(point.x(), point.y(), radius*2, radius*2);
         QPen pen(Qt::white, 2);
         pen.setCosmetic(true);
         painter->setPen(pen);
         painter->setBrush(Qt::transparent);
-        painter->drawEllipse(point, 8, 8);
+        painter->drawEllipse(area);
 
         pen.setColor(Qt::black);
         pen.setWidth(0);
         painter->setPen(pen);
-        painter->drawEllipse(point, 8, 8);
+        painter->drawEllipse(area);
     }
 
     QWidget* optionsWidget() override
@@ -113,6 +116,7 @@ protected:
 private:
     QPoint point;
     QColor color;
+    qreal  radius = 0.5;
 };
 
 } // namespace tool

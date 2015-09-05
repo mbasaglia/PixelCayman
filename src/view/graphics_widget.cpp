@@ -273,7 +273,8 @@ void GraphicsWidget::setCurrentTool(tool::Tool* tool)
 
 QPoint GraphicsWidget::mapToImage(const QPoint& point)
 {
-    return p->document_item->mapFromScene(mapToScene(point)).toPoint();
+    QPointF pointf = p->document_item->mapFromScene(mapToScene(point));
+    return QPoint(pointf.x(), pointf.y());
 }
 
 QPoint GraphicsWidget::mapFromImage(const QPoint& point)
