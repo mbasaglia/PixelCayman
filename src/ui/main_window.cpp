@@ -39,6 +39,7 @@
 #include "document/io.hpp"
 #include "settings.hpp"
 #include "data.hpp"
+#include "tool/tool.hpp"
 
 #include "ui_current_color.h"
 #include "ui_main_window.h"

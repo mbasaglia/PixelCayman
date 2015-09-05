@@ -23,7 +23,10 @@
 
 #include <QGraphicsView>
 #include "graphics_item.hpp"
-#include "tool/tool.hpp"
+
+namespace tool {
+class Tool;
+} // namespace tool
 
 namespace view {
 
@@ -56,7 +59,7 @@ public:
      *
      * Finalizes the old tool and initializes the new one
      */
-    void setCurrentTool(tool::Tool* tool);
+    void setCurrentTool(::tool::Tool* tool);
 
 public slots:
     void setZoomFactor(qreal factor);

@@ -22,6 +22,7 @@
 #define PIXEL_CAYMAN_TOOL_HPP
 
 #include "document/visitor.hpp"
+#include "view/graphics_widget.hpp"
 #include <QMouseEvent>
 
 namespace tool {
@@ -56,28 +57,28 @@ public:
      *
      * \return Whether the initialization has been successful
      */
-    virtual bool initialize(::document::Document* document) = 0;
+    virtual bool initialize(view::GraphicsWidget* widget) = 0;
 
     /**
      * \brief Finalize the tool for a document
      *
      * Called when the tool or document has changed
      */
-    virtual void finalize(::document::Document* document) = 0;
+    virtual void finalize(view::GraphicsWidget* widget) = 0;
 
     /**
      * \brief Mouse press event
      *
      * Called by GraphicsWidget
      */
-    virtual void mousePressEvent(const QMouseEvent* event, ::document::Document* document) = 0;
+    virtual void mousePressEvent(const QMouseEvent* event, view::GraphicsWidget* widget) = 0;
 
     /**
      * \brief Mouse move event
      *
      * Called by GraphicsWidget
      */
-    virtual void mouseMoveEvent(const QMouseEvent* event, ::document::Document* document) = 0;
+    virtual void mouseMoveEvent(const QMouseEvent* event, view::GraphicsWidget* widget) = 0;
 
 
     /**
@@ -85,12 +86,12 @@ public:
      *
      * Called by GraphicsWidget
      */
-    virtual void mouseReleaseEvent(const QMouseEvent* event, ::document::Document* document) = 0;
+    virtual void mouseReleaseEvent(const QMouseEvent* event, view::GraphicsWidget* widget) = 0;
 
     /**
      * \brief Used to render the tool on the view
      */
-    virtual void drawForeground(QPainter* painter) = 0;
+    virtual void drawForeground(QPainter* painter, view::GraphicsWidget* widget) = 0;
 
     /**
      * \brief Returns a widget that ca be used to change the tool behaviour
@@ -99,6 +100,11 @@ public:
      * and update it if the document changes
      */
     virtual QWidget* optionsWidget() = 0;
+
+    /**
+     * \brief Cursor to be displayed
+     */
+    virtual QCursor cursor(const view::GraphicsWidget* widget) const = 0;
 };
 
 } // namespace tool

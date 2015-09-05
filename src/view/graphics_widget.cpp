@@ -23,8 +23,10 @@
  */
 
 #include "graphics_widget.hpp"
+#include "tool/tool.hpp"
 
 #include <QMouseEvent>
+#include <QApplication>
 
 namespace view {
 
@@ -32,10 +34,29 @@ class GraphicsWidget::Private
 {
 public:
 
-enum MouseMode {
-    Resting,
-    Panning,
-};
+    enum MouseMode {
+        Resting,
+        Panning,
+    };
+
+    void setCursor(GraphicsWidget* widget)
+    {
+        return widget->setCursor(tool ? tool->cursor(widget) : Qt::ArrowCursor);
+    }
+
+    void generateMouseEvent(GraphicsWidget* widget)
+    {
+        if ( !tool )
+            return;
+
+        QMouseEvent event(QEvent::MouseMove,
+                          widget->mapFromGlobal(QCursor::pos()),
+                          Qt::NoButton,
+                          QApplication::mouseButtons(),
+                          QApplication::keyboardModifiers()
+                         );
+        tool->mouseMoveEvent(&event, widget);
+    }
 
     GraphicsItem* document_item;
     QPoint drag_point;
@@ -55,6 +76,9 @@ GraphicsWidget::GraphicsWidget(::document::Document* document)
     setFrameStyle(QFrame::NoFrame);
     setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
     setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
+
+    setMouseTracking(true);
+    setRenderHint(QPainter::Antialiasing);
 }
 
 GraphicsWidget::~GraphicsWidget()
@@ -121,7 +145,7 @@ void GraphicsWidget::translate(const QPointF& delta)
     expandSceneRect();
 }
 
-void GraphicsWidget::drawBackground(QPainter * painter, const QRectF & rect)
+void GraphicsWidget::drawBackground(QPainter* painter, const QRectF & rect)
 {
     /// \todo Make it available as an object in the color_widgets library
     static QBrush transparency(QPixmap(QLatin1String(":/color_widgets/alphaback.png")));
@@ -133,7 +157,7 @@ void GraphicsWidget::drawBackground(QPainter * painter, const QRectF & rect)
     painter->drawRect(p->document_item->sceneBoundingRect());
 }
 
-void GraphicsWidget::drawForeground(QPainter * painter, const QRectF & rect)
+void GraphicsWidget::drawForeground(QPainter* painter, const QRectF & rect)
 {
     QPen outline(Qt::black, 1, Qt::DotLine);
     outline.setCosmetic(true);
@@ -144,31 +168,30 @@ void GraphicsWidget::drawForeground(QPainter * painter, const QRectF & rect)
     painter->setPen(outline);
     painter->drawRect(p->document_item->sceneBoundingRect());
 
-    if ( p->tool )
+    if ( p->tool && !p->mouse_mode == Private::Panning )
     {
-        p->tool->drawForeground(painter);
+        p->tool->drawForeground(painter, this);
     }
 }
 
 void GraphicsWidget::mousePressEvent(QMouseEvent *event)
 {
-    // Only accept new modes if the old one has been resolved
-    if ( p->mouse_mode != Private::Resting )
-        return;
-
     p->drag_point = event->pos();
 
-    if ( event->button() == Qt::MiddleButton )
+    if ( p->mouse_mode == Private::Resting && event->button() == Qt::MiddleButton )
     {
         // drag view
         setCursor(Qt::ClosedHandCursor);
         p->mouse_mode = Private::Panning;
     }
-    else if ( p->tool )
+
+    if ( p->tool )
     {
         /// \todo Maybe it needs info on the view/scene
-        p->tool->mousePressEvent(event, document());
+        p->tool->mousePressEvent(event, this);
     }
+
+    viewport()->update();
 }
 
 void GraphicsWidget::mouseMoveEvent(QMouseEvent *event)
@@ -182,27 +205,33 @@ void GraphicsWidget::mouseMoveEvent(QMouseEvent *event)
         delta /= zoomFactor();
         translate(delta);
     }
-    else if ( p->tool )
+
+    if ( p->tool )
     {
         /// \todo Maybe it needs info on the view/scene
-        p->tool->mouseMoveEvent(event, document());
+        p->tool->mouseMoveEvent(event, this);
     }
 
     p->drag_point = mouse_point;
+
+    viewport()->update();
 }
 
 void GraphicsWidget::mouseReleaseEvent(QMouseEvent *event)
 {
     if ( p->mouse_mode == Private::Panning && event->button() == Qt::MiddleButton )
     {
-        setCursor(Qt::ArrowCursor);
+        p->setCursor(this);
         p->mouse_mode = Private::Resting;
     }
-    else if ( p->tool )
+
+    if ( p->tool )
     {
         /// \todo Maybe it needs info on the view/scene
-        p->tool->mouseReleaseEvent(event, document());
+        p->tool->mouseReleaseEvent(event, this);
     }
+
+    viewport()->update();
 }
 
 void GraphicsWidget::wheelEvent(QWheelEvent *event)
@@ -214,6 +243,9 @@ void GraphicsWidget::wheelEvent(QWheelEvent *event)
         else
             zoom(1.25);
     }
+
+    p->generateMouseEvent(this);
+    viewport()->update();
 }
 
 tool::Tool* GraphicsWidget::currentTool() const
@@ -224,12 +256,17 @@ tool::Tool* GraphicsWidget::currentTool() const
 void GraphicsWidget::setCurrentTool(tool::Tool* tool)
 {
     if ( p->tool )
-        p->tool->finalize(document());
+        p->tool->finalize(this);
 
     p->tool = tool;
 
     if ( p->tool )
-        p->tool->initialize(document());
+        p->tool->initialize(this);
+
+    p->setCursor(this);
+    p->generateMouseEvent(this);
+
+    viewport()->update();
 }
 
 } // namespace view

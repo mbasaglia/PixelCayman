@@ -33,6 +33,7 @@ document/io.hpp
 document/io.cpp
 style/dockwidget_style_icon.hpp
 tool/tool.hpp
+tool/paint.hpp
 ui/color_editor.cpp
 ui/color_editor.hpp
 ui/main_window.cpp

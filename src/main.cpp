@@ -28,6 +28,7 @@
 #include "info.hpp"
 #include "settings.hpp"
 #include "data.hpp"
+#include "tool/paint.hpp"
 
 int main(int argc, char** argv)
 {
@@ -46,6 +47,9 @@ int main(int argc, char** argv)
         QIcon::setThemeName("pixel-cayman");
 
         MainWindow window;
+        tool::Paint p;
+        window.addTool(&p);
+
         window.show();
         return app.exec();
     }
