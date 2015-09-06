@@ -38,6 +38,7 @@ ui/color_editor.cpp
 ui/color_editor.hpp
 ui/main_window.cpp
 ui/main_window.hpp
+ui/main_window_p.hpp
 view/graphics_item.hpp
 view/graphics_widget.hpp
 view/graphics_widget.cpp
