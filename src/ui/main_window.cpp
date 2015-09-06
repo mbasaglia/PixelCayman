@@ -27,6 +27,9 @@
 #include <QFileInfo>
 #include <QFileDialog>
 #include <QDockWidget>
+#include <QUndoGroup>
+#include <QUndoView>
+#include <QMessageBox>
 
 #include "color_editor.hpp"
 #include "color_palette_widget.hpp"
@@ -114,20 +117,27 @@ public:
     {
         /// \todo Maybe it could enforce "New Image" as filename on document creation
         if ( !doc->fileName().isEmpty() )
-            return doc->fileName();
+        {
+            /// \todo Options to display fileName() or the full path
+            return QFileInfo(doc->fileName()).baseName();
+        }
         else
+        {
             return tr("New Image");
+        }
     }
 
-    /**
-     * \brief Converts a file name to a title suitable for a tab
-     */
-    QString tabText(QString file_name);
+    int addDocument(document::Document* doc, bool set_current);
 
     void updateTitle();
 
     view::GraphicsWidget* current_view = nullptr;
     tool::Tool* current_tool = nullptr;
+
+    QList<tool::Tool*> tools;
+    QActionGroup* tools_group;
+
+    QUndoGroup undo_group;
 
     QDockWidget* dock_set_color;
     ColorEditor* color_editor;
@@ -141,12 +151,11 @@ public:
     QDockWidget* dock_palette;
     QDockWidget* dock_palette_editor;
 
+    QDockWidget* dock_undo_hitory;
+
     QStringList recent_files;
 
     MainWindow* parent;
-
-    QList<tool::Tool*> tools;
-    QActionGroup* tools_group;
 };
 
 QDockWidget* MainWindow::Private::createDock(QWidget* widget, const QString& theme_icon)
@@ -205,6 +214,9 @@ void MainWindow::Private::initDocks()
         util::overload<int>(&PalWid::currentColorChanged),
         util::overload<int>(&PalWid::setCurrentColor));
 
+    QUndoView* undo_view = new QUndoView(&undo_group);
+    dock_undo_hitory = createDock(undo_view, "view-history");
+    parent->addDockWidget(Qt::LeftDockWidgetArea, dock_undo_hitory);
 
     translateDocks();
 }
@@ -215,10 +227,12 @@ void MainWindow::Private::translateDocks()
     dock_palette->setWindowTitle(tr("Palette"));
     dock_palette_editor->setWindowTitle(tr("Edit Palette"));
     dock_current_color->setWindowTitle(tr("Current Color"));
+    dock_undo_hitory->setWindowTitle(tr("Action History"));
 }
 
 void MainWindow::Private::initMenus()
 {
+    // File
     action_new->setShortcut(QKeySequence::New);
     action_open->setShortcut(QKeySequence::Open);
     action_save->setShortcut(QKeySequence::Save);
@@ -227,6 +241,18 @@ void MainWindow::Private::initMenus()
     action_print->setShortcut(QKeySequence::Print);
     action_quit->setShortcut(QKeySequence::Quit);
 
+    // Edit
+    QAction* action_after_undo_redo = menu_edit->actions()[0];
+    QAction *action_undo  = undo_group.createUndoAction(parent);
+    action_undo->setIcon(QIcon::fromTheme("edit-undo"));
+    action_undo->setShortcut(QKeySequence::Undo);
+    menu_edit->insertAction(action_after_undo_redo, action_undo);
+    QAction *action_redo  = undo_group.createRedoAction(parent);
+    action_redo->setIcon(QIcon::fromTheme("edit-redo"));
+    action_redo->setShortcut(QKeySequence::Redo);
+    menu_edit->insertAction(action_after_undo_redo, action_redo);
+
+    // Tools
     tools_group = new QActionGroup(parent);
     tools_group->setExclusive(true);
 }
@@ -279,20 +305,11 @@ bool MainWindow::Private::save(document::Document* doc, DocumentSaveFormat forma
     return false;
 }
 
-QString MainWindow::Private::tabText(QString file_name)
-{
-    QFileInfo file(file_name);
-    /// \todo Options to display fileName() or the full path
-    return file.baseName();
-}
-
 QAction* MainWindow::Private::recentFileAction(const QString& file_name)
 {
     QAction* action = new QAction(file_name, menu_open_recent);
     connect(action, &QAction::triggered, [this, file_name]{
-        int tab = parent->openTab(file_name);
-        if ( tab != -1 )
-            main_tab->setCurrentIndex(tab);
+        parent->openTab(file_name, true);
     });
     return action;
 }
@@ -328,6 +345,23 @@ void MainWindow::Private::pushRecentFile(const QString& name)
             delete *it;
         }
     }
+}
+
+int MainWindow::Private::addDocument(document::Document* doc, bool set_current)
+{
+    view::GraphicsWidget* widget = new view::GraphicsWidget(doc);
+
+    undo_group.addStack(&widget->undoStack());
+
+    int tab = main_tab->addTab(widget, documentName(doc));
+    connect(&widget->undoStack(), &QUndoStack::cleanChanged, [this, widget]{
+        main_tab->setTabIcon(main_tab->indexOf(widget), QIcon::fromTheme("document-save"));
+    });
+
+    if ( set_current )
+        main_tab->setCurrentIndex(tab);
+
+    return tab;
 }
 
 MainWindow::MainWindow(QWidget* parent)
@@ -368,6 +402,7 @@ MainWindow::MainWindow(QWidget* parent)
             p->current_color_selector.color->setColor(widget->color());
             Private::linkColor(widget, p->current_color_selector.color);
             p->current_view = widget;
+            p->undo_group.setActiveStack(&widget->undoStack());
         }
 
         p->updateTitle();
@@ -403,10 +438,8 @@ void MainWindow::setActiveColor(const QColor& color)
 bool MainWindow::documentNew()
 {
     /// \todo Show dialog to get the size
-    /// \todo Keep track of documents and clean up when the document is closed
     document::Document* doc = new document::Document(QSize(32,32));
-    int tab = p->main_tab->addTab(new view::GraphicsWidget(doc), tr("New Image"));
-    p->main_tab->setCurrentIndex(tab);
+    p->addDocument(doc, true);
     return true;
 }
 
@@ -437,7 +470,7 @@ bool MainWindow::documentOpen()
     int tab = -1;
     for ( const QString& file_name : open_dialog.selectedFiles() )
     {
-        int new_tab = openTab(file_name);
+        int new_tab = openTab(file_name, false);
         if ( new_tab != -1 )
             tab = new_tab;
     }
@@ -451,6 +484,7 @@ bool MainWindow::documentOpen()
     return false;
 }
 
+/// \todo Maybe can be removed (and use Private::widget)
 document::Document* MainWindow::currentDocument()
 {
     if ( p->current_view )
@@ -470,10 +504,11 @@ bool MainWindow::documentSaveAs()
 
 bool MainWindow::save(int tab, bool prompt)
 {
-    if ( !p->current_view )
+    view::GraphicsWidget* widget = p->widget(tab);
+    if ( !widget )
         return false;
 
-    document::Document* doc = p->current_view->document();
+    document::Document* doc = widget->document();
 
     if ( !doc )
         return false;
@@ -510,13 +545,13 @@ bool MainWindow::save(int tab, bool prompt)
         /// \todo Ask confirmation if the file exists
         format = Private::DocumentSaveFormat(file_formats.indexOf(save_dialog.selectedNameFilter()));
         doc->setFileName(save_dialog.selectedFiles().front());
-        p->main_tab->setTabText(tab, p->tabText(doc->fileName()));
+        p->main_tab->setTabText(tab, p->documentName(doc));
         p->updateTitle();
     }
 
     if ( p->save(doc, format) )
     {
-        /// \todo Mark the document as clean
+        widget->undoStack().setClean();
         p->pushRecentFile(doc->fileName());
     }
 
@@ -542,25 +577,25 @@ void MainWindow::Private::updateTitle()
         return;
     }
 
-    /// \todo If the document is dirty, add a *
-    document::Document* doc = parent->currentDocument();
-    parent->setWindowTitle(documentName(doc));
+    view::GraphicsWidget* view_widget = widget(tab);
+    QString title = documentName(view_widget->document());
+    if ( !view_widget->undoStack().isClean() )
+        title = tr("%1 *").arg(title);
+    parent->setWindowTitle(title);
 }
 
-int MainWindow::openTab(const QString& file_name)
+int MainWindow::openTab(const QString& file_name, bool set_current)
 {
-    int tab = -1;
-
     QImage image(file_name);
 
     if ( !image.isNull() )
     {
         document::Document* doc = new document::Document(image, file_name);
-        tab = p->main_tab->addTab(new view::GraphicsWidget(doc), p->tabText(file_name));
         p->pushRecentFile(doc->fileName());
+        return p->addDocument(doc, set_current);
     }
 
-    return tab;
+    return -1;
 }
 
 bool MainWindow::documentClose()
@@ -575,7 +610,20 @@ bool MainWindow::closeTab(int tab, bool prompt)
     if ( !widget )
         return false;
 
-    /// \todo if prompt && dirty => ask whether to save it
+    if ( prompt && !widget->undoStack().isClean() )
+    {
+         int reply = QMessageBox::question(this,
+            tr("Close file"),
+            tr("\"%1\" has been modified.\nDoyou want to save the changes")
+                .arg(p->documentName(widget->document())),
+            QMessageBox::Yes|QMessageBox::No|QMessageBox::Cancel,
+            QMessageBox::Yes
+        );
+        if ( reply == QMessageBox::Yes )
+            save(tab, false);
+        else if ( reply == QMessageBox::Cancel )
+            return false;
+    }
 
     if ( widget == p->current_view )
     {
@@ -583,6 +631,7 @@ bool MainWindow::closeTab(int tab, bool prompt)
         p->current_view = nullptr;
     }
 
+    p->undo_group.removeStack(&widget->undoStack());
     delete widget->document();
     delete widget;
 
@@ -619,9 +668,12 @@ bool MainWindow::documentCloseAll()
     {
         ConfirmCloseDialog dlg(this);
 
-        /// \todo Only add dity documents
         for ( int i = 0; i < p->main_tab->count(); i++ )
-            dlg.addFile(i, p->documentName(p->widget(i)->document()));
+        {
+            auto widget = p->widget(i);
+            if ( !widget->undoStack().isClean() )
+                dlg.addFile(i, p->documentName(widget->document()));
+        }
 
         if ( !dlg.exec() )
             return false;

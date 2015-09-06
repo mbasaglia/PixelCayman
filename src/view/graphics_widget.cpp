@@ -59,15 +59,17 @@ public:
     }
 
     GraphicsItem* document_item;
-    QPoint drag_point;
-    MouseMode mouse_mode = Resting;
+    QPoint      drag_point;
+    MouseMode   mouse_mode = Resting;
     tool::Tool* tool = nullptr;
-    QColor color = Qt::black;
+    QColor      color = Qt::black;
+    QUndoStack  undo_stack;
 };
 
 GraphicsWidget::GraphicsWidget(::document::Document* document)
     : p(new Private)
 {
+    /// \todo if !document => throw exception
     QGraphicsScene* scene = new QGraphicsScene(this);
     scene->setSceneRect(QRectF(QPointF(),document->imageSize()));
     p->document_item = new GraphicsItem(document);
@@ -282,7 +284,6 @@ QPoint GraphicsWidget::mapFromImage(const QPoint& point)
     return mapFromScene(p->document_item->mapToScene(point));
 }
 
-
 QColor GraphicsWidget::color() const
 {
     return p->color;
@@ -292,6 +293,16 @@ void GraphicsWidget::setColor(const QColor& color)
 {
     if ( color != p->color )
         emit ( p->color = color );
+}
+
+const QUndoStack& GraphicsWidget::undoStack() const
+{
+    return p->undo_stack;
+}
+
+QUndoStack& GraphicsWidget::undoStack()
+{
+    return p->undo_stack;
 }
 
 } // namespace view

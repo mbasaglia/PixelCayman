@@ -90,7 +90,7 @@ protected:
      * \brief Open a file
      * \return The index of the newly opened tab, -1 on failure
      */
-    int openTab(const QString& file_name);
+    int openTab(const QString& file_name, bool set_current);
 
     /**
      * \brief Closes a tab

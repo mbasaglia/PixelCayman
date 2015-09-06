@@ -64,7 +64,7 @@ public:
                 return QProxyStyle::drawControl(element, &my_option, painter, widget);;
             }
         }
-        else if ( element == CE_TabBarTabLabel && qobject_cast<const QMainWindow*>(widget->parentWidget()) )
+        /*else if ( element == CE_TabBarTabLabel && qobject_cast<const QMainWindow*>(widget->parentWidget()) )
         {
             if ( const QStyleOptionTab* tab_option = qstyleoption_cast<const QStyleOptionTab *>(option) )
             {
@@ -72,7 +72,7 @@ public:
                 my_option.icon = target->windowIcon();
                 return QProxyStyle::drawControl(element, &my_option, painter, widget);
             }
-        }
+        }*/
 
         QProxyStyle::drawControl(element, option, painter, widget);
     }

@@ -72,27 +72,28 @@
     <addaction name="separator"/>
     <addaction name="action_quit"/>
    </widget>
-   <widget class="QMenu" name="menu_Edit">
+   <widget class="QMenu" name="menu_edit">
     <property name="title">
      <string>&amp;Edit</string>
     </property>
+    <addaction name="separator"/>
    </widget>
-   <widget class="QMenu" name="menu_Image">
+   <widget class="QMenu" name="menu_image">
     <property name="title">
      <string>&amp;Image</string>
     </property>
    </widget>
-   <widget class="QMenu" name="menu_Animation">
+   <widget class="QMenu" name="menu_animation">
     <property name="title">
      <string>A&amp;nimation</string>
     </property>
    </widget>
-   <widget class="QMenu" name="menu_Help">
+   <widget class="QMenu" name="menu_help">
     <property name="title">
      <string>&amp;Help</string>
     </property>
    </widget>
-   <widget class="QMenu" name="menu_View">
+   <widget class="QMenu" name="menu_view">
     <property name="title">
      <string>&amp;View</string>
     </property>
@@ -115,12 +116,12 @@
     </property>
    </widget>
    <addaction name="menu_file"/>
-   <addaction name="menu_Edit"/>
-   <addaction name="menu_Image"/>
-   <addaction name="menu_Animation"/>
+   <addaction name="menu_edit"/>
+   <addaction name="menu_image"/>
+   <addaction name="menu_animation"/>
    <addaction name="menu_tools"/>
-   <addaction name="menu_View"/>
-   <addaction name="menu_Help"/>
+   <addaction name="menu_view"/>
+   <addaction name="menu_help"/>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
   <widget class="QToolBar" name="tool_bar">
@@ -136,9 +137,7 @@
   </widget>
   <action name="action_new">
    <property name="icon">
-    <iconset theme="document-new">
-     <normaloff/>
-    </iconset>
+    <iconset theme="document-new"/>
    </property>
    <property name="text">
     <string>&amp;New</string>
@@ -146,9 +145,7 @@
   </action>
   <action name="action_open">
    <property name="icon">
-    <iconset theme="document-open">
-     <normaloff/>
-    </iconset>
+    <iconset theme="document-open"/>
    </property>
    <property name="text">
     <string>&amp;Open</string>
@@ -159,9 +156,7 @@
     <bool>false</bool>
    </property>
    <property name="icon">
-    <iconset theme="document-save">
-     <normaloff/>
-    </iconset>
+    <iconset theme="document-save"/>
    </property>
    <property name="text">
     <string>&amp;Save</string>
@@ -172,9 +167,7 @@
     <bool>false</bool>
    </property>
    <property name="icon">
-    <iconset theme="document-save-as">
-     <normaloff/>
-    </iconset>
+    <iconset theme="document-save-as"/>
    </property>
    <property name="text">
     <string>Save &amp;As...</string>
@@ -185,9 +178,7 @@
     <bool>false</bool>
    </property>
    <property name="icon">
-    <iconset theme="document-save-all">
-     <normaloff/>
-    </iconset>
+    <iconset theme="document-save-all"/>
    </property>
    <property name="text">
     <string>Save A&amp;ll</string>
@@ -195,9 +186,7 @@
   </action>
   <action name="action_print">
    <property name="icon">
-    <iconset theme="document-print">
-     <normaloff/>
-    </iconset>
+    <iconset theme="document-print"/>
    </property>
    <property name="text">
     <string>&amp;Print...</string>
@@ -208,9 +197,7 @@
     <bool>false</bool>
    </property>
    <property name="icon">
-    <iconset theme="document-close">
-     <normaloff/>
-    </iconset>
+    <iconset theme="document-close"/>
    </property>
    <property name="text">
     <string>&amp;Close</string>
@@ -218,9 +205,7 @@
   </action>
   <action name="action_quit">
    <property name="icon">
-    <iconset theme="application-exit">
-     <normaloff/>
-    </iconset>
+    <iconset theme="application-exit"/>
    </property>
    <property name="text">
     <string>&amp;Quit</string>
@@ -239,9 +224,7 @@
     <bool>false</bool>
    </property>
    <property name="icon">
-    <iconset theme="window-close">
-     <normaloff/>
-    </iconset>
+    <iconset theme="window-close"/>
    </property>
    <property name="text">
     <string>Clos&amp;e All</string>
