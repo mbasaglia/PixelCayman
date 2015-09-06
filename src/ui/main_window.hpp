@@ -68,9 +68,16 @@ public slots:
      * \returns \b true if the document has been closed
      */
     bool documentClose();
+    /**
+     * \brief Closes all documents
+     * \returns \b false if the user has canceled the operation
+     */
+    bool documentCloseAll();
 
 protected:
     void changeEvent(QEvent* event) override;
+    void closeEvent(QCloseEvent *event) override;
+
     /**
      * \brief Save the document
      * \param tab Index of the tab with the document to be saved
@@ -87,9 +94,16 @@ protected:
 
     /**
      * \brief Closes a tab
+     * \param tab Index of the tab with the document to be closed
+     * \param prompt Whether to prompt a save on modified documents
      * \returns \b true if the tab has been closed
      */
-    bool closeTab(int tab);
+    bool closeTab(int tab, bool prompt);
+
+    /**
+     * \brief Same as closeTab(true, true)
+     */
+    bool closeTabPrompt(int tab);
 
     /**
      * \brief Document at the current tab

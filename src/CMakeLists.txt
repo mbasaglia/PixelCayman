@@ -66,16 +66,15 @@ set(CMAKE_AUTOMOC ON)
 set(EXECUTABLE_NAME pixelcayman) # repeated otherwise kdevelop messes up
 add_executable(${EXECUTABLE_NAME} ${SOURCES})
 
-# Libraries
-
-# Color widgets
+# Submodules
 include_directories(../submodules/ColorWidgets/include)
 target_link_libraries(${EXECUTABLE_NAME} ColorWidgets-qt5)
 
-# Extended TabWidget
 include_directories(../submodules/Qt-Extended-TabWidget/src)
 target_link_libraries(${EXECUTABLE_NAME} ExtendedTabWidget)
 
+include_directories(../submodules/ConfirmCloseDialog/src)
+target_link_libraries(${EXECUTABLE_NAME} ConfirmClose)
 
 # Qt
 target_link_libraries(${EXECUTABLE_NAME} Qt5::Widgets)

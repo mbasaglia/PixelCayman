@@ -40,6 +40,7 @@
 #include "settings.hpp"
 #include "data.hpp"
 #include "tool/tool.hpp"
+#include "confirm_close_dialog.hpp"
 
 #include "ui_current_color.h"
 #include "ui_main_window.h"
@@ -107,6 +108,15 @@ public:
     view::GraphicsWidget* widget(int tab)
     {
         return qobject_cast<view::GraphicsWidget*>(main_tab->widget(tab));
+    }
+
+    QString documentName(document::Document* doc)
+    {
+        /// \todo Maybe it could enforce "New Image" as filename on document creation
+        if ( !doc->fileName().isEmpty() )
+            return doc->fileName();
+        else
+            return tr("New Image");
     }
 
     /**
@@ -342,7 +352,7 @@ MainWindow::MainWindow(QWidget* parent)
     p->loadSettings();
 
     connect(p->main_tab, &QTabWidget::tabCloseRequested,
-            this, &MainWindow::closeTab);
+            this, &MainWindow::closeTabPrompt);
 
     connect(p->main_tab, &QTabWidget::currentChanged, [this](int tab) {
 
@@ -370,6 +380,7 @@ MainWindow::MainWindow(QWidget* parent)
 MainWindow::~MainWindow()
 {
     p->saveSettings();
+    delete p;
 }
 
 void MainWindow::changeEvent(QEvent* event)
@@ -533,10 +544,7 @@ void MainWindow::Private::updateTitle()
 
     /// \todo If the document is dirty, add a *
     document::Document* doc = parent->currentDocument();
-    if ( !doc->fileName().isEmpty() )
-        parent->setWindowTitle(doc->fileName());
-    else
-        parent->setWindowTitle(tr("New Image"));
+    parent->setWindowTitle(documentName(doc));
 }
 
 int MainWindow::openTab(const QString& file_name)
@@ -557,17 +565,17 @@ int MainWindow::openTab(const QString& file_name)
 
 bool MainWindow::documentClose()
 {
-    return closeTab(p->main_tab->currentIndex());
+    return closeTabPrompt(p->main_tab->currentIndex());
 }
 
-bool MainWindow::closeTab(int tab)
+bool MainWindow::closeTab(int tab, bool prompt)
 {
     view::GraphicsWidget* widget = p->widget(tab);
 
     if ( !widget )
         return false;
 
-    /// \todo if dirty => ask whether to save it
+    /// \todo if prompt && dirty => ask whether to save it
 
     if ( widget == p->current_view )
     {
@@ -579,6 +587,11 @@ bool MainWindow::closeTab(int tab)
     delete widget;
 
     return true;
+}
+
+bool MainWindow::closeTabPrompt(int tab)
+{
+    return closeTab(tab, true);
 }
 
 void MainWindow::addTool(::tool::Tool* tool)
@@ -600,3 +613,38 @@ void MainWindow::addTool(::tool::Tool* tool)
     });
 }
 
+bool MainWindow::documentCloseAll()
+{
+    if ( p->main_tab->count() != 0 )
+    {
+        ConfirmCloseDialog dlg(this);
+
+        /// \todo Only add dity documents
+        for ( int i = 0; i < p->main_tab->count(); i++ )
+            dlg.addFile(i, p->documentName(p->widget(i)->document()));
+
+        if ( !dlg.exec() )
+            return false;
+
+        /// \todo should return false here only if the user has canceled the save
+        for ( int i : dlg.saveFiles() )
+            if ( !save(i, false) )
+                return false;
+
+        while ( p->main_tab->count() != 0 )
+            closeTab(0, false);
+    }
+
+    return true;
+}
+
+void MainWindow::closeEvent(QCloseEvent *event)
+{
+    if ( !documentCloseAll() )
+    {
+        event->ignore();
+        return;
+    }
+
+    QMainWindow::closeEvent(event);
+}

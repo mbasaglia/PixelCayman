@@ -239,7 +239,9 @@
     <bool>false</bool>
    </property>
    <property name="icon">
-    <iconset theme="window-close"/>
+    <iconset theme="window-close">
+     <normaloff/>
+    </iconset>
    </property>
    <property name="text">
     <string>Clos&amp;e All</string>
@@ -354,6 +356,22 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>action_close_all</sender>
+   <signal>triggered()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>documentCloseAll()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>399</x>
+     <y>299</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <slot>documentNew()</slot>
@@ -362,5 +380,6 @@
   <slot>documentSaveAs()</slot>
   <slot>updateTitle()</slot>
   <slot>documentClose()</slot>
+  <slot>documentCloseAll()</slot>
  </slots>
 </ui>
