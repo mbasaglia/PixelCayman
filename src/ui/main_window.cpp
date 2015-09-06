@@ -280,7 +280,9 @@ QAction* MainWindow::Private::recentFileAction(const QString& file_name)
 {
     QAction* action = new QAction(file_name, menu_open_recent);
     connect(action, &QAction::triggered, [this, file_name]{
-        parent->openTab(file_name);
+        int tab = parent->openTab(file_name);
+        if ( tab != -1 )
+            main_tab->setCurrentIndex(tab);
     });
     return action;
 }
