@@ -46,6 +46,7 @@ util.hpp
 settings.hpp
 data.cpp
 data.hpp
+draw.hpp
 ${CMAKE_CURRENT_BINARY_DIR}/info.cpp
 )
 

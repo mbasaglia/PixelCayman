@@ -26,6 +26,7 @@
 #include <QIcon>
 #include <QPainter>
 #include "view/graphics_widget.hpp"
+#include "draw.hpp"
 
 namespace tool {
 
@@ -63,28 +64,37 @@ public:
 
     void mousePressEvent(const QMouseEvent* event, view::GraphicsWidget* widget) override
     {
-        if ( event->buttons() == Qt::LeftButton )
-            mouseMoveEvent(event, widget);
+        QPoint point = widget->mapToImage(event->pos());
+        line.setP1(point);
+        line.setP2(point);
+
+        if ( event->button() == Qt::LeftButton )
+            draw(widget);
     }
 
     void mouseMoveEvent(const QMouseEvent* event, view::GraphicsWidget* widget) override
     {
-        point = widget->mapToImage(event->pos());
-        /// \todo Find active layer, color and frame
-        if ( (event->buttons() & Qt::LeftButton) && widget->document()->imageRect().contains(point) )
-        {
-            color = widget->color();
-            widget->document()->apply(*this);
-        }
+        QPoint point = widget->mapToImage(event->pos());
+        line.setP1(line.p2());
+        line.setP2(point);
+
+        if ( event->buttons() & Qt::LeftButton )
+            draw(widget);
     }
 
     void mouseReleaseEvent(const QMouseEvent* event, view::GraphicsWidget* widget) override
     {
+        QPoint point = widget->mapToImage(event->pos());
+        line.setP1(line.p2());
+        line.setP2(point);
+
+        if ( event->button() == Qt::LeftButton )
+            draw(widget);
     }
 
     void drawForeground(QPainter* painter, view::GraphicsWidget* widget) override
     {
-        QRectF area(point.x(), point.y(), radius*2, radius*2);
+        QRectF area(line.x2(), line.y2(), radius*2, radius*2);
         QPen pen(Qt::white, 2);
         pen.setCosmetic(true);
         painter->setPen(pen);
@@ -110,11 +120,20 @@ public:
 protected:
     void render(document::Image& image) override
     {
-        image.image().setPixel(point, color.rgba());
+        ::draw::line(line, [this, &image](const QPoint& point){
+            if ( image.image().rect().contains(point) )
+                image.image().setPixel(point, color.rgba());
+        });
+    }
+
+    void draw(view::GraphicsWidget* widget)
+    {
+        color = widget->color();
+        widget->document()->apply(*this);
     }
 
 private:
-    QPoint point;
+    QLine  line;
     QColor color;
     qreal  radius = 0.5;
 };
