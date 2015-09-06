@@ -169,7 +169,7 @@ void GraphicsWidget::drawForeground(QPainter* painter, const QRectF & rect)
     painter->setPen(outline);
     painter->drawRect(p->document_item->sceneBoundingRect());
 
-    if ( p->tool && !p->mouse_mode == Private::Panning )
+    if ( p->tool && p->mouse_mode != Private::Panning )
     {
         painter->translate(p->document_item->pos());
         p->tool->drawForeground(painter, this);
