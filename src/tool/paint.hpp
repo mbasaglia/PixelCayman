@@ -27,6 +27,7 @@
 #include <QPainter>
 #include "view/graphics_widget.hpp"
 #include "draw.hpp"
+#include "math.hpp"
 
 namespace tool {
 
@@ -147,7 +148,8 @@ protected:
 
             for ( int y = rect.top(); y <= rect.bottom(); y++ )
                 for ( int x = rect.left(); x <= rect.right(); x++ )
-                    image.image().setPixel(x, y, color.rgba());
+                    if ( math::pdistance(QPoint(x,y), point, p_norm) * 2 <= diameter )
+                        image.image().setPixel(x, y, color.rgba());
         });
     }
 
@@ -182,6 +184,7 @@ private:
     QColor color;
     int    diameter = 1;
     bool   draw_line = false;
+    qreal  p_norm = 0;
 };
 
 } // namespace tool
