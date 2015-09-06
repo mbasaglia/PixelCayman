@@ -64,6 +64,8 @@ public:
 
     void mousePressEvent(const QMouseEvent* event, view::GraphicsWidget* widget) override
     {
+        draw_line = event->modifiers() & Qt::ShiftModifier;
+
         QPoint point = widget->mapToImage(event->pos());
         line.setP1(point);
         line.setP2(point);
@@ -74,37 +76,53 @@ public:
 
     void mouseMoveEvent(const QMouseEvent* event, view::GraphicsWidget* widget) override
     {
-        QPoint point = widget->mapToImage(event->pos());
-        line.setP1(line.p2());
-        line.setP2(point);
+        /// \todo Allow lines click by click instead of only via draggin (?)
+        draw_line = (event->buttons() & Qt::LeftButton) &&
+                    (event->modifiers() & Qt::ShiftModifier);
 
-        if ( event->buttons() & Qt::LeftButton )
+        if ( !draw_line )
+            line.setP1(line.p2());
+
+        line.setP2(widget->mapToImage(event->pos()));
+
+        if ( draw_line && (event->modifiers() & Qt::ControlModifier) )
+        {
+            QLineF linef(line);
+            linef.setAngle(qRound(linef.angle()/15)*15);
+            line = linef.toLine();
+        }
+
+        if ( (event->buttons() & Qt::LeftButton) && !draw_line )
             draw(widget);
     }
 
     void mouseReleaseEvent(const QMouseEvent* event, view::GraphicsWidget* widget) override
     {
-        QPoint point = widget->mapToImage(event->pos());
-        line.setP1(line.p2());
-        line.setP2(point);
+        if ( !draw_line )
+            line.setP1(line.p2());
+
+        draw_line = false;
+
+        line.setP2(widget->mapToImage(event->pos()));
 
         if ( event->button() == Qt::LeftButton )
             draw(widget);
+
+        line.setP1(line.p2());
     }
 
     void drawForeground(QPainter* painter, view::GraphicsWidget* widget) override
     {
-        QRect ellipse_area = area(line.p2());
         QPen pen(Qt::white, 2);
         pen.setCosmetic(true);
         painter->setPen(pen);
         painter->setBrush(Qt::transparent);
-        painter->drawEllipse(ellipse_area);
+        drawForegroundImpl(painter);
 
         pen.setColor(Qt::black);
         pen.setWidth(0);
         painter->setPen(pen);
-        painter->drawEllipse(ellipse_area);
+        drawForegroundImpl(painter);
     }
 
     QWidget* optionsWidget() override
@@ -149,9 +167,21 @@ private:
             diameter);
     }
 
+    void drawForegroundImpl(QPainter* painter)
+    {
+        if ( draw_line && line.p1() != line.p2() )
+        {
+            painter->drawEllipse(area(line.p1()));
+            painter->drawLine(QLineF(line).translated(diameter/2.0, diameter/2.0));
+        }
+
+        painter->drawEllipse(area(line.p2()));
+    }
+
     QLine  line;
     QColor color;
     int    diameter = 1;
+    bool   draw_line = false;
 };
 
 } // namespace tool
