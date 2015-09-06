@@ -94,17 +94,17 @@ public:
 
     void drawForeground(QPainter* painter, view::GraphicsWidget* widget) override
     {
-        QRectF area(line.x2(), line.y2(), radius*2, radius*2);
+        QRect ellipse_area = area(line.p2());
         QPen pen(Qt::white, 2);
         pen.setCosmetic(true);
         painter->setPen(pen);
         painter->setBrush(Qt::transparent);
-        painter->drawEllipse(area);
+        painter->drawEllipse(ellipse_area);
 
         pen.setColor(Qt::black);
         pen.setWidth(0);
         painter->setPen(pen);
-        painter->drawEllipse(area);
+        painter->drawEllipse(ellipse_area);
     }
 
     QWidget* optionsWidget() override
@@ -121,8 +121,15 @@ protected:
     void render(document::Image& image) override
     {
         ::draw::line(line, [this, &image](const QPoint& point){
-            if ( image.image().rect().contains(point) )
-                image.image().setPixel(point, color.rgba());
+
+            QRect rect = area(point).intersected(image.image().rect());
+
+            if ( rect.isNull() )
+                return;
+
+            for ( int y = rect.top(); y <= rect.bottom(); y++ )
+                for ( int x = rect.left(); x <= rect.right(); x++ )
+                    image.image().setPixel(x, y, color.rgba());
         });
     }
 
@@ -133,9 +140,18 @@ protected:
     }
 
 private:
+    QRect area(const QPoint& center)
+    {
+        return QRect(
+            center.x()-diameter/2,
+            center.y()-diameter/2,
+            diameter,
+            diameter);
+    }
+
     QLine  line;
     QColor color;
-    qreal  radius = 0.5;
+    int    diameter = 1;
 };
 
 } // namespace tool
