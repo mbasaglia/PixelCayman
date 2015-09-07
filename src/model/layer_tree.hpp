@@ -34,6 +34,14 @@ class LayerTree : public QAbstractItemModel
     Q_OBJECT
 
 public:
+    enum Columns
+    {
+        Name,
+        Visible,
+        Locked,
+        Opacity
+    };
+
     explicit LayerTree(::document::Document* document = nullptr);
 
     QVariant data(const QModelIndex &index, int role) const override;

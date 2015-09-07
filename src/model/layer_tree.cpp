@@ -35,8 +35,7 @@ LayerTree::LayerTree(::document::Document* document)
 
 int LayerTree::columnCount(const QModelIndex& parent) const
 {
-    /// \todo More columns for info like opacity et all
-    return 1;
+    return 4;
 }
 
 QModelIndex LayerTree::index(int row, int column, const QModelIndex& parent) const
@@ -93,9 +92,12 @@ QVariant LayerTree::data(const QModelIndex& index, int role) const
 
     if ( role == Qt::DisplayRole || role == Qt::EditRole )
     {
-        if ( index.column() == 0 )
+        switch ( index.column() )
         {
-            return layer->name();
+            case Name:      return layer->name();
+            case Visible:   return layer->visible();
+            case Locked:    return layer->locked();
+            case Opacity:   return layer->opacity();
         }
     }
 

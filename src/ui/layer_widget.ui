@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>LayerWidget</class>
+ <widget class="QWidget" name="LayerWidget">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>242</width>
+    <height>300</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Form</string>
+  </property>
+  <layout class="QVBoxLayout" name="verticalLayout">
+   <property name="leftMargin">
+    <number>0</number>
+   </property>
+   <property name="topMargin">
+    <number>0</number>
+   </property>
+   <property name="rightMargin">
+    <number>0</number>
+   </property>
+   <property name="bottomMargin">
+    <number>0</number>
+   </property>
+   <item>
+    <widget class="QTreeView" name="tree_view">
+     <attribute name="headerVisible">
+      <bool>false</bool>
+     </attribute>
+    </widget>
+   </item>
+   <item>
+    <layout class="QHBoxLayout" name="horizontalLayout">
+     <property name="spacing">
+      <number>0</number>
+     </property>
+     <item>
+      <widget class="QToolButton" name="button_add">
+       <property name="text">
+        <string>New Layer</string>
+       </property>
+       <property name="icon">
+        <iconset theme="list-add"/>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QToolButton" name="button_remove">
+       <property name="text">
+        <string>Remove Layer</string>
+       </property>
+       <property name="icon">
+        <iconset theme="list-remove"/>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <spacer name="horizontalSpacer">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>40</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+     <item>
+      <widget class="QToolButton" name="button_top">
+       <property name="text">
+        <string>Move to Top</string>
+       </property>
+       <property name="icon">
+        <iconset theme="go-top"/>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QToolButton" name="button_up">
+       <property name="text">
+        <string>Move Up</string>
+       </property>
+       <property name="icon">
+        <iconset theme="go-up"/>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QToolButton" name="button_down">
+       <property name="text">
+        <string>Move Down</string>
+       </property>
+       <property name="icon">
+        <iconset theme="go-down"/>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QToolButton" name="button_bottom">
+       <property name="text">
+        <string>Move to Bottom</string>
+       </property>
+       <property name="icon">
+        <iconset theme="go-bottom"/>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+  </layout>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>

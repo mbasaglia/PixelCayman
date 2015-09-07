@@ -38,12 +38,14 @@
 #include "model/layer_tree.hpp"
 #include "settings.hpp"
 #include "style/dockwidget_style_icon.hpp"
+#include "style/bool_icon_delegate.hpp"
 #include "tool/tool.hpp"
 #include "util.hpp"
 #include "view/graphics_widget.hpp"
 
 #include "ui_current_color.h"
 #include "ui_main_window.h"
+#include "ui_layer_widget.h"
 
 class MainWindow::Private : public Ui_MainWindow
 {
@@ -153,6 +155,7 @@ public:
 
     QDockWidget* dock_layers;
     model::LayerTree layer_model;
+    Ui::LayerWidget layer_widget;
 
     QStringList recent_files;
 
@@ -225,12 +228,26 @@ void MainWindow::Private::initDocks()
     parent->addDockWidget(Qt::LeftDockWidgetArea, dock_undo_hitory);
 
     // Layers
-    QTreeView* tree_view = new QTreeView;
-    tree_view->setHeaderHidden(true);
-    tree_view->setModel(&layer_model);
-    dock_layers = createDock(tree_view, "format-list-unordered");
-    parent->addDockWidget(Qt::LeftDockWidgetArea, dock_layers);
+    {
+        QWidget* container = new QWidget;
+        layer_widget.setupUi(container);
+        layer_widget.tree_view->setModel(&layer_model);
 
+        auto delegate_visible = new BoolIconDelegate(
+            QIcon::fromTheme("layer-visible-on"),
+            QIcon::fromTheme("layer-visible-off"),
+            parent);
+        layer_widget.tree_view->setItemDelegateForColumn(model::LayerTree::Visible, delegate_visible);
+
+        auto delegate_locked = new BoolIconDelegate(
+            QIcon::fromTheme("object-locked"),
+            QIcon::fromTheme("object-unlocked"),
+            parent);
+        layer_widget.tree_view->setItemDelegateForColumn(model::LayerTree::Locked, delegate_locked);
+
+        dock_layers = createDock(container, "format-list-unordered");
+        parent->addDockWidget(Qt::LeftDockWidgetArea, dock_layers);
+    }
     // Common stuff
     translateDocks();
 }

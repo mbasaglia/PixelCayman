@@ -32,6 +32,7 @@ document/visitor.hpp
 document/io.hpp
 document/io.cpp
 style/dockwidget_style_icon.hpp
+style/bool_icon_delegate.hpp
 tool/tool.hpp
 tool/paint.hpp
 ui/color_editor.cpp
@@ -61,8 +62,13 @@ find_package(Qt5Widgets REQUIRED)
 set(CMAKE_AUTOMOC ON)
 #set(CMAKE_AUTOUIC ON)
 #if ( CMAKE_MAJOR_VERSION LESS 3 )
-    file(GLOB UI_FILES ui/color_editor.ui ui/current_color.ui ui/main_window.ui)
-    qt5_wrap_ui(SOURCES ${UI_FILES})
+set(UI_FILES
+ui/color_editor.ui
+ui/current_color.ui
+ui/main_window.ui
+ui/layer_widget.ui
+)
+qt5_wrap_ui(SOURCES ${UI_FILES})
 #endif()
 
 # Executable
