@@ -93,14 +93,7 @@ public:
 
     void apply(Visitor& visitor) override;
     Document* parentDocument() const override;
-
-signals:
-    /**
-     * \brief Emitted when a new layer is added to the subtree
-     * \param new_layer Layer that has been added
-     */
-    void newLayer(Layer* new_layer);
-
+    
 private:
     QList<Layer*> children_;
     QString name_;
@@ -110,6 +103,8 @@ private:
     bool locked_ = false;
     Document* owner_;
     Layer* parent_;
+
+    friend class Document;
 };
 
 } // namespace document

@@ -44,15 +44,16 @@ QModelIndex LayerTree::index(int row, int column, const QModelIndex& parent) con
     if ( !document_ || !hasIndex(row, column, parent) )
         return QModelIndex();
 
-    Layer* parent_layer;
-
-    if ( !parent.isValid() )
-        parent_layer = document_->rootLayer();
+    if ( parent.isValid() )
+    {
+        Layer* parent_layer = static_cast<Layer*>(parent.internalPointer());
+        if ( Layer* layer = parent_layer->child(row) )
+            return createIndex(row, column, layer);
+    }
     else
-        parent_layer = static_cast<Layer*>(parent.internalPointer());
-
-    if ( Layer* layer = parent_layer->child(row) )
-        return createIndex(row, column, layer);
+    {
+        return createIndex(row, column, document_->layers()[row]);
+    }
 
     return QModelIndex();
 }
@@ -65,7 +66,7 @@ QModelIndex LayerTree::parent(const QModelIndex& index) const
     Layer* layer = static_cast<Layer*>(index.internalPointer());
     Layer* parent = layer->parentLayer();
 
-    if ( !parent || parent == document_->rootLayer() )
+    if ( !parent )
         return QModelIndex();
 
     return createIndex(parent->children().indexOf(layer), 0, parent);
@@ -77,10 +78,9 @@ int LayerTree::rowCount(const QModelIndex& index) const
         return 0;
 
     if ( !index.isValid() )
-        return document_->rootLayer()->children().size();
+        return document_->layers().size();
 
     Layer* layer = static_cast<Layer*>(index.internalPointer());
-
     return layer->children().size();
 }
 

@@ -35,8 +35,9 @@ Document::Document(const QSize& size,
       image_size(size),
       file_name(file_name)
 {
-    root = new Layer(this, QObject::tr("Layer"));
-    root->addFrameImage();
+    Layer* layer = new Layer(this, QObject::tr("Layer"));
+    layer->addFrameImage();
+    addLayer(layer);
 }
 
 Document::Document(const QImage& image, const QString& file_name)
@@ -44,15 +45,14 @@ Document::Document(const QImage& image, const QString& file_name)
       file_name(file_name)
 {
     /// \todo Read exif metadata (maybe with Exiv2?)
-    root = new Layer(this, QFileInfo(file_name).baseName());
-    root->addFrameImage(image);
+    Layer* layer = new Layer(this, QFileInfo(file_name).baseName());
+    layer->addFrameImage(image);
+    addLayer(layer);
 }
 
 Document::~Document()
 {
-    for ( auto anim : animations_ )
-        delete anim;
-    delete root;
+    // layers/animations are cleaned uoìp by QObject
 }
 
 QString Document::fileName() const
@@ -70,23 +70,16 @@ QSize Document::imageSize() const
     return image_size;
 }
 
-const Layer* Document::rootLayer() const
-{
-    return root;
-}
-
-Layer* Document::rootLayer()
-{
-    return root;
-}
-
 void Document::apply(Visitor& visitor)
 {
     if ( visitor.enter(*this) )
     {
-        root->apply(visitor);
+        for ( auto layer : layers_ )
+            layer->apply(visitor);
+
         for ( auto anim : animations_ )
             anim->apply(visitor);
+
         visitor.leave(*this);
     }
 }
@@ -94,6 +87,21 @@ void Document::apply(Visitor& visitor)
 Document* Document::parentDocument() const
 {
     return const_cast<Document*>(this);
+}
+
+QList<Layer*> Document::layers()
+{
+    return layers_;
+}
+
+void Document::addLayer(Layer* layer)
+{
+    if ( layer->owner_ != this )
+    {
+        layer->owner_ = this;
+        registerElement(layer);
+    }
+    layers_.append(layer);
 }
 
 } // namespace document

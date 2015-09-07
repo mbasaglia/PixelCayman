@@ -71,10 +71,10 @@ public:
     void removeAnimation(Animation* animation);
 
     /**
-     * \brief Top-level layer for this document
+     * \brief Document layers
      */
-    const Layer* rootLayer() const;
-    Layer* rootLayer();
+    QList<Layer*> layers();
+    void addLayer(document::Layer* layer);
 
     void apply(Visitor& visitor) override;
     Document* parentDocument() const override;
@@ -117,7 +117,7 @@ private:
         }
     }
 
-    Layer* root;
+    QList<Layer*> layers_;
     QList<Animation*> animations_;
     QSize image_size;
     QString file_name;
