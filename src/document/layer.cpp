@@ -34,6 +34,10 @@ Layer::Layer(class Document* owner, const QString& name, Layer* parentLayer)
     owner->registerElement(this);
     if ( parent_ )
         parent_->insertChild(this, -1);
+
+    connect(this, &Layer::opacityChanged, this, &DocumentElement::edited);
+    connect(this, &Layer::visibleChanged, this, &DocumentElement::edited);
+    connect(this, &Layer::layersChanged, this, &DocumentElement::edited);
 }
 
 Layer::~Layer()
@@ -43,12 +47,6 @@ Layer::~Layer()
     for ( auto child : children_ )
         delete child;
 }
-
-QList<const Layer*> Layer::children() const
-{
-    return reinterpret_cast<const QList<const Layer*>&>(children_);
-}
-
 QList<Layer*> Layer::children()
 {
     return children_;
@@ -63,6 +61,8 @@ void Layer::insertChild(Layer* layer, int index)
     layer->parent_ = this;
 
     children_.insert(index < 0 ? children_.size() : index, layer);
+
+    emit layersChanged();
 }
 
 Layer* Layer::parentLayer()
@@ -77,7 +77,8 @@ QString Layer::name() const
 
 void Layer::setName(const QString& name)
 {
-    name_ = name;
+    if ( name_ != name )
+        emit nameChanged( name_ = name );
 }
 
 qreal Layer::opacity() const
@@ -87,7 +88,7 @@ qreal Layer::opacity() const
 
 void Layer::setOpacity(qreal opacity)
 {
-    opacity_ = opacity;
+    emit opacityChanged( opacity_ = opacity );
 }
 
 bool Layer::visible() const
@@ -97,7 +98,8 @@ bool Layer::visible() const
 
 void Layer::setVisible(bool visible)
 {
-    visible_ = visible;
+    if ( visible_ != visible )
+        emit visibleChanged( visible_ = visible );
 }
 
 bool Layer::locked() const
@@ -107,7 +109,8 @@ bool Layer::locked() const
 
 void Layer::setLocked(bool locked)
 {
-    locked_ = locked;
+    if ( locked != locked_ )
+        emit lockedChanged( locked_ = locked );
 }
 
 QList<Image*> Layer::frameImages()

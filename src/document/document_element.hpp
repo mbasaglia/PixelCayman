@@ -66,6 +66,15 @@ public:
         return metadata_;
     }
 
+signals:
+    /**
+     * \brief Emitted when any kind of drawing data (not the metadata) changes
+     *        in this element or any of its children
+     *
+     * Intended to be used to signal that the element should be re-drawn
+     */
+    void edited();
+
 private:
     Metadata metadata_;
 };

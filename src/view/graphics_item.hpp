@@ -30,12 +30,15 @@ namespace view {
  * \brief Class to render a document on a graphics view
  * \todo option for fullAlpha and frame
  */
-class GraphicsItem : public QGraphicsItem
+class GraphicsItem : public QGraphicsObject
 {
+    Q_OBJECT
 public:
     GraphicsItem( ::document::Document* document )
         : document_(document)
-    {}
+    {
+        connect(document, &::document::Document::edited, this, &GraphicsItem::updateSlot);
+    }
 
     QRectF boundingRect() const override
     {
@@ -51,6 +54,12 @@ public:
     ::document::Document* document() const
     {
         return document_;
+    }
+
+private slots:
+    void updateSlot()
+    {
+        update();
     }
 
 private:

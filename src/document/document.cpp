@@ -38,6 +38,8 @@ Document::Document(const QSize& size,
     Layer* layer = new Layer(this, QObject::tr("Layer"));
     layer->addFrameImage();
     addLayer(layer);
+    
+    connect(this, &Document::layersChanged, this, &DocumentElement::edited);
 }
 
 Document::Document(const QImage& image, const QString& file_name)
@@ -48,6 +50,8 @@ Document::Document(const QImage& image, const QString& file_name)
     Layer* layer = new Layer(this, QFileInfo(file_name).baseName());
     layer->addFrameImage(image);
     addLayer(layer);
+
+    connect(this, &Document::layersChanged, this, &DocumentElement::edited);
 }
 
 Document::~Document()
@@ -62,7 +66,8 @@ QString Document::fileName() const
 
 void Document::setFileName(const QString& file_name)
 {
-    this->file_name = file_name;
+    if ( this->file_name != file_name )
+        emit fileNameChanged( this->file_name = file_name );
 }
 
 QSize Document::imageSize() const
@@ -98,10 +103,35 @@ void Document::addLayer(Layer* layer)
 {
     if ( layer->owner_ != this )
     {
-        layer->owner_ = this;
         registerElement(layer);
+        layer->owner_ = this;
     }
+
     layers_.append(layer);
+    connect(layer, &Layer::layersChanged, this, &Document::layersChanged);
+
+    emit layersChanged();
+}
+
+void Document::registerElement(DocumentElement* element, const QMetaObject& meta)
+{
+    if ( element->parent() && element->parent() != this )
+        throw std::logic_error("Document::registerElement: Registering an element belonging to an extraneous object");
+
+    element->setParent(this);
+    connect(element, &DocumentElement::edited, this, &DocumentElement::edited);
+
+    if ( element->objectName().isEmpty() )
+    {
+        QString classname = meta.className();
+
+        int colon = classname.lastIndexOf(':');
+        if ( colon != -1 )
+            classname.remove(0, colon+1);
+
+        element->setObjectName(classname.toLower()
+            +"_"+QString::number(quintptr(element)));
+    }
 }
 
 } // namespace document

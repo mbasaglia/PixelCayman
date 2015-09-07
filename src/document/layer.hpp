@@ -34,6 +34,12 @@ class Layer : public DocumentElement
 {
     Q_OBJECT
 
+    Q_PROPERTY(QString name READ name WRITE setName NOTIFY nameChanged)
+    Q_PROPERTY(qreal opacity READ opacity WRITE setOpacity NOTIFY opacityChanged)
+    Q_PROPERTY(bool visible READ visible WRITE setVisible NOTIFY visibleChanged)
+    Q_PROPERTY(bool locked READ locked WRITE setLocked NOTIFY lockedChanged)
+
+
 public:
     explicit Layer(Document* owner, const QString& name, Layer* parentLayer = nullptr);
     Layer(const Layer&) = delete;
@@ -44,7 +50,6 @@ public:
      * \brief Child layers
      */
     QList<Layer*> children();
-    QList<const Layer*> children() const;
     Layer* child(int index);
     void insertChild(Layer* layer, int index = -1);
 
@@ -94,6 +99,19 @@ public:
     void apply(Visitor& visitor) override;
     Document* parentDocument() const override;
     
+signals:
+    void nameChanged(const QString& name);
+    void lockedChanged(bool locked);
+    void visibleChanged(bool visible);
+    void opacityChanged(qreal opacity);
+
+    /**
+     * \brief Emitted on operations that changes the sub-tree layout
+     *
+     * Eg: New layers added, re-ordered etc
+     */
+    void layersChanged();
+
 private:
     QList<Layer*> children_;
     QString name_;

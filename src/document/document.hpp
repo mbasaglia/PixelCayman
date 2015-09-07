@@ -32,6 +32,9 @@ namespace document {
 class Document : public DocumentElement
 {
     Q_OBJECT
+
+    Q_PROPERTY(QString fileName READ fileName WRITE setFileName NOTIFY fileNameChanged)
+
 public:
     explicit Document(const QSize& size = {},
                       const QString& file_name = {},
@@ -100,22 +103,18 @@ public:
         registerElement(element, *element->metaObject());
     }
 
+signals:
+    void fileNameChanged(const QString& fileName);
+
+    /**
+     * \brief Emitted on operations that changes the layer layout
+     *
+     * Eg: New layers added, re-ordered etc
+     */
+    void layersChanged();
+
 private:
-    void registerElement(DocumentElement* element, const QMetaObject& meta)
-    {
-        element->setParent(this);
-        if ( element->objectName().isEmpty() )
-        {
-            QString classname = meta.className();
-
-            int colon = classname.lastIndexOf(':');
-            if ( colon != -1 )
-                classname.remove(0, colon+1);
-
-            element->setObjectName(classname.toLower()
-                +"_"+QString::number(quintptr(element)));
-        }
-    }
+    void registerElement(DocumentElement* element, const QMetaObject& meta);
 
     QList<Layer*> layers_;
     QList<Animation*> animations_;
