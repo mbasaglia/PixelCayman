@@ -45,6 +45,7 @@ public:
     explicit LayerTree(::document::Document* document = nullptr);
 
     QVariant data(const QModelIndex &index, int role) const override;
+    bool setData(const QModelIndex &index, const QVariant &value, int role = Qt::EditRole) override;
 
     Qt::ItemFlags flags(const QModelIndex &index) const override;
 

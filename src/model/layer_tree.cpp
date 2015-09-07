@@ -104,6 +104,35 @@ QVariant LayerTree::data(const QModelIndex& index, int role) const
     return QVariant();
 }
 
+bool LayerTree::setData(const QModelIndex& index, const QVariant& value, int role)
+{
+    if ( !index.isValid() || !document_ )
+        return false;
+
+    Layer* layer = static_cast<Layer*>(index.internalPointer());
+
+    if ( role == Qt::DisplayRole || role == Qt::EditRole )
+    {
+        switch ( index.column() )
+        {
+            case Name:
+                layer->setName(value.toString());
+                return true;
+            case Visible:
+                layer->setVisible(value.toBool());
+                return true;
+            case Locked:
+                layer->setLocked(value.toBool());
+                return true;
+            case Opacity:
+                layer->setOpacity(value.toReal());
+                return true;
+        }
+    }
+
+    return false;
+}
+
 Qt::ItemFlags LayerTree::flags(const QModelIndex& index) const
 {
     if ( !index.isValid() || !document_ )

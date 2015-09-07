@@ -24,42 +24,39 @@
 #ifndef PIXEL_CAYMAN_BOOL_ICON_DELEGATE_HPP
 #define PIXEL_CAYMAN_BOOL_ICON_DELEGATE_HPP
 
-#include <QStyledItemDelegate>
+#include <QAbstractItemDelegate>
 #include <QIcon>
 #include <QPainter>
+#include <QApplication>
+#include <QStyle>
+#include <QMouseEvent>
 
 /**
  * \brief Displays an icon for a boolean value
  */
-class BoolIconDelegate : public QStyledItemDelegate
+class BoolIconDelegate : public QAbstractItemDelegate
 {
     Q_OBJECT
 
 public:
     explicit BoolIconDelegate(QObject *parent = nullptr)
-        : QStyledItemDelegate(parent) {}
+        : QAbstractItemDelegate(parent) {}
 
     explicit BoolIconDelegate(const QIcon& icon_true,
                               const QIcon& icon_false,
                               QObject *parent = nullptr)
-        : QStyledItemDelegate(parent),
+        : QAbstractItemDelegate(parent),
           icon_true(icon_true),
           icon_false(icon_false)
     {}
-
-
-    void setModelData(QWidget *editor,
-                      QAbstractItemModel *model,
-                      const QModelIndex &index) const override
-    {
-        return QStyledItemDelegate::setModelData(editor, model, index);
-    }
-
 
     void paint(QPainter *painter,
                const QStyleOptionViewItem &option,
                const QModelIndex &index) const override
     {
+        QStyle *style = QApplication::style();
+        style->drawControl(QStyle::CE_ItemViewItem, &option, painter, nullptr);
+
         int size = qMin(option.rect.width(), option.rect.height());
         QRect icon_rect(
             option.rect.center().x() - size / 2,
@@ -68,6 +65,36 @@ public:
             size );
         const QIcon& icon = index.data().toBool() ? icon_true : icon_false;
         painter->drawPixmap(icon_rect, icon.pixmap(size));
+    }
+
+    bool editorEvent(QEvent * event,
+                     QAbstractItemModel * model,
+                     const QStyleOptionViewItem & option,
+                     const QModelIndex & index) override
+    {
+
+        if ( event->type() == QEvent::MouseButtonRelease ||
+            event->type() == QEvent::MouseButtonDblClick )
+        {
+            QMouseEvent* mouse_event = static_cast<QMouseEvent*>(event);
+
+            if ( mouse_event->button() == Qt::LeftButton &&
+                ( index.flags() & Qt::ItemIsEditable) )
+            {
+                model->setData(index, !index.data(Qt::EditRole).toBool());
+            }
+
+            return true;
+        }
+
+        return QAbstractItemDelegate::editorEvent(event, model, option, index);
+    }
+
+    QSize sizeHint(const QStyleOptionViewItem &option,
+                   const QModelIndex &index) const override
+    {
+        int sz = QApplication::style()->pixelMetric(QStyle::PM_ListViewIconSize);
+        return QSize(sz, sz);
     }
 
 

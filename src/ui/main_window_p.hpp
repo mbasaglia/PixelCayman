@@ -232,6 +232,11 @@ void MainWindow::Private::initDocks()
         QWidget* container = new QWidget;
         layer_widget.setupUi(container);
         layer_widget.tree_view->setModel(&layer_model);
+        layer_widget.tree_view->header()->setSectionResizeMode(
+            QHeaderView::ResizeToContents);
+        layer_widget.tree_view->header()->setSectionResizeMode(
+            model::LayerTree::Name,
+            QHeaderView::Stretch);
 
         auto delegate_visible = new BoolIconDelegate(
             QIcon::fromTheme("layer-visible-on"),
