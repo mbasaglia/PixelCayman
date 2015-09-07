@@ -42,6 +42,8 @@ ui/main_window_p.hpp
 view/graphics_item.hpp
 view/graphics_widget.hpp
 view/graphics_widget.cpp
+model/layer_tree.hpp
+model/layer_tree.cpp
 main.cpp
 util.hpp
 settings.hpp

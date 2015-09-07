@@ -28,10 +28,12 @@
 
 namespace document {
 
-Layer::Layer(class Document* owner, const QString& name)
-    : name_(name), owner_(owner)
+Layer::Layer(class Document* owner, const QString& name, Layer* parentLayer)
+    : name_(name), owner_(owner), parent_(parentLayer)
 {
     owner->registerElement(this);
+    if ( parent_ )
+        parent_->insertChild(this, -1);
 }
 
 Layer::~Layer()
@@ -50,6 +52,22 @@ QList<const Layer*> Layer::children() const
 QList<Layer*> Layer::children()
 {
     return children_;
+}
+
+void Layer::insertChild(Layer* layer, int index)
+{
+    if ( layer->owner_ != owner_ )
+        owner_->registerElement(layer);
+
+    layer->setParent(this);
+    layer->parent_ = this;
+
+    children_.insert(index < 0 ? children_.size() : index, layer);
+}
+
+Layer* Layer::parentLayer()
+{
+    return parent_;
 }
 
 QString Layer::name() const
@@ -133,6 +151,11 @@ void Layer::apply(Visitor& visitor)
 Document* Layer::parentDocument() const
 {
     return owner_;
+}
+
+Layer* Layer::child(int index)
+{
+    return index < 0 || index >= children_.size() ? nullptr : children_[index];
 }
 
 } // namespace document

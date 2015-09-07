@@ -55,23 +55,7 @@ MainWindow::MainWindow(QWidget* parent)
             this, &MainWindow::closeTabPrompt);
 
     connect(p->main_tab, &QTabWidget::currentChanged, [this](int tab) {
-
-        if ( p->current_view )
-        {
-            p->current_view->setCurrentTool(nullptr);
-            Private::unlinkColor(p->current_view, p->current_color_selector.color);
-        }
-
-        if ( view::GraphicsWidget* widget = p->widget(p->main_tab->currentIndex()) )
-        {
-            widget->setCurrentTool(p->current_tool);
-            p->current_color_selector.color->setColor(widget->color());
-            Private::linkColor(widget, p->current_color_selector.color);
-            p->current_view = widget;
-            p->undo_group.setActiveStack(&widget->undoStack());
-        }
-
-        p->updateTitle();
+        p->setCurrentTab(tab);
     });
 
     p->current_color_selector.color->setColor(Qt::black);

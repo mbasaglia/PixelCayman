@@ -33,8 +33,9 @@ class Document;
 class Layer : public DocumentElement
 {
     Q_OBJECT
+
 public:
-    explicit Layer(Document* owner, const QString& name);
+    explicit Layer(Document* owner, const QString& name, Layer* parentLayer = nullptr);
     Layer(const Layer&) = delete;
     Layer& operator=(const Layer&) = delete;
     ~Layer();
@@ -44,6 +45,13 @@ public:
      */
     QList<Layer*> children();
     QList<const Layer*> children() const;
+    Layer* child(int index);
+    void insertChild(Layer* layer, int index = -1);
+
+    /**
+     * \brief Parent layer
+     */
+    Layer* parentLayer();
 
     /**
      * \brief Human-readable name for the layer
@@ -86,6 +94,13 @@ public:
     void apply(Visitor& visitor) override;
     Document* parentDocument() const override;
 
+signals:
+    /**
+     * \brief Emitted when a new layer is added to the subtree
+     * \param new_layer Layer that has been added
+     */
+    void newLayer(Layer* new_layer);
+
 private:
     QList<Layer*> children_;
     QString name_;
@@ -94,6 +109,7 @@ private:
     qreal opacity_ = 1;
     bool locked_ = false;
     Document* owner_;
+    Layer* parent_;
 };
 
 } // namespace document

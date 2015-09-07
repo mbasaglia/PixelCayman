@@ -25,6 +25,7 @@
 
 #include <QDockWidget>
 #include <QFileInfo>
+#include <QTreeView>
 #include <QUndoGroup>
 #include <QUndoView>
 
@@ -34,6 +35,7 @@
 #include "color_palette_widget.hpp"
 #include "color_selector.hpp"
 #include "document/io.hpp"
+#include "model/layer_tree.hpp"
 #include "settings.hpp"
 #include "style/dockwidget_style_icon.hpp"
 #include "tool/tool.hpp"
@@ -123,6 +125,7 @@ public:
     }
 
     int addDocument(document::Document* doc, bool set_current);
+        void setCurrentTab(int tab);
 
     void updateTitle();
 
@@ -148,6 +151,9 @@ public:
 
     QDockWidget* dock_undo_hitory;
 
+    QDockWidget* dock_layers;
+    model::LayerTree layer_model;
+
     QStringList recent_files;
 
     MainWindow* parent;
@@ -172,10 +178,12 @@ QDockWidget* MainWindow::Private::createDock(QWidget* widget, const QIcon& icon)
 
 void MainWindow::Private::initDocks()
 {
+    // Color editor
     color_editor = new ColorEditor;
     dock_set_color = createDock(color_editor, "format-stroke-color");
     parent->addDockWidget(Qt::RightDockWidgetArea, dock_set_color);
 
+    // Color display
     {
         QWidget* container = new QWidget;
         current_color_selector.setupUi(container);
@@ -184,6 +192,7 @@ void MainWindow::Private::initDocks()
         linkColor(color_editor, current_color_selector.color);
     }
 
+    // Palette display
     using PalWid = color_widgets::ColorPaletteWidget;
     palette_widget = new PalWid;
     palette_widget->setModel(&palette_model);
@@ -198,6 +207,7 @@ void MainWindow::Private::initDocks()
                 palette_widget->setCurrentColor(-1);
     });
 
+    // Palette editor
     palette_editor = new PalWid;
     palette_editor->setModel(&palette_model);
     dock_palette_editor = createDock(palette_editor, "preferences-desktop-icons");
@@ -209,10 +219,19 @@ void MainWindow::Private::initDocks()
         util::overload<int>(&PalWid::currentColorChanged),
         util::overload<int>(&PalWid::setCurrentColor));
 
+    // Undo history
     QUndoView* undo_view = new QUndoView(&undo_group);
     dock_undo_hitory = createDock(undo_view, "view-history");
     parent->addDockWidget(Qt::LeftDockWidgetArea, dock_undo_hitory);
 
+    // Layers
+    QTreeView* tree_view = new QTreeView;
+    tree_view->setHeaderHidden(true);
+    tree_view->setModel(&layer_model);
+    dock_layers = createDock(tree_view, "format-list-unordered");
+    parent->addDockWidget(Qt::LeftDockWidgetArea, dock_layers);
+
+    // Common stuff
     translateDocks();
 }
 
@@ -357,6 +376,32 @@ int MainWindow::Private::addDocument(document::Document* doc, bool set_current)
         main_tab->setCurrentIndex(tab);
 
     return tab;
+}
+
+void MainWindow::Private::setCurrentTab(int tab)
+{
+    if ( current_view )
+    {
+        current_view->setCurrentTool(nullptr);
+        current_view->undoStack().setActive(false);
+        Private::unlinkColor(current_view, current_color_selector.color);
+    }
+
+    if ( view::GraphicsWidget* widget = this->widget(main_tab->currentIndex()) )
+    {
+        widget->setCurrentTool(current_tool);
+        current_color_selector.color->setColor(widget->color());
+        Private::linkColor(widget, current_color_selector.color);
+        current_view = widget;
+        widget->undoStack().setActive(true);
+        layer_model.setDocument(widget->document());
+    }
+    else
+    {
+        layer_model.setDocument(nullptr);
+    }
+
+    updateTitle();
 }
 
 void MainWindow::Private::updateTitle()
