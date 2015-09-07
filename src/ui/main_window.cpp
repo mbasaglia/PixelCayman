@@ -292,21 +292,28 @@ bool MainWindow::documentCloseAll()
     {
         ConfirmCloseDialog dlg(this);
 
+        bool has_dirty_documents = false;
         for ( int i = 0; i < p->main_tab->count(); i++ )
         {
             auto widget = p->widget(i);
             if ( !widget->undoStack().isClean() )
+            {
                 dlg.addFile(i, p->documentName(widget->document()));
+                has_dirty_documents = true;
+            }
         }
 
-        if ( !dlg.exec() )
-            return false;
-
-        /// \todo should return false here only if the user has canceled the save
-        for ( int i : dlg.saveFiles() )
-            if ( !save(i, false) )
+        if ( has_dirty_documents )
+        {
+            if ( !dlg.exec() )
                 return false;
 
+            /// \todo should return false here only if the user has canceled the save
+            for ( int i : dlg.saveFiles() )
+                if ( !save(i, false) )
+                    return false;
+        }
+        
         while ( p->main_tab->count() != 0 )
             closeTab(0, false);
     }
