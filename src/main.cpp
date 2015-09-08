@@ -40,11 +40,11 @@ int main(int argc, char** argv)
     {
         // Initialize Icon theme
         // NOTE: this is broken in Qt 5.4.1
-        QIcon::setThemeSearchPaths(
+        /*QIcon::setThemeSearchPaths(
             QIcon::themeSearchPaths()
             << data().readable("icons")
         );
-        QIcon::setThemeName("pixel-cayman");
+        QIcon::setThemeName("pixel-cayman");*/
 
         MainWindow window;
         tool::Paint p;
