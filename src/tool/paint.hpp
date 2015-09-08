@@ -36,6 +36,7 @@ class Paint : public Tool, protected document::visitor::FrameRenderer
 public:
     Paint() : Tool(), FrameRenderer(nullptr)
     {
+        ballBrush(1, 0);
     }
 
     QIcon icon() const override
@@ -139,17 +140,11 @@ public:
 protected:
     void render(document::Image& image) override
     {
-        ::draw::line(line, [this, &image](const QPoint& point){
-
-            QRect rect = area(point).intersected(image.image().rect());
-
-            if ( rect.isNull() )
-                return;
-
-            for ( int y = rect.top(); y <= rect.bottom(); y++ )
-                for ( int x = rect.left(); x <= rect.right(); x++ )
-                    if ( math::pdistance(QPoint(x,y), point, p_norm) * 2 <= diameter )
-                        image.image().setPixel(x, y, color.rgba());
+        QPainter painter(&image.image());
+        painter.setBrush(color);
+        painter.setPen(QPen(Qt::transparent));
+        ::draw::line(line, [this, &painter](const QPoint& point){
+            painter.drawPath(brush_path.translated(point));
         });
     }
 
@@ -160,31 +155,59 @@ protected:
     }
 
 private:
-    QRect area(const QPoint& center)
+
+    /**
+     * \brief Set the brush to use a p-norm ball with the given diameter
+     */
+    void ballBrush(int diameter, qreal p_norm)
     {
-        return QRect(
-            center.x()-diameter/2,
-            center.y()-diameter/2,
-            diameter,
-            diameter);
+        QPoint center(diameter/2, diameter/2);
+        brush_mask = QImage(QSize(diameter, diameter), QImage::Format_ARGB32_Premultiplied);
+        brush_region = QRegion();
+
+        // Simple square for inf-norm distance
+        if ( p_norm <= 0 )
+        {
+            QRect rect = brush_mask.rect().translated(-center);
+            brush_mask.fill(Qt::black);
+            brush_region = QRegion(rect);
+            brush_path = QPainterPath();
+            brush_path.addRect(rect);
+            return;
+        }
+
+        brush_mask.fill(Qt::transparent);
+        for ( int y = 0; y <= brush_mask.height(); y++ )
+            for ( int x = 0; x <= brush_mask.width(); x++ )
+                if ( math::pdistance(QPoint(x,y), center, p_norm) * 2 <= diameter )
+                {
+                    brush_mask.setPixel(x, y, Qt::black);
+                    brush_region |= QRect(x-center.x(), y-center.x(), 1, 1);
+                }
+
+        QPainterPath new_path;
+        new_path.addRegion(brush_region);
+        brush_path = new_path.simplified();
     }
 
     void drawForegroundImpl(QPainter* painter)
     {
         if ( draw_line && line.p1() != line.p2() )
         {
-            painter->drawEllipse(area(line.p1()));
-            painter->drawLine(QLineF(line).translated(diameter/2.0, diameter/2.0));
+            painter->drawPath(brush_path.translated(line.p1()));
+            painter->drawLine(QLineF(line).translated(0.5,0.5));
         }
 
-        painter->drawEllipse(area(line.p2()));
+        painter->drawPath(brush_path.translated(line.p2()));
     }
 
     QLine  line;
     QColor color;
-    int    diameter = 1;
     bool   draw_line = false;
-    qreal  p_norm = 0;
+
+    QImage       brush_mask;
+    QRegion      brush_region;
+    QPainterPath brush_path;
 };
 
 } // namespace tool
