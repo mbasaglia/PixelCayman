@@ -283,6 +283,7 @@ void MainWindow::addTool(::tool::Tool* tool)
         p->current_tool = used_tool;
         if ( p->current_view )
             p->current_view->setCurrentTool(used_tool);
+        p->dock_tool_options->setWidget(used_tool ? used_tool->optionsWidget() : nullptr);
     });
 }
 

@@ -35,6 +35,7 @@ style/dockwidget_style_icon.hpp
 style/bool_icon_delegate.hpp
 tool/tool.hpp
 tool/paint.hpp
+tool/paint.cpp
 ui/color_editor.cpp
 ui/color_editor.hpp
 ui/layer_widget.hpp
@@ -42,6 +43,8 @@ ui/layer_widget.cpp
 ui/main_window.cpp
 ui/main_window.hpp
 ui/main_window_p.hpp
+ui/tool_paint_widget.hpp
+ui/tool_paint_widget.cpp
 view/graphics_item.hpp
 view/graphics_widget.hpp
 view/graphics_widget.cpp
@@ -69,6 +72,7 @@ ui/color_editor.ui
 ui/current_color.ui
 ui/main_window.ui
 ui/layer_widget.ui
+ui/tool_paint_widget.ui
 )
 qt5_wrap_ui(SOURCES ${UI_FILES})
 #endif()

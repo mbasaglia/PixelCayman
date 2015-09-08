@@ -155,6 +155,8 @@ public:
     QDockWidget* dock_layers;
     LayerWidget* layer_widget;
 
+    QDockWidget* dock_tool_options;
+
     QStringList recent_files;
 
     MainWindow* parent;
@@ -230,6 +232,12 @@ void MainWindow::Private::initDocks()
     dock_layers = createDock(layer_widget, "format-list-unordered");
     parent->addDockWidget(Qt::LeftDockWidgetArea, dock_layers);
 
+    // Tool Options
+    dock_tool_options = createDock(nullptr, "preferences-other");
+    parent->addDockWidget(Qt::LeftDockWidgetArea, dock_tool_options);
+    parent->tabifyDockWidget(dock_tool_options, dock_undo_hitory);
+    dock_tool_options->raise();
+
     // Common stuff
     translateDocks();
 }
@@ -241,6 +249,7 @@ void MainWindow::Private::translateDocks()
     dock_palette_editor->setWindowTitle(tr("Edit Palette"));
     dock_current_color->setWindowTitle(tr("Current Color"));
     dock_undo_hitory->setWindowTitle(tr("Action History"));
+    dock_tool_options->setWindowTitle(tr("Tool Options"));
 }
 
 void MainWindow::Private::initMenus()
