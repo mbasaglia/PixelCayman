@@ -265,6 +265,9 @@ void MainWindow::Private::initMenus()
     action_redo->setShortcut(QKeySequence::Redo);
     menu_edit->insertAction(action_after_undo_redo, action_redo);
 
+    // Help
+    connect(action_about_qt, &QAction::triggered, &QApplication::aboutQt);
+
     // Tools
     tools_group = new QActionGroup(parent);
     tools_group->setExclusive(true);

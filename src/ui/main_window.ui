@@ -92,6 +92,8 @@
     <property name="title">
      <string>&amp;Help</string>
     </property>
+    <addaction name="action_About"/>
+    <addaction name="action_about_qt"/>
    </widget>
    <widget class="QMenu" name="menu_view">
     <property name="title">
@@ -137,7 +139,9 @@
   </widget>
   <action name="action_new">
    <property name="icon">
-    <iconset theme="document-new"/>
+    <iconset theme="document-new">
+     <normaloff/>
+    </iconset>
    </property>
    <property name="text">
     <string>&amp;New</string>
@@ -145,7 +149,9 @@
   </action>
   <action name="action_open">
    <property name="icon">
-    <iconset theme="document-open"/>
+    <iconset theme="document-open">
+     <normaloff/>
+    </iconset>
    </property>
    <property name="text">
     <string>&amp;Open</string>
@@ -156,7 +162,9 @@
     <bool>false</bool>
    </property>
    <property name="icon">
-    <iconset theme="document-save"/>
+    <iconset theme="document-save">
+     <normaloff/>
+    </iconset>
    </property>
    <property name="text">
     <string>&amp;Save</string>
@@ -167,7 +175,9 @@
     <bool>false</bool>
    </property>
    <property name="icon">
-    <iconset theme="document-save-as"/>
+    <iconset theme="document-save-as">
+     <normaloff/>
+    </iconset>
    </property>
    <property name="text">
     <string>Save &amp;As...</string>
@@ -178,7 +188,9 @@
     <bool>false</bool>
    </property>
    <property name="icon">
-    <iconset theme="document-save-all"/>
+    <iconset theme="document-save-all">
+     <normaloff/>
+    </iconset>
    </property>
    <property name="text">
     <string>Save A&amp;ll</string>
@@ -186,7 +198,9 @@
   </action>
   <action name="action_print">
    <property name="icon">
-    <iconset theme="document-print"/>
+    <iconset theme="document-print">
+     <normaloff/>
+    </iconset>
    </property>
    <property name="text">
     <string>&amp;Print...</string>
@@ -197,7 +211,9 @@
     <bool>false</bool>
    </property>
    <property name="icon">
-    <iconset theme="document-close"/>
+    <iconset theme="document-close">
+     <normaloff/>
+    </iconset>
    </property>
    <property name="text">
     <string>&amp;Close</string>
@@ -205,7 +221,9 @@
   </action>
   <action name="action_quit">
    <property name="icon">
-    <iconset theme="application-exit"/>
+    <iconset theme="application-exit">
+     <normaloff/>
+    </iconset>
    </property>
    <property name="text">
     <string>&amp;Quit</string>
@@ -224,13 +242,28 @@
     <bool>false</bool>
    </property>
    <property name="icon">
-    <iconset theme="window-close"/>
+    <iconset theme="window-close">
+     <normaloff/>
+    </iconset>
    </property>
    <property name="text">
     <string>Clos&amp;e All</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+Shift+W</string>
+   </property>
+  </action>
+  <action name="action_About">
+   <property name="icon">
+    <iconset theme="help-about"/>
+   </property>
+   <property name="text">
+    <string>&amp;About...</string>
+   </property>
+  </action>
+  <action name="action_about_qt">
+   <property name="text">
+    <string>About &amp;Qt...</string>
    </property>
   </action>
  </widget>
