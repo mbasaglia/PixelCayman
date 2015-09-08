@@ -38,14 +38,13 @@
 #include "model/layer_tree.hpp"
 #include "settings.hpp"
 #include "style/dockwidget_style_icon.hpp"
-#include "style/bool_icon_delegate.hpp"
 #include "tool/tool.hpp"
 #include "util.hpp"
 #include "view/graphics_widget.hpp"
+#include "layer_widget.hpp"
 
 #include "ui_current_color.h"
 #include "ui_main_window.h"
-#include "ui_layer_widget.h"
 
 class MainWindow::Private : public Ui_MainWindow
 {
@@ -154,8 +153,7 @@ public:
     QDockWidget* dock_undo_hitory;
 
     QDockWidget* dock_layers;
-    model::LayerTree layer_model;
-    Ui::LayerWidget layer_widget;
+    LayerWidget* layer_widget;
 
     QStringList recent_files;
 
@@ -228,31 +226,10 @@ void MainWindow::Private::initDocks()
     parent->addDockWidget(Qt::LeftDockWidgetArea, dock_undo_hitory);
 
     // Layers
-    {
-        QWidget* container = new QWidget;
-        layer_widget.setupUi(container);
-        layer_widget.tree_view->setModel(&layer_model);
-        layer_widget.tree_view->header()->setSectionResizeMode(
-            QHeaderView::ResizeToContents);
-        layer_widget.tree_view->header()->setSectionResizeMode(
-            model::LayerTree::Name,
-            QHeaderView::Stretch);
+    layer_widget = new LayerWidget();
+    dock_layers = createDock(layer_widget, "format-list-unordered");
+    parent->addDockWidget(Qt::LeftDockWidgetArea, dock_layers);
 
-        auto delegate_visible = new BoolIconDelegate(
-            QIcon::fromTheme("layer-visible-on"),
-            QIcon::fromTheme("layer-visible-off"),
-            parent);
-        layer_widget.tree_view->setItemDelegateForColumn(model::LayerTree::Visible, delegate_visible);
-
-        auto delegate_locked = new BoolIconDelegate(
-            QIcon::fromTheme("object-locked"),
-            QIcon::fromTheme("object-unlocked"),
-            parent);
-        layer_widget.tree_view->setItemDelegateForColumn(model::LayerTree::Locked, delegate_locked);
-
-        dock_layers = createDock(container, "format-list-unordered");
-        parent->addDockWidget(Qt::LeftDockWidgetArea, dock_layers);
-    }
     // Common stuff
     translateDocks();
 }
@@ -416,11 +393,11 @@ void MainWindow::Private::setCurrentTab(int tab)
         Private::linkColor(widget, current_color_selector.color);
         current_view = widget;
         widget->undoStack().setActive(true);
-        layer_model.setDocument(widget->document());
+        layer_widget->setDocument(widget->document());
     }
     else
     {
-        layer_model.setDocument(nullptr);
+        layer_widget->setDocument(nullptr);
     }
 
     updateTitle();

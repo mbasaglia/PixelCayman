@@ -77,7 +77,7 @@ public:
      * \brief Document layers
      */
     QList<Layer*> layers();
-    void addLayer(document::Layer* layer);
+    void insertLayer(document::Layer* layer, int index = -1);
 
     void apply(Visitor& visitor) override;
     Document* parentDocument() const override;

@@ -158,8 +158,35 @@ void LayerTree::setDocument(::document::Document* document)
     if ( document == document_ )
         return;
 
+    connect(document, &::document::Document::layersChanged,
+            this, &LayerTree::updateLayers);
+
     beginResetModel();
     document_ = document;
+    endResetModel();
+}
+
+bool LayerTree::addLayer(const QString& name, int row, const QModelIndex& parent)
+{
+    if ( !document_ )
+        return false;
+
+    Layer* new_layer = new Layer(document_, name);
+
+    /// \todo Should add a frame image for every frame (should use a visitor for that)
+    new_layer->addFrameImage();
+
+    if ( Layer* parent_layer = static_cast<Layer*>(parent.internalPointer()) )
+        parent_layer->insertChild(new_layer, row);
+    else
+        document_->insertLayer(new_layer, row);
+
+    return true;
+}
+
+void LayerTree::updateLayers()
+{
+    beginResetModel();
     endResetModel();
 }
 

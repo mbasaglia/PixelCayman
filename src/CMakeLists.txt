@@ -37,6 +37,8 @@ tool/tool.hpp
 tool/paint.hpp
 ui/color_editor.cpp
 ui/color_editor.hpp
+ui/layer_widget.hpp
+ui/layer_widget.cpp
 ui/main_window.cpp
 ui/main_window.hpp
 ui/main_window_p.hpp

@@ -37,7 +37,7 @@ Document::Document(const QSize& size,
 {
     Layer* layer = new Layer(this, QObject::tr("Layer"));
     layer->addFrameImage();
-    addLayer(layer);
+    insertLayer(layer);
     
     connect(this, &Document::layersChanged, this, &DocumentElement::edited);
 }
@@ -49,7 +49,7 @@ Document::Document(const QImage& image, const QString& file_name)
     /// \todo Read exif metadata (maybe with Exiv2?)
     Layer* layer = new Layer(this, QFileInfo(file_name).baseName());
     layer->addFrameImage(image);
-    addLayer(layer);
+    insertLayer(layer);
 
     connect(this, &Document::layersChanged, this, &DocumentElement::edited);
 }
@@ -99,7 +99,7 @@ QList<Layer*> Document::layers()
     return layers_;
 }
 
-void Document::addLayer(Layer* layer)
+void Document::insertLayer(document::Layer* layer, int index)
 {
     if ( layer->owner_ != this )
     {
@@ -107,7 +107,10 @@ void Document::addLayer(Layer* layer)
         layer->owner_ = this;
     }
 
-    layers_.append(layer);
+    if ( index < 0 || index >= layers_.size() )
+        layers_.append(layer);
+    else
+        layers_.insert(index, layer);
     connect(layer, &Layer::layersChanged, this, &Document::layersChanged);
 
     emit layersChanged();

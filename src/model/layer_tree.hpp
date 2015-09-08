@@ -59,7 +59,12 @@ public:
     int columnCount(const QModelIndex &parent = QModelIndex()) const override;
 
     ::document::Document* document() const;
-        void setDocument(document::Document* document);
+    void setDocument(::document::Document* document);
+
+    bool addLayer(const QString& name, int row, const QModelIndex& parent);
+
+private slots:
+    void updateLayers();
 
 private:
     ::document::Document* document_;

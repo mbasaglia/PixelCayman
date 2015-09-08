@@ -73,8 +73,7 @@ public:
                      const QModelIndex & index) override
     {
 
-        if ( event->type() == QEvent::MouseButtonRelease ||
-            event->type() == QEvent::MouseButtonDblClick )
+        if ( event->type() == QEvent::MouseButtonRelease )
         {
             QMouseEvent* mouse_event = static_cast<QMouseEvent*>(event);
 

@@ -44,7 +44,9 @@
         <string>New Layer</string>
        </property>
        <property name="icon">
-        <iconset theme="list-add"/>
+        <iconset theme="list-add">
+         <normaloff/>
+        </iconset>
        </property>
       </widget>
      </item>
@@ -54,7 +56,9 @@
         <string>Remove Layer</string>
        </property>
        <property name="icon">
-        <iconset theme="list-remove"/>
+        <iconset theme="list-remove">
+         <normaloff/>
+        </iconset>
        </property>
       </widget>
      </item>
@@ -77,7 +81,9 @@
         <string>Move to Top</string>
        </property>
        <property name="icon">
-        <iconset theme="go-top"/>
+        <iconset theme="go-top">
+         <normaloff/>
+        </iconset>
        </property>
       </widget>
      </item>
@@ -87,7 +93,9 @@
         <string>Move Up</string>
        </property>
        <property name="icon">
-        <iconset theme="go-up"/>
+        <iconset theme="go-up">
+         <normaloff/>
+        </iconset>
        </property>
       </widget>
      </item>
@@ -97,7 +105,9 @@
         <string>Move Down</string>
        </property>
        <property name="icon">
-        <iconset theme="go-down"/>
+        <iconset theme="go-down">
+         <normaloff/>
+        </iconset>
        </property>
       </widget>
      </item>
@@ -107,7 +117,9 @@
         <string>Move to Bottom</string>
        </property>
        <property name="icon">
-        <iconset theme="go-bottom"/>
+        <iconset theme="go-bottom">
+         <normaloff/>
+        </iconset>
        </property>
       </widget>
      </item>
@@ -116,5 +128,42 @@
   </layout>
  </widget>
  <resources/>
- <connections/>
+ <connections>
+  <connection>
+   <sender>button_add</sender>
+   <signal>clicked()</signal>
+   <receiver>LayerWidget</receiver>
+   <slot>addLayer()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>16</x>
+     <y>280</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>22</x>
+     <y>340</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>button_remove</sender>
+   <signal>clicked()</signal>
+   <receiver>LayerWidget</receiver>
+   <slot>removeLayer()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>47</x>
+     <y>282</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>60</x>
+     <y>381</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+ <slots>
+  <slot>addLayer()</slot>
+  <slot>removeLayer()</slot>
+ </slots>
 </ui>
