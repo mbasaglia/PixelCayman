@@ -144,8 +144,9 @@ QCursor Paint::cursor(const view::GraphicsWidget* widget) const
 void Paint::render(document::Image& image)
 {
     QPainter painter(&image.image());
+    painter.setCompositionMode(QPainter::CompositionMode_Source);
     painter.setBrush(color);
-    painter.setPen(QPen(Qt::transparent));
+    painter.setPen(Qt::NoPen);
     ::draw::line(line, [this, &painter](const QPoint& point){
         painter.drawPath(brush_path.translated(point));
     });
