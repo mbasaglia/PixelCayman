@@ -88,7 +88,11 @@ public:
      * \brief Images for this layer
      */
     QList<Image*> frameImages();
-    QList<const Image*> frameImages() const;
+
+    /**
+     * \brief Get the image associated with the given frame
+     */
+    Image* frameImage(Frame* frame);
 
     /**
      * \brief Creates a new frame for this layer

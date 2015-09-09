@@ -194,4 +194,32 @@ void LayerTree::updateLayers()
     endResetModel();
 }
 
+Layer* LayerTree::layer(const QModelIndex& index) const
+{
+    if ( !index.isValid() || index.model() != this || !document_ )
+        return nullptr;
+    return static_cast<Layer*>(index.internalPointer());
+}
+
+QModelIndex LayerTree::index(Layer* layer) const
+{
+    if ( !layer || layer->parentDocument() != document_ || !document_ )
+        return QModelIndex();
+
+    Layer* parent_layer = layer->parentLayer();
+    QList<Layer*> siblings;
+
+    if ( parent_layer )
+        siblings = parent_layer->children();
+    else
+        siblings = document_->layers();
+
+    int index = siblings.indexOf(parent_layer);
+
+    if ( index != -1 )
+        return createIndex(index, 0, layer);
+
+    return QModelIndex();
+}
+
 } // namespace model

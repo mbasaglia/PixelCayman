@@ -28,7 +28,7 @@
 
 namespace tool {
 
-class Paint : public Tool, protected document::visitor::FrameRenderer
+class Paint : public Tool
 {
 public:
     Paint();
@@ -47,7 +47,7 @@ public:
     QCursor cursor(const view::GraphicsWidget* widget) const override;
 
 protected:
-    void render(document::Image& image) override;
+    void render(document::Image& image);
 
     void draw(view::GraphicsWidget* widget);
 
@@ -62,7 +62,6 @@ private:
     void drawForegroundImpl(QPainter* painter);
 
     QLine  line;
-    QColor color;
     bool   draw_line = false;
 
     QImage       brush_mask;

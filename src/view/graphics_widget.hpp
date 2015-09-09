@@ -45,6 +45,19 @@ class GraphicsWidget : public QGraphicsView
      */
     Q_PROPERTY(QColor color READ color WRITE setColor NOTIFY colorChanged)
 
+    /**
+     * \brief The currently active layer
+     *
+     * The active layer can be used by tools to perform editing operations
+     * (after checking that the layer itself isn't locked).
+     *
+     * As long as there is at leas one layer in the document,
+     * the view will have an active layer.
+     *
+     * If there is no layer, it returns \b nullptr.
+     */
+    Q_PROPERTY(::document::Layer* activeLayer READ activeLayer WRITE setActiveLayer NOTIFY activeLayerChanged)
+
 public:
     explicit GraphicsWidget(::document::Document* document);
     ~GraphicsWidget();
@@ -82,6 +95,9 @@ public:
     const QUndoStack& undoStack() const;
     QUndoStack& undoStack();
 
+    ::document::Layer* activeLayer() const;
+    void setActiveLayer(::document::Layer* layer);
+
 public slots:
     void setZoomFactor(qreal factor);
     void zoom(qreal factor);
@@ -91,6 +107,7 @@ public slots:
 signals:
     void zoomFactorChanged(qreal zoomFactor);
     void colorChanged(const QColor& color);
+    void activeLayerChanged(::document::Layer* activeLayer);
 
 protected:
     void drawBackground(QPainter * painter, const QRectF & rect) override;

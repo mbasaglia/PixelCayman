@@ -64,7 +64,20 @@ public:
     ::document::Document* document() const;
     void setDocument(::document::Document* document);
 
+    /**
+     * \brief Add an empty layer with the given name as the row^th child of parent
+     */
     bool addLayer(const QString& name, int row, const QModelIndex& parent);
+
+    /**
+     * \brief Layer corresponding to the given index
+     */
+    ::document::Layer* layer(const QModelIndex& index) const;
+
+    /**
+     * \brief Index corresponding to the given layer
+     */
+    QModelIndex index(::document::Layer* layer) const;
 
 private slots:
     void updateLayers();

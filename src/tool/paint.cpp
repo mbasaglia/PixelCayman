@@ -31,7 +31,7 @@
 
 namespace tool {
 
-Paint::Paint() : Tool(), FrameRenderer(nullptr)
+Paint::Paint()
 {
     options_widget = new Widget(this);
 
@@ -141,21 +141,23 @@ QCursor Paint::cursor(const view::GraphicsWidget* widget) const
     return QCursor(Qt::CrossCursor);
 }
 
-void Paint::render(document::Image& image)
+void Paint::draw(view::GraphicsWidget* widget)
 {
-    QPainter painter(&image.image());
+    if ( !widget->activeLayer() || widget->activeLayer()->locked() )
+        return;
+
+    /// \todo Select the active frame
+    document::Image* image = widget->activeLayer()->frameImage(nullptr);
+    if ( !image )
+        return;
+
+    QPainter painter(&image->image());
     painter.setCompositionMode(QPainter::CompositionMode_Source);
-    painter.setBrush(color);
+    painter.setBrush(widget->color());
     painter.setPen(Qt::NoPen);
     ::draw::line(line, [this, &painter](const QPoint& point){
         painter.drawPath(brush_path.translated(point));
     });
-}
-
-void Paint::draw(view::GraphicsWidget* widget)
-{
-    color = widget->color();
-    widget->document()->apply(*this);
 }
 
 void Paint::drawForegroundImpl(QPainter* painter)

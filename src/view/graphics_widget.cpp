@@ -59,12 +59,13 @@ public:
         tool->mouseMoveEvent(&event, widget);
     }
 
-    GraphicsItem* document_item;
-    QPoint      drag_point;
-    MouseMode   mouse_mode = Resting;
-    tool::Tool* tool = nullptr;
-    QColor      color = Qt::black;
-    QUndoStack  undo_stack;
+    GraphicsItem*       document_item;
+    QPoint              drag_point;
+    MouseMode           mouse_mode = Resting;
+    ::tool::Tool*       tool = nullptr;
+    QColor              color = Qt::black;
+    ::document::Layer*  active_layer = nullptr;
+    QUndoStack          undo_stack;
 };
 
 GraphicsWidget::GraphicsWidget(::document::Document* document)
@@ -306,6 +307,19 @@ const QUndoStack& GraphicsWidget::undoStack() const
 QUndoStack& GraphicsWidget::undoStack()
 {
     return p->undo_stack;
+}
+
+document::Layer* GraphicsWidget::activeLayer() const
+{
+    /// \todo Handle the active layer being removed
+    if ( !p->active_layer && !p->document_item->document()->layers().empty() )
+        return p->document_item->document()->layers().back();
+    return p->active_layer;
+}
+
+void GraphicsWidget::setActiveLayer(document::Layer* layer)
+{
+    p->active_layer = layer;
 }
 
 } // namespace view

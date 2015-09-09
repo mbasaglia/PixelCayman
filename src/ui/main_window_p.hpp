@@ -128,7 +128,7 @@ public:
     }
 
     int addDocument(document::Document* doc, bool set_current);
-        void setCurrentTab(int tab);
+    void setCurrentTab(int tab);
 
     void updateTitle();
 
@@ -425,6 +425,8 @@ void MainWindow::Private::setCurrentTab(int tab)
         current_view->setCurrentTool(nullptr);
         current_view->undoStack().setActive(false);
         Private::unlinkColor(current_view, current_color_selector.color);
+        disconnect(layer_widget, nullptr, current_view, nullptr);
+        disconnect(current_view, nullptr, layer_widget, nullptr);
     }
 
     if ( view::GraphicsWidget* widget = this->widget(main_tab->currentIndex()) )
@@ -435,6 +437,10 @@ void MainWindow::Private::setCurrentTab(int tab)
         current_view = widget;
         widget->undoStack().setActive(true);
         layer_widget->setDocument(widget->document());
+        connect(layer_widget, &LayerWidget::activeLayerChanged,
+                widget, &view::GraphicsWidget::setActiveLayer);
+        connect(widget, &view::GraphicsWidget::activeLayerChanged,
+                layer_widget, &LayerWidget::setActiveLayer);
     }
     else
     {

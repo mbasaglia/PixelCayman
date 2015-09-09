@@ -119,11 +119,6 @@ QList<Image*> Layer::frameImages()
     return frames_;
 }
 
-QList<const Image*> Layer::frameImages() const
-{
-    return reinterpret_cast<const QList<const Image*>&>(frames_);;
-}
-
 Image* Layer::addFrameImage()
 {
     Image* image = new Image(this, owner_->imageSize());
@@ -171,6 +166,14 @@ void Layer::setBlendMode(QPainter::CompositionMode blendMode)
 {
     if ( blendMode != blend_mode_ )
         emit blendModeChanged( blend_mode_ = blendMode );
+}
+
+Image* Layer::frameImage(Frame* frame)
+{
+    for ( auto image : frames_ )
+        if ( image->frame() == frame )
+            return image;
+    return nullptr;
 }
 
 } // namespace document

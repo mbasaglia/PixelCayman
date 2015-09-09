@@ -33,15 +33,24 @@ class LayerWidget : public QWidget, private Ui::LayerWidget
 {
     Q_OBJECT
 
+    Q_PROPERTY(::document::Document* document READ document WRITE setDocument)
+
+    Q_PROPERTY(::document::Layer* activeLayer READ activeLayer WRITE setActiveLayer NOTIFY activeLayerChanged)
+
 public:
     LayerWidget();
 
     ::document::Document* document() const;
+    ::document::Layer* activeLayer() const;
 
 public slots:
     void setDocument(::document::Document* document);
+    void setActiveLayer(::document::Layer* activeLayer);
     void addLayer();
     void removeLayer();
+
+signals:
+    void activeLayerChanged(::document::Layer* activeLayer);
 
 protected:
     void changeEvent(QEvent* event) override;

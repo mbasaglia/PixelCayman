@@ -64,6 +64,15 @@ LayerWidget::LayerWidget()
     delegate_blend_mode->setUnknownValueName(tr("Custom"));
     tree_view->setItemDelegateForColumn(::model::LayerTree::BlendMode, delegate_blend_mode);
 
+    connect(tree_view->selectionModel(), &QItemSelectionModel::currentChanged,
+        [this](const QModelIndex& index)
+        {
+            if ( model.rowCount() == 0 )
+                emit activeLayerChanged( nullptr );
+            else if ( index.isValid() )
+                emit activeLayerChanged( model.layer(index) );
+        });
+
 }
 
 void LayerWidget::changeEvent(QEvent* event)
@@ -104,4 +113,14 @@ void LayerWidget::addLayer()
 void LayerWidget::removeLayer()
 {
     /// \todo
+}
+
+document::Layer* LayerWidget::activeLayer() const
+{
+    return model.layer(tree_view->currentIndex());
+}
+
+void LayerWidget::setActiveLayer(document::Layer* activeLayer)
+{
+    tree_view->setCurrentIndex(model.index(activeLayer));
 }
