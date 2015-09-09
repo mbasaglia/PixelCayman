@@ -39,7 +39,10 @@ public:
         Name,
         Visible,
         Locked,
-        Opacity
+        Opacity,
+        BlendMode,
+
+        ColumnCount
     };
 
     explicit LayerTree(::document::Document* document = nullptr);

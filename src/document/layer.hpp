@@ -23,6 +23,8 @@
 
 #include "image.hpp"
 
+#include <QPainter>
+
 namespace document {
 
 class Document;
@@ -38,7 +40,7 @@ class Layer : public DocumentElement
     Q_PROPERTY(qreal opacity READ opacity WRITE setOpacity NOTIFY opacityChanged)
     Q_PROPERTY(bool visible READ visible WRITE setVisible NOTIFY visibleChanged)
     Q_PROPERTY(bool locked READ locked WRITE setLocked NOTIFY lockedChanged)
-
+    Q_PROPERTY(QPainter::CompositionMode blendMode READ blendMode WRITE setBlendMode NOTIFY blendModeChanged)
 
 public:
     explicit Layer(Document* owner, const QString& name, Layer* parentLayer = nullptr);
@@ -98,12 +100,20 @@ public:
 
     void apply(Visitor& visitor) override;
     Document* parentDocument() const override;
+
+    /**
+     * \brief Alpha blending operation
+     */
+    QPainter::CompositionMode blendMode() const;
+    void setBlendMode(QPainter::CompositionMode blendMode);
+
     
 signals:
     void nameChanged(const QString& name);
     void lockedChanged(bool locked);
     void visibleChanged(bool visible);
     void opacityChanged(qreal opacity);
+    void blendModeChanged(QPainter::CompositionMode blendMode);
 
     /**
      * \brief Emitted on operations that changes the sub-tree layout
@@ -121,6 +131,7 @@ private:
     bool locked_ = false;
     Document* owner_;
     Layer* parent_;
+    QPainter::CompositionMode blend_mode_ = QPainter::CompositionMode_SourceOver;
 
     friend class Document;
 };

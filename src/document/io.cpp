@@ -23,6 +23,8 @@
  */
 
 #include "io.hpp"
+#include "misc/composition_mode.hpp"
+
 namespace document {
 
 bool save_xml(Document& doc)
@@ -73,10 +75,11 @@ bool SaverXml::enter(Layer& layer)
 {
     writer.writeStartElement("layer");
     writeId(layer);
-    writer.writeAttribute("name",layer.name());
-    writer.writeAttribute("opacity",QString::number(layer.opacity()));
-    writer.writeAttribute("visible",QString::number(layer.visible()));
-    writer.writeAttribute("locked",QString::number(layer.locked()));
+    writer.writeAttribute("name", layer.name());
+    writer.writeAttribute("opacity", QString::number(layer.opacity()));
+    writer.writeAttribute("visible", QString::number(layer.visible()));
+    writer.writeAttribute("locked", QString::number(layer.locked()));
+    writer.writeAttribute("blend", misc::composition_to_string(layer.blendMode()));
     writeMetadata(layer.metadata());
     return true;
 }

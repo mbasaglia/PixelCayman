@@ -35,7 +35,7 @@ LayerTree::LayerTree(::document::Document* document)
 
 int LayerTree::columnCount(const QModelIndex& parent) const
 {
-    return 4;
+    return ColumnCount;
 }
 
 QModelIndex LayerTree::index(int row, int column, const QModelIndex& parent) const
@@ -98,6 +98,7 @@ QVariant LayerTree::data(const QModelIndex& index, int role) const
             case Visible:   return layer->visible();
             case Locked:    return layer->locked();
             case Opacity:   return layer->opacity();
+            case BlendMode: return layer->blendMode();
         }
     }
 
@@ -126,6 +127,9 @@ bool LayerTree::setData(const QModelIndex& index, const QVariant& value, int rol
                 return true;
             case Opacity:
                 layer->setOpacity(value.toReal());
+                return true;
+            case BlendMode:
+                layer->setBlendMode(QPainter::CompositionMode(value.toInt()));
                 return true;
         }
     }

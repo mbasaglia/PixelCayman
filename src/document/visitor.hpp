@@ -104,7 +104,6 @@ class FrameRenderer : public Visitor
 public:
     explicit FrameRenderer(Frame* frame) : frame_(frame) {}
 
-    /// \todo Check that the frame is part of the document
     bool enter(Document& document) override
     {
         return true;
@@ -159,6 +158,23 @@ public:
         : FrameRenderer(frame), painter(painter), full_alpha(full_alpha)
     {}
 
+    bool enter(Document& document) override
+    {
+        blend = painter->compositionMode();
+        return true;
+    }
+
+    void leave(Document& document) override
+    {
+        painter->setCompositionMode(blend);
+    }
+
+    bool enter(Layer& layer) override
+    {
+        painter->setCompositionMode(layer.blendMode());
+        return true;
+    }
+
 protected:
     void render(Image& image) override
     {
@@ -171,6 +187,7 @@ protected:
 private:
     QPainter* painter;
     bool full_alpha;
+    QPainter::CompositionMode blend;
 };
 
 } // namespace visitor

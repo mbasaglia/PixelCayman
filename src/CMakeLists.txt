@@ -34,6 +34,7 @@ document/io.cpp
 style/dockwidget_style_icon.hpp
 style/bool_icon_delegate.hpp
 style/slider_delegate.hpp
+style/enum_combo_delegate.hpp
 tool/tool.hpp
 tool/paint.hpp
 tool/paint.cpp
@@ -51,6 +52,8 @@ view/graphics_widget.hpp
 view/graphics_widget.cpp
 model/layer_tree.hpp
 model/layer_tree.cpp
+misc/composition_mode.hpp
+misc/composition_mode.cpp
 main.cpp
 util.hpp
 settings.hpp

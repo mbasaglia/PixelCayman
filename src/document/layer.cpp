@@ -38,6 +38,7 @@ Layer::Layer(class Document* owner, const QString& name, Layer* parentLayer)
     connect(this, &Layer::opacityChanged, this, &DocumentElement::edited);
     connect(this, &Layer::visibleChanged, this, &DocumentElement::edited);
     connect(this, &Layer::layersChanged, this, &DocumentElement::edited);
+    connect(this, &Layer::blendModeChanged, this, &DocumentElement::edited);
 }
 
 Layer::~Layer()
@@ -159,6 +160,17 @@ Document* Layer::parentDocument() const
 Layer* Layer::child(int index)
 {
     return index < 0 || index >= children_.size() ? nullptr : children_[index];
+}
+
+QPainter::CompositionMode Layer::blendMode() const
+{
+    return blend_mode_;
+}
+
+void Layer::setBlendMode(QPainter::CompositionMode blendMode)
+{
+    if ( blendMode != blend_mode_ )
+        emit blendModeChanged( blend_mode_ = blendMode );
 }
 
 } // namespace document

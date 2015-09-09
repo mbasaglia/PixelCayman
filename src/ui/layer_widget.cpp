@@ -21,11 +21,14 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-
 #include "layer_widget.hpp"
+
+#include <QInputDialog>
+
 #include "style/bool_icon_delegate.hpp"
 #include "style/slider_delegate.hpp"
-#include <QInputDialog>
+#include "style/enum_combo_delegate.hpp"
+#include "misc/composition_mode.hpp"
 
 LayerWidget::LayerWidget()
 {
@@ -36,6 +39,9 @@ LayerWidget::LayerWidget()
         QHeaderView::ResizeToContents);
     tree_view->header()->setSectionResizeMode(
         model::LayerTree::Name,
+        QHeaderView::Stretch);
+    tree_view->header()->setSectionResizeMode(
+        model::LayerTree::Opacity,
         QHeaderView::Stretch);
 
     auto delegate_visible = new BoolIconDelegate(
@@ -52,6 +58,11 @@ LayerWidget::LayerWidget()
 
     auto delegate_opacity = new SliderDelegate(this);
     tree_view->setItemDelegateForColumn(::model::LayerTree::Opacity, delegate_opacity);
+
+    auto delegate_blend_mode = new EnumComboDelegate(this);
+    delegate_blend_mode->setNames(misc::composition_names);
+    delegate_blend_mode->setUnknownValueName(tr("Custom"));
+    tree_view->setItemDelegateForColumn(::model::LayerTree::BlendMode, delegate_blend_mode);
 
 }
 
