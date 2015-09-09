@@ -59,8 +59,10 @@ public:
 
     Private(MainWindow* parent) : parent(parent) {}
 
-    QDockWidget* createDock(QWidget* widget, const QString& theme_icon);
-    QDockWidget* createDock(QWidget* widget, const QIcon& icon);
+    QDockWidget* createDock(QWidget* widget, const QString& theme_icon,
+                            const QString& object_name);
+    QDockWidget* createDock(QWidget* widget, const QIcon& icon,
+                            const QString& object_name);
     void initDocks();
     void translateDocks();
     void initMenus();
@@ -150,7 +152,7 @@ public:
     QDockWidget* dock_palette;
     QDockWidget* dock_palette_editor;
 
-    QDockWidget* dock_undo_hitory;
+    QDockWidget* dock_undo_history;
 
     QDockWidget* dock_layers;
     LayerWidget* layer_widget;
@@ -160,14 +162,25 @@ public:
     QStringList recent_files;
 
     MainWindow* parent;
+
+    /**
+     * \brief UI layout version, used by saveState
+     *
+     * If the UI layout changes significantly, this value should be increased
+     */
+    static constexpr int ui_version = 0;
 };
 
-QDockWidget* MainWindow::Private::createDock(QWidget* widget, const QString& theme_icon)
+QDockWidget* MainWindow::Private::createDock(QWidget* widget,
+                                             const QString& theme_icon,
+                                             const QString& object_name)
 {
-    return createDock(widget, QIcon::fromTheme(theme_icon));
+    return createDock(widget, QIcon::fromTheme(theme_icon), object_name);
 }
 
-QDockWidget* MainWindow::Private::createDock(QWidget* widget, const QIcon& icon)
+QDockWidget* MainWindow::Private::createDock(QWidget* widget,
+                                             const QIcon& icon,
+                                             const QString& object_name)
 {
     QDockWidget* dock = new QDockWidget(parent);
     dock->setWidget(widget);
@@ -176,6 +189,7 @@ QDockWidget* MainWindow::Private::createDock(QWidget* widget, const QIcon& icon)
     action->setIcon(icon);
     menu_docks->addAction(action);
     dock->setStyle(new DockWidgetStyleIcon(dock));
+    dock->setObjectName(object_name);
     return dock;
 }
 
@@ -183,14 +197,14 @@ void MainWindow::Private::initDocks()
 {
     // Color editor
     color_editor = new ColorEditor;
-    dock_set_color = createDock(color_editor, "format-stroke-color");
+    dock_set_color = createDock(color_editor, "format-stroke-color", "dock_set_color");
     parent->addDockWidget(Qt::RightDockWidgetArea, dock_set_color);
 
     // Color display
     {
         QWidget* container = new QWidget;
         current_color_selector.setupUi(container);
-        dock_current_color = createDock(container, "format-stroke-color");
+        dock_current_color = createDock(container, "format-stroke-color", "dock_current_color");
         parent->addDockWidget(Qt::RightDockWidgetArea, dock_current_color);
         linkColor(color_editor, current_color_selector.color);
     }
@@ -200,7 +214,7 @@ void MainWindow::Private::initDocks()
     palette_widget = new PalWid;
     palette_widget->setModel(&palette_model);
     palette_widget->setReadOnly(true);
-    dock_palette = createDock(palette_widget, "preferences-desktop-icons");
+    dock_palette = createDock(palette_widget, "preferences-desktop-icons", "dock_palette");
     parent->addDockWidget(Qt::RightDockWidgetArea, dock_palette);
     connect(palette_widget, util::overload<const QColor&>(&PalWid::currentColorChanged),
             current_color_selector.color, &color_widgets::ColorSelector::setColor);
@@ -213,7 +227,7 @@ void MainWindow::Private::initDocks()
     // Palette editor
     palette_editor = new PalWid;
     palette_editor->setModel(&palette_model);
-    dock_palette_editor = createDock(palette_editor, "preferences-desktop-icons");
+    dock_palette_editor = createDock(palette_editor, "preferences-desktop-icons", "dock_palette_editor");
     parent->addDockWidget(Qt::RightDockWidgetArea, dock_palette_editor);
     parent->tabifyDockWidget(dock_palette, dock_palette_editor);
     dock_palette->raise();
@@ -224,18 +238,18 @@ void MainWindow::Private::initDocks()
 
     // Undo history
     QUndoView* undo_view = new QUndoView(&undo_group);
-    dock_undo_hitory = createDock(undo_view, "view-history");
-    parent->addDockWidget(Qt::LeftDockWidgetArea, dock_undo_hitory);
+    dock_undo_history = createDock(undo_view, "view-history", "dock_undo_history");
+    parent->addDockWidget(Qt::LeftDockWidgetArea, dock_undo_history);
 
     // Layers
     layer_widget = new LayerWidget();
-    dock_layers = createDock(layer_widget, "format-list-unordered");
+    dock_layers = createDock(layer_widget, "format-list-unordered", "dock_layers");
     parent->addDockWidget(Qt::LeftDockWidgetArea, dock_layers);
 
     // Tool Options
-    dock_tool_options = createDock(nullptr, "preferences-other");
+    dock_tool_options = createDock(nullptr, "preferences-other", "dock_tool_options");
     parent->addDockWidget(Qt::LeftDockWidgetArea, dock_tool_options);
-    parent->tabifyDockWidget(dock_tool_options, dock_undo_hitory);
+    parent->tabifyDockWidget(dock_tool_options, dock_undo_history);
     dock_tool_options->raise();
 
     // Common stuff
@@ -248,7 +262,7 @@ void MainWindow::Private::translateDocks()
     dock_palette->setWindowTitle(tr("Palette"));
     dock_palette_editor->setWindowTitle(tr("Edit Palette"));
     dock_current_color->setWindowTitle(tr("Current Color"));
-    dock_undo_hitory->setWindowTitle(tr("Action History"));
+    dock_undo_history->setWindowTitle(tr("Action History"));
     dock_tool_options->setWindowTitle(tr("Tool Options"));
     dock_layers->setWindowTitle(tr("Layers"));
 }
@@ -297,12 +311,24 @@ void MainWindow::Private::loadSettings()
         for ( const QString& file : recent_files )
             menu_open_recent->addAction(recentFileAction(file));
     }
+
+    SETTINGS_GROUP("ui/mainwindow")
+    {
+        parent->restoreGeometry(settings::get<QByteArray>("geometry"));
+        parent->restoreState(settings::get<QByteArray>("state"), ui_version);
+    }
 }
 
 
 void MainWindow::Private::saveSettings()
 {
     settings::put("file/recent", recent_files);
+
+    SETTINGS_GROUP("ui/mainwindow")
+    {
+        settings::put("geometry", parent->saveGeometry());
+        settings::put("state", parent->saveState(ui_version));
+    }
 }
 
 bool MainWindow::Private::save(document::Document* doc, DocumentSaveFormat format)
