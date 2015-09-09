@@ -130,7 +130,7 @@ template<class T>
 /**
  * \brief Simple utility to introduce a settings group with a nice syntax
  *
- * \example
+ * Example:
  * \code
  * SETTINGS_GROUP("Group")
  * {

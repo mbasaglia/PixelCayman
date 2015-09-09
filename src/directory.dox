@@ -1,0 +1,56 @@
+/**
+\dir PixelCayman/src
+\brief Root directory for the PixelCayman-specific sources
+
+If possible, files should go in one of the subdirectories.
+Files that are not must either be low-level utilities that are tightly bound
+to the PixelCayman application or define a namespace which has the same name as
+the file and be the only files (header and a possible implementation) which
+contain definitions to that namespace).
+*/
+/**
+\dir src/document
+\brief Document model
+
+Contains the classes that are part of the document tree or that operate
+closely with it.
+
+Everything must be in the \c document namespace.
+*//**
+\dir src/misc
+\brief Miscellaneous utilities that don't belong anywhere else.
+
+Everything must be in the \c misc namespace.
+*/
+/**
+\dir src/model
+\brief Qt Model implementations.
+
+All application-specific \c QAbstractItemModel specializations belong here.
+*/
+/**
+\dir src/style
+\brief Qt widget styling
+
+All the utilities that alter the appearance of some Qt widgets belong here,
+including the item delegates.
+*/
+/**
+\dir src/tool
+\brief Tools to be used with \c GraphicsWidget
+
+All files in here must define classes that inherit from tool::Tool and have
+everything in the \c tool namespace.
+*/
+/**
+\dir src/ui
+\brief Widgets with a ui file
+
+All ui files and implementation of classes that use them shall go here.
+*/
+/**
+\dir src/view
+\brief View classes for the document model
+
+Everything must be in the \c view namespace.
+*/

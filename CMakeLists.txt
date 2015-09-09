@@ -77,7 +77,15 @@ if(DOXYGEN_FOUND)
     set(DOXYGEN_OUTPUT "\"${CMAKE_BINARY_DIR}/doc\"")
 
     set(DOXYGEN_INPUT "")
-    file(GLOB_RECURSE DOXYGEN_INPUT_FILES "src/*.dox" "src/*.cpp" "src/*.hpp")
+    file(GLOB_RECURSE DOXYGEN_INPUT_FILES
+        "*.dox"
+        "src/*.dox"
+        "src/*.cpp"
+        "src/*.hpp"
+        "submodules/*/src/*.cpp"
+        "submodules/*/src/*.hpp"
+        "submodules/*/include/*.hpp"
+    )
     foreach(source ${DOXYGEN_INPUT_FILES})
         set(DOXYGEN_INPUT "${DOXYGEN_INPUT} \"${source}\"")
     endforeach()

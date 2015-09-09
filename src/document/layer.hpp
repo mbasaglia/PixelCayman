@@ -36,10 +36,29 @@ class Layer : public DocumentElement
 {
     Q_OBJECT
 
+    /**
+     * \brief Human-readable name for the layer
+     */
     Q_PROPERTY(QString name READ name WRITE setName NOTIFY nameChanged)
+
+    /**
+     * \brief Layer opacity [0-1]
+     */
     Q_PROPERTY(qreal opacity READ opacity WRITE setOpacity NOTIFY opacityChanged)
+
+    /**
+     * \brief Whether the layer is visible or not
+     */
     Q_PROPERTY(bool visible READ visible WRITE setVisible NOTIFY visibleChanged)
+    
+    /**
+     * \brief Whether the layer allows edits to its image and children
+     */
     Q_PROPERTY(bool locked READ locked WRITE setLocked NOTIFY lockedChanged)
+
+    /**
+     * \brief Alpha blending operation
+     */
     Q_PROPERTY(QPainter::CompositionMode blendMode READ blendMode WRITE setBlendMode NOTIFY blendModeChanged)
 
 public:
@@ -60,27 +79,15 @@ public:
      */
     Layer* parentLayer();
 
-    /**
-     * \brief Human-readable name for the layer
-     */
     QString name() const;
     void setName(const QString& name);
 
-    /**
-     * \brief Layer opacity [0-1]
-     */
     qreal opacity() const;
     void setOpacity(qreal opacity);
 
-    /**
-     * \brief Whether the layer is visible or not
-     */
     bool visible() const;
     void setVisible(bool visible);
 
-    /**
-     * \brief Whether the layer allows edits to its image and children
-     */
     bool locked() const;
     void setLocked(bool locked);
 
@@ -105,9 +112,6 @@ public:
     void apply(Visitor& visitor) override;
     Document* parentDocument() const override;
 
-    /**
-     * \brief Alpha blending operation
-     */
     QPainter::CompositionMode blendMode() const;
     void setBlendMode(QPainter::CompositionMode blendMode);
 

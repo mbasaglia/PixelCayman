@@ -51,7 +51,7 @@ PROJECT_BRIEF          = "@PROJECT_DESCRIPTION@"
 # and the maximum width should not exceed 200 pixels. Doxygen will copy the logo
 # to the output directory.
 
-PROJECT_LOGO           =
+PROJECT_LOGO           = "${CMAKE_SOURCE_DIR}/data/icons/pixel-cayman/32x32/pixel-cayman.png"
 
 # The OUTPUT_DIRECTORY tag is used to specify the (relative or absolute) path
 # into which the generated documentation will be written. If a relative path is
@@ -227,10 +227,6 @@ TAB_SIZE               = 4
 # documentation, which will result in a user-defined paragraph with heading
 # "Side Effects:". You can put \n's in the value part of an alias to insert
 # newlines.
-
-ALIASES                += "thread=\n\b Threading\n\li\b Threads:"
-ALIASES                += "lock=\n\li\b Locks:"
-ALIASES                += "license=\section License"
 
 # This tag can be used to specify a number of word-keyword mappings (TCL only).
 # A mapping has the form "name=value". For example adding "class=itcl::class"
@@ -817,7 +813,7 @@ EXCLUDE_PATTERNS       =
 # Note that the wildcards are matched against the file with absolute path, so to
 # exclude all test directories use the pattern */test/*
 
-EXCLUDE_SYMBOLS        =
+EXCLUDE_SYMBOLS        = *::*Private
 
 # The EXAMPLE_PATH tag can be used to specify one or more files or directories
 # that contain example code fragments that are included (see the \include
