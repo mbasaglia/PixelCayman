@@ -27,6 +27,7 @@
 
 #include <QMouseEvent>
 #include <QApplication>
+#include <QScrollBar>
 
 namespace view {
 
@@ -82,6 +83,11 @@ GraphicsWidget::GraphicsWidget(::document::Document* document)
 
     setMouseTracking(true);
     setRenderHint(QPainter::Antialiasing);
+
+    connect(horizontalScrollBar(), &QAbstractSlider::sliderReleased,
+            this, &GraphicsWidget::fitSceneRect);
+    connect(verticalScrollBar(), &QAbstractSlider::sliderReleased,
+            this, &GraphicsWidget::fitSceneRect);
 }
 
 GraphicsWidget::~GraphicsWidget()
@@ -132,20 +138,17 @@ void GraphicsWidget::zoom(qreal factor)
     emit zoomFactorChanged(zoomFactor());
 }
 
-void GraphicsWidget::expandSceneRect()
+void GraphicsWidget::fitSceneRect()
 {
     QRectF viewport( mapToScene(0, 0), mapToScene(width(), height()));
-    QRectF scene_rect = sceneRect();
-    if ( !scene_rect.contains(viewport) )
-    {
-        setSceneRect(scene_rect.united(viewport));
-    }
+    QRectF scene_rect = p->document_item->sceneBoundingRect().adjusted(-4, -4, 4, 4);
+    setSceneRect(scene_rect.united(viewport));
 }
 
 void GraphicsWidget::translate(const QPointF& delta)
 {
     p->document_item->setPos(p->document_item->pos()+delta);
-    expandSceneRect();
+    fitSceneRect();
 }
 
 void GraphicsWidget::drawBackground(QPainter* painter, const QRectF & rect)

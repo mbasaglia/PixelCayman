@@ -101,8 +101,8 @@ protected:
     void mouseReleaseEvent(QMouseEvent *event) override;
     void wheelEvent(QWheelEvent *event) override;
 
-private:
-    void expandSceneRect();
+private slots:
+    void fitSceneRect();
 
 private:
     class Private;
