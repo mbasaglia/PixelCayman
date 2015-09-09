@@ -250,6 +250,7 @@ void MainWindow::Private::translateDocks()
     dock_current_color->setWindowTitle(tr("Current Color"));
     dock_undo_hitory->setWindowTitle(tr("Action History"));
     dock_tool_options->setWindowTitle(tr("Tool Options"));
+    dock_layers->setWindowTitle(tr("Layers"));
 }
 
 void MainWindow::Private::initMenus()
