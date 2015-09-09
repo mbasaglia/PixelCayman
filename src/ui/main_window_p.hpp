@@ -312,6 +312,8 @@ void MainWindow::Private::loadSettings()
             menu_open_recent->addAction(recentFileAction(file));
     }
 
+    /// \todo Save the original state locally, so it can be reset when
+    /// the window is open
     SETTINGS_GROUP("ui/mainwindow")
     {
         parent->restoreGeometry(settings::get<QByteArray>("geometry"));

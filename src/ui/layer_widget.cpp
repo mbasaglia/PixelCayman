@@ -24,6 +24,7 @@
 
 #include "layer_widget.hpp"
 #include "style/bool_icon_delegate.hpp"
+#include "style/slider_delegate.hpp"
 #include <QInputDialog>
 
 LayerWidget::LayerWidget()
@@ -48,6 +49,9 @@ LayerWidget::LayerWidget()
         QIcon::fromTheme("object-unlocked"),
         this);
     tree_view->setItemDelegateForColumn(::model::LayerTree::Locked, delegate_locked);
+
+    auto delegate_opacity = new SliderDelegate(this);
+    tree_view->setItemDelegateForColumn(::model::LayerTree::Opacity, delegate_opacity);
 
 }
 

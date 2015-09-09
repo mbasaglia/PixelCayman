@@ -43,5 +43,26 @@ inline qreal pdistance(QPointF p1, QPointF p2, qreal p)
     1/p);
 }
 
+/**
+ * \brief Normalize a value
+ * \pre  value in [min, max] && min < max
+ * \post value in [0, 1]
+ */
+inline constexpr qreal normalize(qreal value, qreal min, qreal max)
+{
+    return (value - min) / (max - min);
+}
+
+/**
+ * \brief Denormalize a value
+ * \pre  value in [0, 1] && min < max
+ * \post value in [min, max]
+ */
+inline constexpr qreal denormalize(qreal value, qreal min, qreal max)
+{
+    return value * (max - min) + min;
+}
+
+
 } // namespace math
 #endif // PIXEL_CAYMAN_MATH_HPP
