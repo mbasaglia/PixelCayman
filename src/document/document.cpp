@@ -25,22 +25,19 @@
 #include "document.hpp"
 #include "visitor.hpp"
 #include <QFileInfo>
-#include "command/move_child_layers.hpp"
 
 namespace document {
 
 Document::Document(const QSize& size,
                    const QString& file_name,
                    const Metadata& metadata)
-    : DocumentElement(metadata),
+    : LayerContainer(metadata),
       image_size(size),
       file_name(file_name)
 {
     Layer* layer = new Layer(this, QObject::tr("Layer"));
     layer->addFrameImage();
     insertLayerRaw(layer, -1);
-    
-    connect(this, &Document::layersChanged, this, &DocumentElement::edited);
 }
 
 Document::Document(const QImage& image, const QString& file_name)
@@ -80,8 +77,7 @@ void Document::apply(Visitor& visitor)
 {
     if ( visitor.enter(*this) )
     {
-        for ( auto layer : layers_ )
-            layer->apply(visitor);
+        LayerContainer::apply(visitor);
 
         for ( auto anim : animations_ )
             anim->apply(visitor);
@@ -93,40 +89,6 @@ void Document::apply(Visitor& visitor)
 Document* Document::parentDocument() const
 {
     return const_cast<Document*>(this);
-}
-
-QList<Layer*> Document::layers()
-{
-    return layers_;
-}
-
-void Document::insertLayer(document::Layer* layer, int index)
-{
-    auto layers_copy = layers_;
-
-    insertLayerRaw(layer, index);
-
-    pushCommand(new command::MoveChildLayers(
-        tr("Add Layer"), this, &layers_, layers_copy, layers_
-    ));
-}
-
-void Document::insertLayerRaw(document::Layer* layer, int index)
-{
-    if ( layer->owner_ != this )
-    {
-        registerElement(layer);
-        layer->owner_ = this;
-    }
-
-    if ( index < 0 || index >= layers_.size() )
-        layers_.append(layer);
-    else
-        layers_.insert(index, layer);
-
-    connect(layer, &Layer::layersChanged, this, &Document::layersChanged);
-
-    emit layersChanged();
 }
 
 void Document::registerElement(DocumentElement* element, const QMetaObject& meta)
@@ -164,6 +126,12 @@ QUndoStack& Document::undoStack()
 void Document::pushCommand(QUndoCommand* command)
 {
     undo_stack.push(command);
+}
+
+void Document::onInsert(Layer* layer)
+{
+    if ( layer->owner_ != this )
+        layer->owner_ = this;
 }
 
 } // namespace document

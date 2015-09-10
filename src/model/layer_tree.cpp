@@ -26,6 +26,7 @@
 
 using document::Layer;
 using document::Document;
+using document::LayerContainer;
 
 namespace model {
 
@@ -38,21 +39,23 @@ int LayerTree::columnCount(const QModelIndex& parent) const
     return ColumnCount;
 }
 
+LayerContainer* LayerTree::container(const QModelIndex& index) const
+{
+    if ( index.isValid() )
+        return static_cast<Layer*>(index.internalPointer());
+    return document_;
+}
+
+
 QModelIndex LayerTree::index(int row, int column, const QModelIndex& parent) const
 {
     if ( !document_ || !hasIndex(row, column, parent) )
         return QModelIndex();
 
-    if ( parent.isValid() )
-    {
-        Layer* parent_layer = static_cast<Layer*>(parent.internalPointer());
-        if ( Layer* layer = parent_layer->child(row) )
-            return createIndex(row, column, layer);
-    }
-    else
-    {
-        return createIndex(row, column, document_->layers()[row]);
-    }
+    LayerContainer* parent_container = container(parent);
+
+    if ( Layer* layer = parent_container->layer(row) )
+        return createIndex(row, column, layer);
 
     return QModelIndex();
 }
@@ -68,7 +71,7 @@ QModelIndex LayerTree::parent(const QModelIndex& index) const
     if ( !parent )
         return QModelIndex();
 
-    return createIndex(parent->children().indexOf(layer), 0, parent);
+    return createIndex(parent->layers().indexOf(layer), 0, parent);
 }
 
 int LayerTree::rowCount(const QModelIndex& index) const
@@ -76,11 +79,7 @@ int LayerTree::rowCount(const QModelIndex& index) const
     if ( !document_ )
         return 0;
 
-    if ( !index.isValid() )
-        return document_->layers().size();
-
-    Layer* layer = static_cast<Layer*>(index.internalPointer());
-    return layer->children().size();
+    return container(index)->layers().size();
 }
 
 QVariant LayerTree::data(const QModelIndex& index, int role) const
@@ -180,10 +179,7 @@ bool LayerTree::addLayer(const QString& name, int row, const QModelIndex& parent
     /// \todo Should add a frame image for every frame (should use a visitor for that)
     new_layer->addFrameImage();
 
-    if ( Layer* parent_layer = static_cast<Layer*>(parent.internalPointer()) )
-        parent_layer->insertChild(new_layer, row);
-    else
-        document_->insertLayer(new_layer, row);
+    container(parent)->insertLayer(new_layer, row);
 
     return true;
 }
@@ -206,15 +202,11 @@ QModelIndex LayerTree::index(Layer* layer) const
     if ( !layer || layer->parentDocument() != document_ || !document_ )
         return QModelIndex();
 
-    Layer* parent_layer = layer->parentLayer();
-    QList<Layer*> siblings;
+    LayerContainer* parent_layer = layer->parentLayer();
+    if ( !parent_layer )
+        parent_layer = document_;
 
-    if ( parent_layer )
-        siblings = parent_layer->children();
-    else
-        siblings = document_->layers();
-
-    int index = siblings.indexOf(parent_layer);
+    int index = parent_layer->layers().indexOf(layer);
 
     if ( index != -1 )
         return createIndex(index, 0, layer);

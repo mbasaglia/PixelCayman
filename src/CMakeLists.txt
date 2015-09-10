@@ -31,6 +31,8 @@ document/layer.cpp
 document/visitor.hpp
 document/io.hpp
 document/io.cpp
+document/layer_container.hpp
+document/layer_container.cpp
 document/command/change_image.hpp
 document/command/change_image.cpp
 document/command/move_child_layers.hpp

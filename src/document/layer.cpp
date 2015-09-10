@@ -33,12 +33,12 @@ Layer::Layer(class Document* owner, const QString& name, Layer* parentLayer)
     : name_(name), owner_(owner), parent_(parentLayer)
 {
     owner->registerElement(this);
+
     if ( parent_ )
-        parent_->insertChild(this, -1);
+        parent_->insertLayer(this, -1);
 
     connect(this, &Layer::opacityChanged, this, &DocumentElement::edited);
     connect(this, &Layer::visibleChanged, this, &DocumentElement::edited);
-    connect(this, &Layer::layersChanged, this, &DocumentElement::edited);
     connect(this, &Layer::blendModeChanged, this, &DocumentElement::edited);
 }
 
@@ -46,31 +46,11 @@ Layer::~Layer()
 {
     for ( auto frame : frames_ )
         delete frame;
-    for ( auto child : children_ )
-        delete child;
-}
-QList<Layer*> Layer::children()
-{
-    return children_;
 }
 
-void Layer::insertChild(Layer* layer, int index)
+void Layer::onInsert(Layer* layer)
 {
-    if ( layer->owner_ != owner_ )
-        owner_->registerElement(layer);
-
-    layer->setParent(this);
     layer->parent_ = this;
-
-    auto children_copy = children_;
-
-    children_.insert(index < 0 ? children_.size() : index, layer);
-
-    emit layersChanged();
-
-    parentDocument()->pushCommand(new command::MoveChildLayers(
-        tr("Add Layer"), this, &children_, children_copy, children_
-    ));
 }
 
 Layer* Layer::parentLayer()
@@ -144,8 +124,7 @@ void Layer::apply(Visitor& visitor)
 {
     if ( visitor.enter(*this) )
     {
-        for ( Layer* child : children_ )
-            child->apply(visitor);
+        LayerContainer::apply(visitor);
 
         for ( Image* img : frames_ )
             img->apply(visitor);
@@ -157,11 +136,6 @@ void Layer::apply(Visitor& visitor)
 Document* Layer::parentDocument() const
 {
     return owner_;
-}
-
-Layer* Layer::child(int index)
-{
-    return index < 0 || index >= children_.size() ? nullptr : children_[index];
 }
 
 QPainter::CompositionMode Layer::blendMode() const

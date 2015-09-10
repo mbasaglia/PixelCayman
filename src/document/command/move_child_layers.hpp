@@ -24,7 +24,7 @@
 #include <QUndoCommand>
 
 namespace document {
-class Document;
+class LayerContainer;
 class Layer;
 
 namespace command {
@@ -36,21 +36,12 @@ class MoveChildLayers : public QUndoCommand
 {
 public:
     MoveChildLayers(
-        const QString& name,
-        Document*      document,
-        QList<Layer*>* target,
-        QList<Layer*>  before,
-        QList<Layer*>  after,
-        QUndoCommand*  parent = nullptr
-    );
-
-    MoveChildLayers(
-        const QString& name,
-        Layer*         layer,
-        QList<Layer*>* target,
-        QList<Layer*> before,
-        QList<Layer*> after,
-        QUndoCommand* parent = nullptr
+        const QString&  name,
+        LayerContainer* parent,
+        QList<Layer*>*  target,
+        QList<Layer*>   before,
+        QList<Layer*>   after,
+        QUndoCommand*   parent_command = nullptr
     );
 
     void undo() override;
@@ -58,11 +49,10 @@ public:
     void redo() override;
 
 private:
-    Document*     document = nullptr;
-    Layer*        layer = nullptr;
-    QList<Layer*>*target;
-    QList<Layer*> before;
-    QList<Layer*> after;
+    LayerContainer* parent;
+    QList<Layer*>*  target;
+    QList<Layer*>   before;
+    QList<Layer*>   after;
 };
 
 } // namespace command

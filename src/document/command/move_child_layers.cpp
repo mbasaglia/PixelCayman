@@ -23,35 +23,20 @@
  */
 
 #include "move_child_layers.hpp"
-#include "document/document.hpp"
+#include "document/layer_container.hpp"
 
 namespace document {
 namespace command {
 
 MoveChildLayers::MoveChildLayers(
-        const QString& name,
-        Document*      document,
-        QList<Layer*>* target,
-        QList<Layer*>  before,
-        QList<Layer*>  after,
-        QUndoCommand*  parent
-    ) : QUndoCommand(name, parent),
-        document(document),
-        target(target),
-        before(before),
-        after(after)
-{}
-
-MoveChildLayers::MoveChildLayers(
-        const QString& name,
-        Layer*         layer,
-        QList<Layer*>* target,
-        QList<Layer*>  before,
-        QList<Layer*>  after,
-        QUndoCommand*  parent
-    ) : QUndoCommand(name, parent),
-        document(layer->parentDocument()),
-        layer(layer),
+        const QString&  name,
+        LayerContainer* parent,
+        QList<Layer*>*  target,
+        QList<Layer*>   before,
+        QList<Layer*>   after,
+        QUndoCommand*   parent_command
+    ) : QUndoCommand(name, parent_command),
+        parent(parent),
         target(target),
         before(before),
         after(after)
@@ -61,20 +46,14 @@ void MoveChildLayers::undo()
 {
     *target = before;
 
-    if ( layer )
-        emit layer->layersChanged();
-    else if ( document )
-        emit document->layersChanged();
+    emit parent->layersChanged();
 }
 
 void MoveChildLayers::redo()
 {
     *target = after;
 
-    if ( layer )
-        emit layer->layersChanged();
-    else if ( document )
-        emit document->layersChanged();
+    emit parent->layersChanged();
 }
 
 } // namespace command

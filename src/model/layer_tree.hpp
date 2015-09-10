@@ -83,6 +83,8 @@ private slots:
     void updateLayers();
 
 private:
+    ::document::LayerContainer* container(const QModelIndex& index) const;
+
     ::document::Document* document_;
 };
 

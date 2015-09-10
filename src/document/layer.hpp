@@ -22,6 +22,7 @@
 #define PIXEL_CAYMAN_DOCUMENT_LAYER_HPP
 
 #include "image.hpp"
+#include "layer_container.hpp"
 
 #include <QPainter>
 
@@ -32,7 +33,7 @@ class Document;
 /**
  * \brief A layer in the document
  */
-class Layer : public DocumentElement
+class Layer : public LayerContainer
 {
     Q_OBJECT
 
@@ -66,13 +67,6 @@ public:
     Layer(const Layer&) = delete;
     Layer& operator=(const Layer&) = delete;
     ~Layer();
-
-    /**
-     * \brief Child layers
-     */
-    QList<Layer*> children();
-    Layer* child(int index);
-    void insertChild(Layer* layer, int index = -1);
 
     /**
      * \brief Parent layer
@@ -123,15 +117,10 @@ signals:
     void opacityChanged(qreal opacity);
     void blendModeChanged(QPainter::CompositionMode blendMode);
 
-    /**
-     * \brief Emitted on operations that changes the sub-tree layout
-     *
-     * Eg: New layers added, re-ordered etc
-     */
-    void layersChanged();
-
+protected:
+    void onInsert(Layer* layer) override;
+    
 private:
-    QList<Layer*> children_;
     QString name_;
     QList<Image*> frames_;
     bool visible_ = true;

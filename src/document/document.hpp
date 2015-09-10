@@ -30,7 +30,7 @@ namespace document {
 /**
  * \brief Root of a document structure
  */
-class Document : public DocumentElement
+class Document : public LayerContainer
 {
     Q_OBJECT
 
@@ -74,11 +74,6 @@ public:
     Animation* addAnimation(const QString& name);
     void removeAnimation(Animation* animation);
 
-    /**
-     * \brief Document layers
-     */
-    QList<Layer*> layers();
-    void insertLayer(document::Layer* layer, int index = -1);
 
     void apply(Visitor& visitor) override;
     Document* parentDocument() const override;
@@ -118,22 +113,12 @@ public:
 signals:
     void fileNameChanged(const QString& fileName);
 
-    /**
-     * \brief Emitted on operations that changes the layer layout
-     *
-     * Eg: New layers added, re-ordered etc
-     */
-    void layersChanged();
+protected:
+    void onInsert(Layer* layer) override;
 
 private:
     void registerElement(DocumentElement* element, const QMetaObject& meta);
 
-    /**
-     * \brief Inserts a layer without generating a command
-     */
-    void insertLayerRaw(document::Layer* layer, int index);
-
-    QList<Layer*>       layers_;
     QList<Animation*>   animations_;
     QSize               image_size;
     QString             file_name;
