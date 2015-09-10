@@ -163,8 +163,9 @@ void LayerTree::setDocument(::document::Document* document)
     if ( document == document_ )
         return;
 
-    connect(document, &::document::Document::layersChanged,
-            this, &LayerTree::updateLayers);
+    if ( document )
+        connect(document, &::document::Document::layersChanged,
+                this, &LayerTree::updateLayers);
 
     beginResetModel();
     document_ = document;

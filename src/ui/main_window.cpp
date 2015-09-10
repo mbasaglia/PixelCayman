@@ -254,7 +254,7 @@ bool MainWindow::closeTab(int tab, bool prompt)
         p->current_view->setCurrentTool(nullptr);
         p->current_view = nullptr;
     }
-
+    
     p->undo_group.removeStack(&widget->document()->undoStack());
     delete widget->document();
     delete widget;
