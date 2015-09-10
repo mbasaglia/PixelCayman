@@ -64,6 +64,8 @@ public:
     bool moveRows(const QModelIndex &sourceParent, int sourceRow, int count,
                   const QModelIndex &destinationParent, int destinationChild) override;
 
+    bool removeRows(int row, int count, const QModelIndex &parent = QModelIndex()) override;
+
     Qt::DropActions supportedDropActions() const override;
     Qt::DropActions supportedDragActions() const override;
     QStringList mimeTypes() const override;

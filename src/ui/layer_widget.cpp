@@ -111,7 +111,9 @@ void LayerWidget::addLayer()
 
 void LayerWidget::removeLayer()
 {
-    /// \todo
+    auto index = tree_view->currentIndex();
+    if ( index.isValid() )
+        model.removeRow(index.row(), model.parent(index));
 }
 
 document::Layer* LayerWidget::activeLayer() const

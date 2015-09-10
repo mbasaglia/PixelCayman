@@ -236,6 +236,15 @@ bool LayerTree::moveRows(const QModelIndex &sourceParent, int sourceRow, int cou
     return true;
 }
 
+bool LayerTree::removeRows(int row, int count, const QModelIndex &parent)
+{
+    if ( count != 1 )
+        return false;
+
+    LayerContainer* cont = container(parent);
+    return cont->removeLayer(cont->layer(row));
+}
+
 Qt::DropActions LayerTree::supportedDropActions() const
 {
     return Qt::MoveAction;
