@@ -75,7 +75,7 @@ LayerWidget::LayerWidget()
 
     auto expand = [this](const QModelIndex& parent) {
         for ( QModelIndex index = parent; index.isValid(); index = model.parent(index) )
-            tree_view->setExpanded(index, true);
+            tree_view->expand(index);
     };
 
     connect(&model, &QAbstractItemModel::rowsInserted, expand);

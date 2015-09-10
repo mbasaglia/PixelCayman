@@ -41,6 +41,7 @@ style/dockwidget_style_icon.hpp
 style/bool_icon_delegate.hpp
 style/slider_delegate.hpp
 style/enum_combo_delegate.hpp
+style/itemview_style_rowdrop.hpp
 tool/tool.hpp
 tool/paint.hpp
 tool/paint.cpp

@@ -24,13 +24,20 @@
 #include <QTreeView>
 #include <QDropEvent>
 #include <QMimeData>
+#include "style/itemview_style_rowdrop.hpp"
 
 class TreeViewAcceptSelf : public QTreeView
 {
     //Q_OBJECT
 
 public:
-    using QTreeView::QTreeView;
+    explicit TreeViewAcceptSelf(QWidget* parent = nullptr)
+        : QTreeView(parent)
+    {
+        auto new_style = new ItemViewStyleRowDrop(style());
+        new_style->setParent(this);
+        setStyle(new_style);
+    }
 
 protected:
     void dragEnterEvent(QDragEnterEvent *event) override
