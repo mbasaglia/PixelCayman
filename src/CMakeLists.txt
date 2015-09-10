@@ -31,6 +31,8 @@ document/layer.cpp
 document/visitor.hpp
 document/io.hpp
 document/io.cpp
+document/command/change_image.hpp
+document/command/change_image.cpp
 style/dockwidget_style_icon.hpp
 style/bool_icon_delegate.hpp
 style/slider_delegate.hpp

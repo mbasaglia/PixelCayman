@@ -137,4 +137,20 @@ void Document::registerElement(DocumentElement* element, const QMetaObject& meta
     }
 }
 
+
+const QUndoStack& Document::undoStack() const
+{
+    return undo_stack;
+}
+
+QUndoStack& Document::undoStack()
+{
+    return undo_stack;
+}
+
+void Document::pushCommand(QUndoCommand* command)
+{
+    undo_stack.push(command);
+}
+
 } // namespace document

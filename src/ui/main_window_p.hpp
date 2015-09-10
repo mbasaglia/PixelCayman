@@ -405,10 +405,10 @@ int MainWindow::Private::addDocument(document::Document* doc, bool set_current)
 {
     view::GraphicsWidget* widget = new view::GraphicsWidget(doc);
 
-    undo_group.addStack(&widget->undoStack());
+    undo_group.addStack(&doc->undoStack());
 
     int tab = main_tab->addTab(widget, documentName(doc));
-    connect(&widget->undoStack(), &QUndoStack::cleanChanged, [this, widget]{
+    connect(&doc->undoStack(), &QUndoStack::cleanChanged, [this, widget]{
         main_tab->setTabIcon(main_tab->indexOf(widget), QIcon::fromTheme("document-save"));
     });
 
@@ -423,7 +423,7 @@ void MainWindow::Private::setCurrentTab(int tab)
     if ( current_view )
     {
         current_view->setCurrentTool(nullptr);
-        current_view->undoStack().setActive(false);
+        current_view->document()->undoStack().setActive(false);
         Private::unlinkColor(current_view, current_color_selector.color);
         disconnect(layer_widget, nullptr, current_view, nullptr);
         disconnect(current_view, nullptr, layer_widget, nullptr);
@@ -435,7 +435,7 @@ void MainWindow::Private::setCurrentTab(int tab)
         current_color_selector.color->setColor(widget->color());
         Private::linkColor(widget, current_color_selector.color);
         current_view = widget;
-        widget->undoStack().setActive(true);
+        widget->document()->undoStack().setActive(true);
         layer_widget->setDocument(widget->document());
         connect(layer_widget, &LayerWidget::activeLayerChanged,
                 widget, &view::GraphicsWidget::setActiveLayer);
@@ -471,7 +471,7 @@ void MainWindow::Private::updateTitle()
 
     view::GraphicsWidget* view_widget = widget(tab);
     QString title = documentName(view_widget->document());
-    if ( !view_widget->undoStack().isClean() )
+    if ( !view_widget->document()->undoStack().isClean() )
         title = tr("%1 *").arg(title);
     parent->setWindowTitle(title);
 }

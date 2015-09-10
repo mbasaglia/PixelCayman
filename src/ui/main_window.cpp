@@ -201,7 +201,7 @@ bool MainWindow::save(int tab, bool prompt)
 
     if ( p->save(doc, format) )
     {
-        widget->undoStack().setClean();
+        widget->document()->undoStack().setClean();
         p->pushRecentFile(doc->fileName());
     }
 
@@ -234,7 +234,7 @@ bool MainWindow::closeTab(int tab, bool prompt)
     if ( !widget )
         return false;
 
-    if ( prompt && !widget->undoStack().isClean() )
+    if ( prompt && !widget->document()->undoStack().isClean() )
     {
          int reply = QMessageBox::question(this,
             tr("Close file"),
@@ -255,7 +255,7 @@ bool MainWindow::closeTab(int tab, bool prompt)
         p->current_view = nullptr;
     }
 
-    p->undo_group.removeStack(&widget->undoStack());
+    p->undo_group.removeStack(&widget->document()->undoStack());
     delete widget->document();
     delete widget;
 
@@ -297,7 +297,7 @@ bool MainWindow::documentCloseAll()
         for ( int i = 0; i < p->main_tab->count(); i++ )
         {
             auto widget = p->widget(i);
-            if ( !widget->undoStack().isClean() )
+            if ( !widget->document()->undoStack().isClean() )
             {
                 dlg.addFile(i, p->documentName(widget->document()));
                 has_dirty_documents = true;

@@ -21,9 +21,11 @@
 #ifndef PIXEL_CAYMAN_DOCUMENT_IMAGE_HPP
 #define PIXEL_CAYMAN_DOCUMENT_IMAGE_HPP
 
-#include "frame.hpp"
 #include <QImage>
 #include <QColor>
+
+#include "frame.hpp"
+#include "command/change_image.hpp"
 
 namespace document {
 
@@ -42,8 +44,24 @@ public:
                    const QColor& color = Qt::transparent,
                    Frame* frame = nullptr);
 
+    ~Image();
+
+    /**
+     * \brief Underlying image
+     */
     const QImage& image() const;
     QImage& image();
+
+    /**
+     * \brief Begins a painting operation
+     * \param text Human-readable name of the operation
+     */
+    void beginPainting(const QString& text);
+    /**
+     * \brief Ends the current paint operation and pushes the changes to the
+     *        document undo stack
+     */
+    void endPainting();
 
     /**
     * \brief Paints the image with the given opacity [0,1]
@@ -76,6 +94,7 @@ private:
     QImage image_;
     Frame* frame_;
     Layer* layer_;
+    command::ChangeImage* command_ = nullptr;
 };
 
 } // namespace document

@@ -22,6 +22,7 @@
 #define PIXEL_CAYMAN_TOOL_PAINT_HPP
 
 #include "tool.hpp"
+#include "document/image.hpp"
 
 #include <QIcon>
 #include <QPainter>
@@ -47,9 +48,11 @@ public:
     QCursor cursor(const view::GraphicsWidget* widget) const override;
 
 protected:
-    void render(document::Image& image);
-
     void draw(view::GraphicsWidget* widget);
+    void begin_draw(view::GraphicsWidget* widget);
+    void end_draw(view::GraphicsWidget* widget);
+
+    document::Image* activeImage(view::GraphicsWidget* widget);
 
 private:
     /**

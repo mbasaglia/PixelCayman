@@ -21,6 +21,7 @@
 #ifndef PIXEL_CAYMAN_DOCUMENT_HPP
 #define PIXEL_CAYMAN_DOCUMENT_HPP
 
+#include <QUndoStack>
 #include "animation.hpp"
 #include "layer.hpp"
 
@@ -103,6 +104,17 @@ public:
         registerElement(element, *element->metaObject());
     }
 
+    /**
+     * \brief Stack with the commands used to edit this document
+     */
+    const QUndoStack& undoStack() const;
+    QUndoStack& undoStack();
+
+    /**
+     * \brief Add a command to the document
+     */
+    void pushCommand(QUndoCommand* command);
+
 signals:
     void fileNameChanged(const QString& fileName);
 
@@ -116,10 +128,11 @@ signals:
 private:
     void registerElement(DocumentElement* element, const QMetaObject& meta);
 
-    QList<Layer*> layers_;
-    QList<Animation*> animations_;
-    QSize image_size;
-    QString file_name;
+    QList<Layer*>       layers_;
+    QList<Animation*>   animations_;
+    QSize               image_size;
+    QString             file_name;
+    QUndoStack          undo_stack;
 };
 
 } // namespace document

@@ -65,7 +65,6 @@ public:
     ::tool::Tool*       tool = nullptr;
     QColor              color = Qt::black;
     ::document::Layer*  active_layer = nullptr;
-    QUndoStack          undo_stack;
 };
 
 GraphicsWidget::GraphicsWidget(::document::Document* document)
@@ -297,16 +296,6 @@ void GraphicsWidget::setColor(const QColor& color)
 {
     if ( color != p->color )
         emit ( p->color = color );
-}
-
-const QUndoStack& GraphicsWidget::undoStack() const
-{
-    return p->undo_stack;
-}
-
-QUndoStack& GraphicsWidget::undoStack()
-{
-    return p->undo_stack;
 }
 
 document::Layer* GraphicsWidget::activeLayer() const

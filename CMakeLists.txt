@@ -16,6 +16,7 @@
 #
 
 cmake_minimum_required(VERSION 2.6)
+cmake_policy(SET CMP0009 NEW)
 set(NICE_NAME PixelCayman)
 project(${NICE_NAME} CXX)
 set(PROJECT_VERSION 0.0)

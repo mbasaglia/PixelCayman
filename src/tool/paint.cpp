@@ -60,12 +60,12 @@ QString Paint::description() const
 
 bool Paint::initialize(view::GraphicsWidget* widget)
 {
-    widget->setCursor(Qt::CrossCursor);
     return true;
 }
 
 void Paint::finalize(view::GraphicsWidget* widget)
 {
+    end_draw(widget);
 }
 
 void Paint::mousePressEvent(const QMouseEvent* event, view::GraphicsWidget* widget)
@@ -77,7 +77,10 @@ void Paint::mousePressEvent(const QMouseEvent* event, view::GraphicsWidget* widg
     line.setP2(point);
 
     if ( event->button() == Qt::LeftButton )
+    {
+        begin_draw(widget);
         draw(widget);
+    }
 }
 
 void Paint::mouseMoveEvent(const QMouseEvent* event, view::GraphicsWidget* widget)
@@ -112,7 +115,10 @@ void Paint::mouseReleaseEvent(const QMouseEvent* event, view::GraphicsWidget* wi
     line.setP2(widget->mapToImage(event->pos()));
 
     if ( event->button() == Qt::LeftButton )
+    {
         draw(widget);
+        end_draw(widget);
+    }
 
     line.setP1(line.p2());
 }
@@ -143,11 +149,7 @@ QCursor Paint::cursor(const view::GraphicsWidget* widget) const
 
 void Paint::draw(view::GraphicsWidget* widget)
 {
-    if ( !widget->activeLayer() || widget->activeLayer()->locked() )
-        return;
-
-    /// \todo Select the active frame
-    document::Image* image = widget->activeLayer()->frameImage(nullptr);
+    document::Image* image = activeImage(widget);
     if ( !image )
         return;
 
@@ -159,6 +161,31 @@ void Paint::draw(view::GraphicsWidget* widget)
         painter.drawPath(brush_path.translated(point));
     });
 }
+
+void Paint::begin_draw(view::GraphicsWidget* widget)
+{
+    if ( document::Image* image = activeImage(widget) )
+        image->beginPainting(document::Image::tr("Paint"));
+}
+
+void Paint::end_draw(view::GraphicsWidget* widget)
+{
+    if ( document::Image* image = activeImage(widget) )
+        image->endPainting();
+}
+
+document::Image* Paint::activeImage(view::GraphicsWidget* widget)
+{
+    if ( !widget )
+        return nullptr;
+
+    if ( !widget->activeLayer() || widget->activeLayer()->locked() )
+        return nullptr;
+
+    /// \todo Select the active frame
+    return widget->activeLayer()->frameImage(nullptr);
+}
+
 
 void Paint::drawForegroundImpl(QPainter* painter)
 {

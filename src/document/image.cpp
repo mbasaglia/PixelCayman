@@ -41,6 +41,11 @@ Image::Image(Layer* layer, const QSize& size, const QColor& color,  Frame* frame
     layer->parentDocument()->registerElement(this);
 }
 
+Image::~Image()
+{
+    endPainting();
+}
+
 void Image::apply(Visitor& visitor)
 {
     visitor.visit(*this);
@@ -97,6 +102,21 @@ Layer* Image::layer()
 Document* Image::parentDocument() const
 {
     return layer_->parentDocument();
+}
+
+void Image::beginPainting(const QString& text)
+{
+    command_ = new command::ChangeImage(text, this, image_);
+}
+
+void Image::endPainting()
+{
+    if ( command_ )
+    {
+        command_->setAfterImage(image_);
+        parentDocument()->pushCommand(command_);
+        command_ = nullptr;
+    }
 }
 
 } // namespace document

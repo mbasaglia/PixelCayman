@@ -22,7 +22,6 @@
 #define PIXEL_CAYMAN_VIEW_GRAPHICS_WIDGET_HPP
 
 #include <QGraphicsView>
-#include <QUndoStack>
 #include "graphics_item.hpp"
 
 namespace tool {
@@ -91,9 +90,6 @@ public:
     QPoint mapFromImage(const QPoint& point);
 
     QColor color() const;
-
-    const QUndoStack& undoStack() const;
-    QUndoStack& undoStack();
 
     ::document::Layer* activeLayer() const;
     void setActiveLayer(::document::Layer* layer);
