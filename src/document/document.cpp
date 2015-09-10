@@ -25,6 +25,7 @@
 #include "document.hpp"
 #include "visitor.hpp"
 #include <QFileInfo>
+#include "command/move_child_layers.hpp"
 
 namespace document {
 
@@ -37,7 +38,7 @@ Document::Document(const QSize& size,
 {
     Layer* layer = new Layer(this, QObject::tr("Layer"));
     layer->addFrameImage();
-    insertLayer(layer);
+    insertLayerRaw(layer, -1);
     
     connect(this, &Document::layersChanged, this, &DocumentElement::edited);
 }
@@ -49,7 +50,7 @@ Document::Document(const QImage& image, const QString& file_name)
     /// \todo Read exif metadata (maybe with Exiv2?)
     Layer* layer = new Layer(this, QFileInfo(file_name).baseName());
     layer->addFrameImage(image);
-    insertLayer(layer);
+    insertLayerRaw(layer, -1);
 
     connect(this, &Document::layersChanged, this, &DocumentElement::edited);
 }
@@ -101,6 +102,17 @@ QList<Layer*> Document::layers()
 
 void Document::insertLayer(document::Layer* layer, int index)
 {
+    auto layers_copy = layers_;
+
+    insertLayerRaw(layer, index);
+
+    pushCommand(new command::MoveChildLayers(
+        tr("Add Layer"), this, &layers_, layers_copy, layers_
+    ));
+}
+
+void Document::insertLayerRaw(document::Layer* layer, int index)
+{
     if ( layer->owner_ != this )
     {
         registerElement(layer);
@@ -111,6 +123,7 @@ void Document::insertLayer(document::Layer* layer, int index)
         layers_.append(layer);
     else
         layers_.insert(index, layer);
+
     connect(layer, &Layer::layersChanged, this, &Document::layersChanged);
 
     emit layersChanged();

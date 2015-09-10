@@ -128,6 +128,11 @@ signals:
 private:
     void registerElement(DocumentElement* element, const QMetaObject& meta);
 
+    /**
+     * \brief Inserts a layer without generating a command
+     */
+    void insertLayerRaw(document::Layer* layer, int index);
+
     QList<Layer*>       layers_;
     QList<Animation*>   animations_;
     QSize               image_size;

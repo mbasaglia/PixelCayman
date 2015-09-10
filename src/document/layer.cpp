@@ -25,6 +25,7 @@
 #include "layer.hpp"
 #include "document.hpp"
 #include "visitor.hpp"
+#include "command/move_child_layers.hpp"
 
 namespace document {
 
@@ -61,9 +62,15 @@ void Layer::insertChild(Layer* layer, int index)
     layer->setParent(this);
     layer->parent_ = this;
 
+    auto children_copy = children_;
+
     children_.insert(index < 0 ? children_.size() : index, layer);
 
     emit layersChanged();
+
+    parentDocument()->pushCommand(new command::MoveChildLayers(
+        tr("Add Layer"), this, &children_, children_copy, children_
+    ));
 }
 
 Layer* Layer::parentLayer()
