@@ -254,6 +254,9 @@ void MainWindow::Private::initDocks()
 
     // Common stuff
     translateDocks();
+
+    for ( auto* dock : parent->findChildren<QDockWidget*>() )
+        dock->setEnabled(false);
 }
 
 void MainWindow::Private::translateDocks()
@@ -441,10 +444,16 @@ void MainWindow::Private::setCurrentTab(int tab)
                 widget, &view::GraphicsWidget::setActiveLayer);
         connect(widget, &view::GraphicsWidget::activeLayerChanged,
                 layer_widget, &LayerWidget::setActiveLayer);
+
+        for ( auto* dock : parent->findChildren<QDockWidget*>() )
+            dock->setEnabled(true);
     }
     else
     {
         layer_widget->setDocument(nullptr);
+
+        for ( auto* dock : parent->findChildren<QDockWidget*>() )
+            dock->setEnabled(false);
     }
 
     updateTitle();
