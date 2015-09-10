@@ -251,8 +251,7 @@ bool MainWindow::closeTab(int tab, bool prompt)
 
     if ( widget == p->current_view )
     {
-        p->current_view->setCurrentTool(nullptr);
-        p->current_view = nullptr;
+        p->setCurrentView(nullptr);
     }
     
     p->undo_group.removeStack(&widget->document()->undoStack());

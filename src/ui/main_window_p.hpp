@@ -129,6 +129,7 @@ public:
 
     int addDocument(document::Document* doc, bool set_current);
     void setCurrentTab(int tab);
+    void setCurrentView(view::GraphicsWidget* widget);
 
     void updateTitle();
 
@@ -423,6 +424,11 @@ int MainWindow::Private::addDocument(document::Document* doc, bool set_current)
 
 void MainWindow::Private::setCurrentTab(int tab)
 {
+    setCurrentView(widget(tab));
+}
+
+void MainWindow::Private::setCurrentView(view::GraphicsWidget* widget)
+{
     if ( current_view )
     {
         current_view->setCurrentTool(nullptr);
@@ -432,12 +438,11 @@ void MainWindow::Private::setCurrentTab(int tab)
         disconnect(current_view, nullptr, layer_widget, nullptr);
     }
 
-    if ( view::GraphicsWidget* widget = this->widget(main_tab->currentIndex()) )
+    if ( widget )
     {
         widget->setCurrentTool(current_tool);
         current_color_selector.color->setColor(widget->color());
         Private::linkColor(widget, current_color_selector.color);
-        current_view = widget;
         widget->document()->undoStack().setActive(true);
         layer_widget->setDocument(widget->document());
         connect(layer_widget, &LayerWidget::activeLayerChanged,
@@ -455,6 +460,8 @@ void MainWindow::Private::setCurrentTab(int tab)
         for ( auto* dock : parent->findChildren<QDockWidget*>() )
             dock->setEnabled(false);
     }
+    
+    current_view = widget;
 
     updateTitle();
 }
