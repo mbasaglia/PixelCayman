@@ -114,7 +114,8 @@ signals:
     void fileNameChanged(const QString& fileName);
 
 protected:
-    void onInsert(Layer* layer) override;
+    void onInsertLayer(Layer* layer) override;
+    void onRemoveLayer(Layer* layer) override;
 
 private:
     void registerElement(DocumentElement* element, const QMetaObject& meta);

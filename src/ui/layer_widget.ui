@@ -27,7 +27,19 @@
     <number>0</number>
    </property>
    <item>
-    <widget class="QTreeView" name="tree_view">
+    <widget class="TreeViewAcceptSelf" name="tree_view">
+     <property name="acceptDrops">
+      <bool>true</bool>
+     </property>
+     <property name="dragEnabled">
+      <bool>true</bool>
+     </property>
+     <property name="dragDropMode">
+      <enum>QAbstractItemView::DragDrop</enum>
+     </property>
+     <property name="defaultDropAction">
+      <enum>Qt::MoveAction</enum>
+     </property>
      <attribute name="headerVisible">
       <bool>false</bool>
      </attribute>
@@ -127,6 +139,13 @@
    </item>
   </layout>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>TreeViewAcceptSelf</class>
+   <extends>QTreeView</extends>
+   <header>item/tree_view_accept_self.hpp</header>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections>
   <connection>

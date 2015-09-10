@@ -72,7 +72,6 @@ LayerWidget::LayerWidget()
             else if ( index.isValid() )
                 emit activeLayerChanged( model.layer(index) );
         });
-
 }
 
 void LayerWidget::changeEvent(QEvent* event)

@@ -24,7 +24,6 @@
 
 #include "layer_container.hpp"
 #include "document.hpp"
-#include "command/move_child_layers.hpp"
 
 namespace document {
 
@@ -42,12 +41,8 @@ void LayerContainer::apply(Visitor& visitor)
 
 void LayerContainer::insertLayer(document::Layer* layer, int index)
 {
-    auto layers_copy = layers_;
-
-    insertLayerRaw(layer, index);
-
-    parentDocument()->pushCommand(new command::MoveChildLayers(
-        tr("Add Layer"), this, &layers_, layers_copy, layers_
+    parentDocument()->pushCommand(new command::AddLayer(
+        tr("Add Layer"), this, layer, index
     ));
 }
 
@@ -56,7 +51,7 @@ void LayerContainer::insertLayerRaw(Layer* layer, int index)
     if ( layer->parentDocument() != parentDocument() )
         parentDocument()->registerElement(layer);
 
-    onInsert(layer);
+    onInsertLayer(layer);
 
     if ( index < 0 || index >= layers_.size() )
         layers_.append(layer);
@@ -71,6 +66,41 @@ void LayerContainer::insertLayerRaw(Layer* layer, int index)
 Layer* LayerContainer::layer(int index)
 {
     return index < 0 || index >= layers_.size() ? nullptr : layers_[index];
+}
+
+bool LayerContainer::removeLayer(Layer* layer)
+{
+    int index = layerIndex(layer);
+
+    if ( index < 0 || index > layers_.size() )
+        return false;
+
+    parentDocument()->pushCommand(new command::RemoveLayer(
+        tr("Remove Layer"), this, layer, index
+    ));
+
+    return true;
+}
+
+bool LayerContainer::removeLayerRaw(Layer* layer)
+{
+    int index = layerIndex(layer);
+
+    if ( index < 0 || index > layers_.size() )
+        return false;
+
+    layers_.removeAt(index);
+
+    onRemoveLayer(layer);
+
+    emit layersChanged();
+
+    return true;
+}
+
+int LayerContainer::layerIndex(Layer* layer) const
+{
+    return layers_.indexOf(layer);
 }
 
 } // namespace document

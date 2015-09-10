@@ -118,7 +118,8 @@ signals:
     void blendModeChanged(QPainter::CompositionMode blendMode);
 
 protected:
-    void onInsert(Layer* layer) override;
+    void onInsertLayer(Layer* layer) override;
+    void onRemoveLayer(Layer* layer) override;
     
 private:
     QString name_;

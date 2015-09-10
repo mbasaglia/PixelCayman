@@ -23,10 +23,13 @@
  */
 
 #include "layer_tree.hpp"
+#include <QMimeData>
 
 using document::Layer;
 using document::Document;
 using document::LayerContainer;
+
+static QString mime_type = "application/x-pixel-cayman-layer-row";
 
 namespace model {
 
@@ -45,7 +48,6 @@ LayerContainer* LayerTree::container(const QModelIndex& index) const
         return static_cast<Layer*>(index.internalPointer());
     return document_;
 }
-
 
 QModelIndex LayerTree::index(int row, int column, const QModelIndex& parent) const
 {
@@ -71,7 +73,7 @@ QModelIndex LayerTree::parent(const QModelIndex& index) const
     if ( !parent )
         return QModelIndex();
 
-    return createIndex(parent->layers().indexOf(layer), 0, parent);
+    return createIndex(parent->layerIndex(layer), 0, parent);
 }
 
 int LayerTree::rowCount(const QModelIndex& index) const
@@ -138,15 +140,15 @@ bool LayerTree::setData(const QModelIndex& index, const QVariant& value, int rol
 
 Qt::ItemFlags LayerTree::flags(const QModelIndex& index) const
 {
-    if ( !index.isValid() || !document_ )
+    if ( !document_ )
         return 0;
+
+    if ( !index.isValid() )
+        return Qt::ItemIsDropEnabled | Qt::ItemIsDragEnabled;
 
     auto flags = QAbstractItemModel::flags(index);
 
-    flags |= Qt::ItemIsEditable;
-
-    if ( index.column() == 0 )
-        flags |= Qt::ItemIsDragEnabled;
+    flags |= Qt::ItemIsEditable | Qt::ItemIsDropEnabled | Qt::ItemIsDragEnabled;
 
     return flags;
 }
@@ -206,12 +208,94 @@ QModelIndex LayerTree::index(Layer* layer) const
     if ( !parent_layer )
         parent_layer = document_;
 
-    int index = parent_layer->layers().indexOf(layer);
+    int index = parent_layer->layerIndex(layer);
 
     if ( index != -1 )
         return createIndex(index, 0, layer);
 
     return QModelIndex();
+}
+
+bool LayerTree::moveRows(const QModelIndex &sourceParent, int sourceRow, int count,
+                         const QModelIndex &destinationParent, int destinationChild)
+{
+    if ( count != 1 || !document_ )
+        return false;
+
+    LayerContainer* from = container(sourceParent);
+    LayerContainer* to = container(destinationParent);
+    Layer* subject = from->layer(sourceRow);
+
+    if ( !subject )
+        return false;
+
+    from->removeLayer(subject);
+    to->insertLayer(subject);
+
+    return true;
+}
+
+Qt::DropActions LayerTree::supportedDropActions() const
+{
+    return Qt::MoveAction;
+}
+
+Qt::DropActions LayerTree::supportedDragActions() const
+{
+    return Qt::MoveAction;
+}
+
+QStringList LayerTree::mimeTypes() const
+{
+    return {mime_type};
+}
+
+QMimeData* LayerTree::mimeData(const QModelIndexList & indexes) const
+{
+    if ( indexes.empty() || !indexes[0].isValid() )
+        return nullptr;
+
+    QMimeData* data = new QMimeData;
+    QByteArray encoded;
+    QDataStream stream(&encoded, QIODevice::WriteOnly);
+    stream << quintptr(document_) << quintptr(indexes[0].internalPointer());
+    data->setData(mime_type, encoded);
+    return data;
+}
+
+bool LayerTree::dropMimeData(const QMimeData *data, Qt::DropAction action,
+                             int row, int column, const QModelIndex &parent)
+{
+    if ( !data->hasFormat(mime_type) || !(supportedDropActions() & action) )
+        return false;
+
+
+    QByteArray encoded = data->data(mime_type);
+    QDataStream stream(&encoded, QIODevice::ReadOnly);
+
+    quintptr doc_int;
+    quintptr layer_int;
+    stream >> doc_int >> layer_int;
+    Document* source_doc = reinterpret_cast<Document*>(doc_int);
+    Layer* source_layer = reinterpret_cast<Layer*>(layer_int);
+
+    if ( stream.status() != QDataStream::Ok || source_doc != document_ )
+        return false;
+
+    LayerContainer* from = source_layer->parentLayer();
+    if ( !from )
+        from = source_layer->parentDocument();
+    LayerContainer* to = container(parent);
+
+    if ( from == to && from->layerIndex(source_layer) == row )
+        return false;
+
+    document_->undoStack().beginMacro("Move Layer");
+    from->removeLayer(source_layer);
+    to->insertLayer(source_layer, row);
+    document_->undoStack().endMacro();
+
+    return true;
 }
 
 } // namespace model

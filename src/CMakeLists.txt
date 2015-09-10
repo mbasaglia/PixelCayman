@@ -56,8 +56,9 @@ ui/tool_paint_widget.cpp
 view/graphics_item.hpp
 view/graphics_widget.hpp
 view/graphics_widget.cpp
-model/layer_tree.hpp
-model/layer_tree.cpp
+item/layer_tree.hpp
+item/layer_tree.cpp
+item/tree_view_accept_self.hpp
 misc/composition_mode.hpp
 misc/composition_mode.cpp
 main.cpp

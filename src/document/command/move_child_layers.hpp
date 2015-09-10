@@ -30,17 +30,16 @@ class Layer;
 namespace command {
 
 /**
- * \brief Cammand to change the direct children of a layer (or document)
+ * \brief Cammand to add a layer
  */
-class MoveChildLayers : public QUndoCommand
+class AddLayer : public QUndoCommand
 {
 public:
-    MoveChildLayers(
+    AddLayer(
         const QString&  name,
         LayerContainer* parent,
-        QList<Layer*>*  target,
-        QList<Layer*>   before,
-        QList<Layer*>   after,
+        Layer*          layer,
+        int             index,
         QUndoCommand*   parent_command = nullptr
     );
 
@@ -50,9 +49,22 @@ public:
 
 private:
     LayerContainer* parent;
-    QList<Layer*>*  target;
-    QList<Layer*>   before;
-    QList<Layer*>   after;
+    Layer*          layer;
+    int             index;
+};
+
+/**
+ * \brief Cammand to remove a layer
+ */
+class RemoveLayer : public AddLayer
+{
+public:
+    using AddLayer::AddLayer;
+
+    void undo() override { AddLayer::redo(); }
+
+    void redo() override { AddLayer::undo(); }
+
 };
 
 } // namespace command

@@ -48,9 +48,14 @@ Layer::~Layer()
         delete frame;
 }
 
-void Layer::onInsert(Layer* layer)
+void Layer::onInsertLayer(Layer* layer)
 {
     layer->parent_ = this;
+}
+
+void Layer::onRemoveLayer(Layer* layer)
+{
+    layer->parent_ = nullptr;
 }
 
 Layer* Layer::parentLayer()

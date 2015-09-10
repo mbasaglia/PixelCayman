@@ -35,7 +35,7 @@
 #include "color_palette_widget.hpp"
 #include "color_selector.hpp"
 #include "document/io.hpp"
-#include "model/layer_tree.hpp"
+#include "item/layer_tree.hpp"
 #include "settings.hpp"
 #include "style/dockwidget_style_icon.hpp"
 #include "tool/tool.hpp"

@@ -16,15 +16,16 @@ Contains the classes that are part of the document tree or that operate
 closely with it.
 
 Everything must be in the \c document namespace.
-*//**
+*/
+/**
 \dir src/misc
 \brief Miscellaneous utilities that don't belong anywhere else.
 
 Everything must be in the \c misc namespace.
 */
 /**
-\dir src/model
-\brief Qt Model implementations.
+\dir src/item
+\brief Qt Item Model/View implementations.
 
 All application-specific \c QAbstractItemModel specializations belong here.
 */

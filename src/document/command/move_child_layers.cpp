@@ -28,32 +28,26 @@
 namespace document {
 namespace command {
 
-MoveChildLayers::MoveChildLayers(
+AddLayer::AddLayer(
         const QString&  name,
         LayerContainer* parent,
-        QList<Layer*>*  target,
-        QList<Layer*>   before,
-        QList<Layer*>   after,
+        Layer*          layer,
+        int             index,
         QUndoCommand*   parent_command
     ) : QUndoCommand(name, parent_command),
         parent(parent),
-        target(target),
-        before(before),
-        after(after)
+        layer(layer),
+        index(index)
 {}
 
-void MoveChildLayers::undo()
+void AddLayer::undo()
 {
-    *target = before;
-
-    emit parent->layersChanged();
+    parent->removeLayerRaw(layer);
 }
 
-void MoveChildLayers::redo()
+void AddLayer::redo()
 {
-    *target = after;
-
-    emit parent->layersChanged();
+    parent->insertLayerRaw(layer, index);
 }
 
 } // namespace command

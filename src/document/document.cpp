@@ -112,7 +112,6 @@ void Document::registerElement(DocumentElement* element, const QMetaObject& meta
     }
 }
 
-
 const QUndoStack& Document::undoStack() const
 {
     return undo_stack;
@@ -128,10 +127,14 @@ void Document::pushCommand(QUndoCommand* command)
     undo_stack.push(command);
 }
 
-void Document::onInsert(Layer* layer)
+void Document::onInsertLayer(Layer* layer)
 {
     if ( layer->owner_ != this )
         layer->owner_ = this;
+}
+
+void Document::onRemoveLayer(Layer* layer)
+{
 }
 
 } // namespace document

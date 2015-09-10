@@ -24,7 +24,7 @@
 #include <QWidget>
 #include "document/document.hpp"
 #include "ui_layer_widget.h"
-#include "model/layer_tree.hpp"
+#include "item/layer_tree.hpp"
 
 /**
  * \brief Widget to display and edit the layers in a document
