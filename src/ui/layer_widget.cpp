@@ -72,6 +72,19 @@ LayerWidget::LayerWidget()
             else if ( index.isValid() )
                 emit activeLayerChanged( model.layer(index) );
         });
+
+    auto expand = [this](const QModelIndex& parent) {
+        for ( QModelIndex index = parent; index.isValid(); index = model.parent(index) )
+            tree_view->setExpanded(index, true);
+    };
+
+    connect(&model, &QAbstractItemModel::rowsInserted, expand);
+    connect(&model, &QAbstractItemModel::rowsRemoved, expand);;
+    connect(&model, &::model::LayerTree::rowDragged,
+    [this](const QModelIndex& index) {
+        tree_view->selectionModel()->setCurrentIndex(index,
+            QItemSelectionModel::SelectCurrent | QItemSelectionModel::Rows | QItemSelectionModel::Clear);
+    });
 }
 
 void LayerWidget::changeEvent(QEvent* event)
@@ -92,6 +105,7 @@ document::Document* LayerWidget::document() const
 void LayerWidget::setDocument(document::Document* document)
 {
     model.setDocument(document);
+    tree_view->setCurrentIndex(model.index(0, 0));
 }
 
 void LayerWidget::addLayer()
@@ -99,13 +113,17 @@ void LayerWidget::addLayer()
     bool ok = false;
     QString name = QInputDialog::getText(this, tr("New Layer"),
         tr("Layer name"), QLineEdit::Normal, tr("Layer"), &ok );
+
     if ( ok )
     {
         QModelIndex index = tree_view->currentIndex();
         QModelIndex parent = model.parent(index);
 
-        model.addLayer(name, index.isValid() ? index.row()+1 : -1, parent);
-        /// \todo Undo command
+        QModelIndex new_index =
+            model.addLayer(name, index.isValid() ? index.row()+1 : -1, parent);
+
+        if ( new_index.isValid() )
+            tree_view->setCurrentIndex(new_index);
     }
 }
 
@@ -113,7 +131,7 @@ void LayerWidget::removeLayer()
 {
     auto index = tree_view->currentIndex();
     if ( index.isValid() )
-        model.removeRow(index.row(), model.parent(index));
+        model.removeLayer(index.row(), model.parent(index));
 }
 
 document::Layer* LayerWidget::activeLayer() const

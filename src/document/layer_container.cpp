@@ -30,7 +30,8 @@ namespace document {
 LayerContainer::LayerContainer(const Metadata& metadata)
     : DocumentElement(metadata)
 {
-    connect(this, &Layer::layersChanged, this, &DocumentElement::edited);
+    connect(this, &LayerContainer::layerAdded,   this, &DocumentElement::edited);
+    connect(this, &LayerContainer::layerRemoved, this, &DocumentElement::edited);
 }
 
 void LayerContainer::apply(Visitor& visitor)
@@ -58,9 +59,10 @@ void LayerContainer::insertLayerRaw(Layer* layer, int index)
     else
         layers_.insert(index, layer);
 
-    connect(layer, &LayerContainer::layersChanged, this, &LayerContainer::layersChanged);
+    connect(layer, &LayerContainer::layerAdded, this, &LayerContainer::layerAdded);
+    connect(layer, &LayerContainer::layerRemoved, this, &LayerContainer::layerRemoved);
 
-    emit layersChanged();
+    emit layerAdded(layer, this, index);
 }
 
 Layer* LayerContainer::layer(int index)
@@ -93,7 +95,10 @@ bool LayerContainer::removeLayerRaw(Layer* layer)
 
     onRemoveLayer(layer);
 
-    emit layersChanged();
+    disconnect(layer, &LayerContainer::layerAdded, this, &LayerContainer::layerAdded);
+    disconnect(layer, &LayerContainer::layerRemoved, this, &LayerContainer::layerRemoved);
+
+    emit layerRemoved(layer, this, index);
 
     return true;
 }

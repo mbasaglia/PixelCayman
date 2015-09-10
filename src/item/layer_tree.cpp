@@ -163,19 +163,24 @@ void LayerTree::setDocument(::document::Document* document)
     if ( document == document_ )
         return;
 
+    if ( document_ )
+        disconnect(document_, nullptr, this, nullptr);
+
     if ( document )
-        connect(document, &::document::Document::layersChanged,
-                this, &LayerTree::updateLayers);
+    {
+        connect(document, &Document::layerAdded, this, &LayerTree::onLayerAdded);
+        connect(document, &Document::layerRemoved, this, &LayerTree::onLayerRemoved);
+    }
 
     beginResetModel();
     document_ = document;
     endResetModel();
 }
 
-bool LayerTree::addLayer(const QString& name, int row, const QModelIndex& parent)
+QModelIndex LayerTree::addLayer(const QString& name, int row, const QModelIndex& parent)
 {
     if ( !document_ )
-        return false;
+        return QModelIndex();
 
     Layer* new_layer = new Layer(document_, name);
 
@@ -184,14 +189,9 @@ bool LayerTree::addLayer(const QString& name, int row, const QModelIndex& parent
 
     container(parent)->insertLayer(new_layer, row);
 
-    return true;
+    return index(new_layer);
 }
 
-void LayerTree::updateLayers()
-{
-    beginResetModel();
-    endResetModel();
-}
 
 Layer* LayerTree::layer(const QModelIndex& index) const
 {
@@ -238,9 +238,15 @@ bool LayerTree::moveRows(const QModelIndex &sourceParent, int sourceRow, int cou
 
 bool LayerTree::removeRows(int row, int count, const QModelIndex &parent)
 {
-    if ( count != 1 )
-        return false;
+    return false;
+}
 
+/**
+ * \note This isn't implemented in removeRows() because QTreeView
+ *       calls it on drag start
+ */
+bool LayerTree::removeLayer(int row, const QModelIndex &parent)
+{
     LayerContainer* cont = container(parent);
     return cont->removeLayer(cont->layer(row));
 }
@@ -297,15 +303,40 @@ bool LayerTree::dropMimeData(const QMimeData *data, Qt::DropAction action,
         from = source_layer->parentDocument();
     LayerContainer* to = container(parent);
 
-    if ( from == to && from->layerIndex(source_layer) == row )
-        return false;
+
+    if ( from == to )
+    {
+        int layer_index = from->layerIndex(source_layer);
+        if ( layer_index == row || (row == -1 && layer_index == from->layers().size() - 1) )
+            return false;
+    }
 
     document_->undoStack().beginMacro("Move Layer");
     from->removeLayer(source_layer);
     to->insertLayer(source_layer, row);
     document_->undoStack().endMacro();
 
+    emit rowDragged(index(source_layer));
+
     return true;
 }
+
+void LayerTree::onLayerAdded(::document::Layer* layer, ::document::LayerContainer* parent, int index)
+{
+    beginInsertRows(parentIndex(layer), index, index);
+    endInsertRows();
+}
+
+void LayerTree::onLayerRemoved(::document::Layer* layer, ::document::LayerContainer* parent, int index)
+{
+    beginRemoveRows(parentIndex(layer), index, index);
+    endRemoveRows();
+}
+
+QModelIndex LayerTree::parentIndex(Layer* layer) const
+{
+    return layer && layer->parentLayer() ? index(layer->parentLayer()) : QModelIndex();
+}
+
 
 } // namespace model

@@ -65,6 +65,7 @@ public:
                   const QModelIndex &destinationParent, int destinationChild) override;
 
     bool removeRows(int row, int count, const QModelIndex &parent = QModelIndex()) override;
+    bool removeLayer(int row, const QModelIndex &parent = QModelIndex());
 
     Qt::DropActions supportedDropActions() const override;
     Qt::DropActions supportedDragActions() const override;
@@ -79,7 +80,7 @@ public:
     /**
      * \brief Add an empty layer with the given name as the row^th child of parent
      */
-    bool addLayer(const QString& name, int row, const QModelIndex& parent);
+    QModelIndex addLayer(const QString& name, int row, const QModelIndex& parent);
 
     /**
      * \brief Layer corresponding to the given index
@@ -91,8 +92,17 @@ public:
      */
     QModelIndex index(::document::Layer* layer) const;
 
+    /**
+     * \brief Index corresponding to the parent of the given layer
+     */
+    QModelIndex parentIndex(::document::Layer* layer) const;
+
 private slots:
-    void updateLayers();
+    void onLayerAdded(::document::Layer* layer, ::document::LayerContainer* parent, int index);
+    void onLayerRemoved(::document::Layer* layer, ::document::LayerContainer* parent, int index);
+
+signals:
+    void rowDragged(const QModelIndex& destination);
 
 private:
     ::document::LayerContainer* container(const QModelIndex& index) const;

@@ -48,8 +48,6 @@ Document::Document(const QImage& image, const QString& file_name)
     Layer* layer = new Layer(this, QFileInfo(file_name).baseName());
     layer->addFrameImage(image);
     insertLayerRaw(layer, -1);
-
-    connect(this, &Document::layersChanged, this, &DocumentElement::edited);
 }
 
 Document::~Document()

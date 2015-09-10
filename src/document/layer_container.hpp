@@ -97,11 +97,13 @@ protected:
 
 signals:
     /**
-     * \brief Emitted on operations that changes the layer layout
-     *
-     * Eg: New layers added, re-ordered etc
+     * \brief Emitted when a layer has been added
      */
-    void layersChanged();
+    void layerAdded(Layer* layer, LayerContainer* parent, int index);
+    /**
+     * \brief Emitted when a layer has been removed
+     */
+    void layerRemoved(Layer* layer, LayerContainer* parent, int index);
 
 private:
     QList<Layer*> layers_;
