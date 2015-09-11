@@ -22,7 +22,7 @@
  *
  */
 
-#include "paint.hpp"
+#include "brush.hpp"
 
 #include "view/graphics_widget.hpp"
 #include "draw.hpp"
@@ -31,44 +31,54 @@
 
 namespace tool {
 
-Paint::Paint()
+
+std::weak_ptr<Brush::Widget> Brush::options_widget_weak;
+
+Brush::Brush()
 {
-    options_widget = new Widget(this);
+    if ( options_widget_weak.expired() )
+    {
+        options_widget = std::make_shared<Widget>();
+        options_widget_weak = options_widget;
+    }
+    else
+    {
+        options_widget = options_widget_weak.lock();
+    }
 
     ballBrush(1, 0);
 }
 
-Paint::~Paint()
+Brush::~Brush()
 {
-    delete options_widget;
 }
 
-QIcon Paint::icon() const
+QIcon Brush::icon() const
 {
     return QIcon::fromTheme("draw-brush");
 }
 
-QString Paint::name() const
+QString Brush::name() const
 {
-    return QObject::tr("Paint");
+    return QObject::tr("Brush");
 }
 
-QString Paint::description() const
+QString Brush::description() const
 {
-    return {}; /// \todo
+    return QObject::tr("Draw with the current color");
 }
 
-bool Paint::initialize(view::GraphicsWidget* widget)
+bool Brush::initialize(view::GraphicsWidget* widget)
 {
     return true;
 }
 
-void Paint::finalize(view::GraphicsWidget* widget)
+void Brush::finalize(view::GraphicsWidget* widget)
 {
     end_draw(widget);
 }
 
-void Paint::mousePressEvent(const QMouseEvent* event, view::GraphicsWidget* widget)
+void Brush::mousePressEvent(const QMouseEvent* event, view::GraphicsWidget* widget)
 {
     draw_line = event->modifiers() & Qt::ShiftModifier;
 
@@ -83,7 +93,7 @@ void Paint::mousePressEvent(const QMouseEvent* event, view::GraphicsWidget* widg
     }
 }
 
-void Paint::mouseMoveEvent(const QMouseEvent* event, view::GraphicsWidget* widget)
+void Brush::mouseMoveEvent(const QMouseEvent* event, view::GraphicsWidget* widget)
 {
     /// \todo Allow lines click by click instead of only via draggin (?)
     draw_line = (event->buttons() & Qt::LeftButton) &&
@@ -105,7 +115,7 @@ void Paint::mouseMoveEvent(const QMouseEvent* event, view::GraphicsWidget* widge
         draw(widget);
 }
 
-void Paint::mouseReleaseEvent(const QMouseEvent* event, view::GraphicsWidget* widget)
+void Brush::mouseReleaseEvent(const QMouseEvent* event, view::GraphicsWidget* widget)
 {
     if ( !draw_line )
         line.setP1(line.p2());
@@ -123,7 +133,7 @@ void Paint::mouseReleaseEvent(const QMouseEvent* event, view::GraphicsWidget* wi
     line.setP1(line.p2());
 }
 
-void Paint::drawForeground(QPainter* painter, view::GraphicsWidget* widget)
+void Brush::drawForeground(QPainter* painter, view::GraphicsWidget* widget)
 {
     QPen pen(Qt::white, 2);
     pen.setCosmetic(true);
@@ -137,44 +147,60 @@ void Paint::drawForeground(QPainter* painter, view::GraphicsWidget* widget)
     drawForegroundImpl(painter);
 }
 
-QWidget* Paint::optionsWidget()
+QWidget* Brush::optionsWidget()
 {
-    return options_widget;
+    options_widget->setTool(this);
+    return options_widget.get();
 }
 
-QCursor Paint::cursor(const view::GraphicsWidget* widget) const
+QCursor Brush::cursor(const view::GraphicsWidget* widget) const
 {
     return QCursor(Qt::CrossCursor);
 }
 
-void Paint::draw(view::GraphicsWidget* widget)
+QColor Brush::color(view::GraphicsWidget* widget) const
+{
+    return widget->color();
+}
+
+QPainter::CompositionMode Brush::blend(view::GraphicsWidget*) const
+{
+    return QPainter::CompositionMode_Source;
+}
+
+void Brush::draw(view::GraphicsWidget* widget)
 {
     document::Image* image = activeImage(widget);
     if ( !image )
         return;
 
     QPainter painter(&image->image());
-    painter.setCompositionMode(QPainter::CompositionMode_Source);
-    painter.setBrush(widget->color());
+    painter.setCompositionMode(blend(widget));
+    painter.setBrush(color(widget));
     painter.setPen(Qt::NoPen);
     ::draw::line(line, [this, &painter](const QPoint& point){
         painter.drawPath(brush_path.translated(point));
     });
 }
 
-void Paint::begin_draw(view::GraphicsWidget* widget)
+QString Brush::actionName(view::GraphicsWidget*) const
 {
-    if ( document::Image* image = activeImage(widget) )
-        image->beginPainting(document::Image::tr("Paint"));
+    return QObject::tr("Paint");
 }
 
-void Paint::end_draw(view::GraphicsWidget* widget)
+void Brush::begin_draw(view::GraphicsWidget* widget)
+{
+    if ( document::Image* image = activeImage(widget) )
+        image->beginPainting(actionName(widget));
+}
+
+void Brush::end_draw(view::GraphicsWidget* widget)
 {
     if ( document::Image* image = activeImage(widget) )
         image->endPainting();
 }
 
-document::Image* Paint::activeImage(view::GraphicsWidget* widget)
+document::Image* Brush::activeImage(view::GraphicsWidget* widget)
 {
     if ( !widget )
         return nullptr;
@@ -187,7 +213,7 @@ document::Image* Paint::activeImage(view::GraphicsWidget* widget)
 }
 
 
-void Paint::drawForegroundImpl(QPainter* painter)
+void Brush::drawForegroundImpl(QPainter* painter)
 {
     if ( draw_line && line.p1() != line.p2() )
     {
@@ -198,7 +224,7 @@ void Paint::drawForegroundImpl(QPainter* painter)
     painter->drawPath(brush_path.translated(line.p2()));
 }
 
-void Paint::ballBrush(int diameter, qreal p_norm)
+void Brush::ballBrush(int diameter, qreal p_norm)
 {
     QPoint center(diameter/2, diameter/2);
 
@@ -232,7 +258,7 @@ void Paint::ballBrush(int diameter, qreal p_norm)
     options_widget->updatePreview();
 }
 
-void Paint::rectangleBrush(const QSize& size)
+void Brush::rectangleBrush(const QSize& size)
 {
     QRect rect(QPoint(0,0), size);
     brush_path = QPainterPath();

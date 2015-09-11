@@ -21,12 +21,12 @@
 #ifndef PIXEL_CAYMAN_TOOL_PAINT_WIDGET_HPP
 #define PIXEL_CAYMAN_TOOL_PAINT_WIDGET_HPP
 
-#include "tool/paint.hpp"
+#include "tool/brush.hpp"
 #include "ui_tool_paint_widget.h"
 
 namespace tool {
 
-class Paint::Widget : public QWidget, private Ui_ToolPaintWidget
+class Brush::Widget : public QWidget, private Ui_ToolPaintWidget
 {
     Q_OBJECT
 
@@ -40,7 +40,10 @@ private:
     };
 
 public:
-    explicit Widget(Paint* tool);
+    explicit Widget(Brush* tool = nullptr);
+
+    void setImageBrushEnabled(bool enabled);
+    void setTool(Brush* tool);
 
     void updatePreview();
 
@@ -52,8 +55,7 @@ private slots:
 
 private:
     qreal ratio = 1;
-    Paint* tool;
-
+    Brush* tool;
 };
 
 

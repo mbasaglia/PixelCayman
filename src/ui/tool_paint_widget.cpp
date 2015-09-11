@@ -24,10 +24,11 @@
 
 #include "tool_paint_widget.hpp"
 #include "util.hpp"
+#include <QStandardItemModel>
 
 namespace tool {
 
-Paint::Widget::Widget(Paint* tool)
+Brush::Widget::Widget(Brush* tool)
     : tool(tool)
 {
     setupUi(this);
@@ -39,7 +40,7 @@ Paint::Widget::Widget(Paint* tool)
     });
 }
 
-void Paint::Widget::changeEvent(QEvent* event)
+void Brush::Widget::changeEvent(QEvent* event)
 {
     if ( event->type() == QEvent::LanguageChange )
     {
@@ -49,29 +50,37 @@ void Paint::Widget::changeEvent(QEvent* event)
     QWidget::changeEvent(event);
 }
 
-void Paint::Widget::updatePreview()
+void Brush::Widget::updatePreview()
 {
     QPixmap pixmap(label_preview->size());
     pixmap.fill(Qt::transparent);
-    QPainter painter(&pixmap);
-    painter.setBrush(Qt::red);
-    painter.setPen(QPen(Qt::white));
-    painter.translate(pixmap.rect().center());
 
-    qreal size = qMax(tool->brush_mask.width(), tool->brush_mask.height());
-    qreal pixsize = qMax(pixmap.width(), pixmap.height());
-    if ( size*2 > pixsize )
-        painter.scale(pixsize/size, pixsize/size);
-    else
-        painter.scale(2 ,2);
+    if ( tool )
+    {
+        QPainter painter(&pixmap);
+        painter.setBrush(Qt::red);
+        painter.setPen(QPen(Qt::white));
+        painter.translate(pixmap.rect().center());
 
-    painter.drawPath(tool->brush_path);
-    painter.drawImage(tool->brush_mask.offset(), tool->brush_mask);
+        qreal size = qMax(tool->brush_mask.width(), tool->brush_mask.height());
+        qreal pixsize = qMax(pixmap.width(), pixmap.height());
+        if ( size*2 > pixsize )
+            painter.scale(pixsize/size, pixsize/size);
+        else
+            painter.scale(2 ,2);
+
+        painter.drawPath(tool->brush_path);
+        painter.drawImage(tool->brush_mask.offset(), tool->brush_mask);
+    }
+
     label_preview->setPixmap(pixmap);
 }
 
-void Paint::Widget::updateBrush()
+void Brush::Widget::updateBrush()
 {
+    if ( !tool )
+        return;
+
     switch ( combo_shapes->currentIndex() )
     {
         case Rectangle:
@@ -87,6 +96,28 @@ void Paint::Widget::updateBrush()
             /// \todo
             return;
     }
+}
+
+void Brush::Widget::setImageBrushEnabled(bool enabled)
+{
+    auto model = qobject_cast<QStandardItemModel*>(combo_shapes->model());
+
+    if ( enabled )
+    {
+        model->item(Image)->setFlags(QStandardItem().flags());
+    }
+    else
+    {
+        model->item(Image)->setFlags(Qt::NoItemFlags);
+        if ( combo_shapes->currentIndex() == Image )
+            combo_shapes->setCurrentIndex(Rectangle);
+    }
+}
+
+void Brush::Widget::setTool(Brush* tool)
+{
+    this->tool = tool;
+    updateBrush();
 }
 
 } // namespace tool

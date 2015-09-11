@@ -43,8 +43,9 @@ style/slider_delegate.hpp
 style/enum_combo_delegate.hpp
 style/itemview_style_rowdrop.hpp
 tool/tool.hpp
-tool/paint.hpp
-tool/paint.cpp
+tool/brush.hpp
+tool/brush.cpp
+tool/eraser.hpp
 ui/color_editor.cpp
 ui/color_editor.hpp
 ui/layer_widget.hpp

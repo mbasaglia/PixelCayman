@@ -21,6 +21,8 @@
 #ifndef PIXEL_CAYMAN_TOOL_PAINT_HPP
 #define PIXEL_CAYMAN_TOOL_PAINT_HPP
 
+#include <memory>
+
 #include "tool.hpp"
 #include "document/image.hpp"
 
@@ -29,11 +31,11 @@
 
 namespace tool {
 
-class Paint : public Tool
+class Brush : public Tool
 {
 public:
-    Paint();
-    ~Paint();
+    Brush();
+    ~Brush();
 
     QIcon icon() const override;
     QString name() const override;
@@ -54,7 +56,6 @@ protected:
 
     document::Image* activeImage(view::GraphicsWidget* widget);
 
-private:
     /**
      * \brief Set the brush to use a p-norm ball with the given diameter
      */
@@ -62,6 +63,24 @@ private:
 
     void rectangleBrush(const QSize& size);
 
+    /**
+     * \brief The color to be used by the tool
+     */
+    virtual QColor color(view::GraphicsWidget* widget) const;
+
+    /**
+     * \brief The color to be used by the tool
+     */
+    virtual QPainter::CompositionMode blend(view::GraphicsWidget* widget) const;
+
+    /**
+     * \brief Name of the action performed by the tool (Shown in the undo command)
+     */
+    virtual QString actionName(view::GraphicsWidget* widget) const;
+
+    class Widget;
+
+private:
     void drawForegroundImpl(QPainter* painter);
 
     QLine  line;
@@ -70,8 +89,8 @@ private:
     QImage       brush_mask;
     QPainterPath brush_path;
 
-    class Widget;
-    Widget* options_widget;
+    std::shared_ptr<Widget> options_widget;
+    static std::weak_ptr<Widget> options_widget_weak;
 };
 
 } // namespace tool
