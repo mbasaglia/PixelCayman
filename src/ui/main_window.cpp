@@ -182,6 +182,7 @@ bool MainWindow::save(int tab, bool prompt)
             << tr("Cayman Files (*.mela)")
             /// \todo split "All Bitmap Images" in png etc
             << tr("All Bitmap Images (%1)").arg(image_formats)
+            << tr("Ansi text (*.ansi *.txt)")
             << tr("All Files (*)");
 
         /// \todo if doc->filename is a bitmap, select that filter
