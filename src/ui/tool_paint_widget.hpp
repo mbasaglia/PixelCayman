@@ -44,6 +44,7 @@ public:
 
     void setImageBrushEnabled(bool enabled);
     void setTool(Brush* tool);
+    Brush* tool() const;
 
     void updatePreview();
 
@@ -55,7 +56,7 @@ private slots:
 
 private:
     qreal ratio = 1;
-    Brush* tool;
+    Brush* tool_;
 };
 
 

@@ -65,6 +65,7 @@ MainWindow::MainWindow(QWidget* parent)
 MainWindow::~MainWindow()
 {
     p->saveSettings();
+    p->dock_tool_options->setWidget(nullptr);
     delete p;
 }
 

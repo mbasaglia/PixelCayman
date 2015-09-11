@@ -46,6 +46,7 @@ tool/tool.hpp
 tool/brush.hpp
 tool/brush.cpp
 tool/eraser.hpp
+tool/registry.hpp
 ui/color_editor.cpp
 ui/color_editor.hpp
 ui/layer_widget.hpp

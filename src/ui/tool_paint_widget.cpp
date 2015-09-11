@@ -29,7 +29,7 @@
 namespace tool {
 
 Brush::Widget::Widget(Brush* tool)
-    : tool(tool)
+    : tool_(tool)
 {
     setupUi(this);
 
@@ -55,22 +55,22 @@ void Brush::Widget::updatePreview()
     QPixmap pixmap(label_preview->size());
     pixmap.fill(Qt::transparent);
 
-    if ( tool )
+    if ( tool_ )
     {
         QPainter painter(&pixmap);
         painter.setBrush(Qt::red);
         painter.setPen(QPen(Qt::white));
         painter.translate(pixmap.rect().center());
 
-        qreal size = qMax(tool->brush_mask.width(), tool->brush_mask.height());
+        qreal size = qMax(tool_->brush_mask.width(), tool_->brush_mask.height());
         qreal pixsize = qMax(pixmap.width(), pixmap.height());
         if ( size*2 > pixsize )
             painter.scale(pixsize/size, pixsize/size);
         else
             painter.scale(2 ,2);
 
-        painter.drawPath(tool->brush_path);
-        painter.drawImage(tool->brush_mask.offset(), tool->brush_mask);
+        painter.drawPath(tool_->brush_path);
+        painter.drawImage(tool_->brush_mask.offset(), tool_->brush_mask);
     }
 
     label_preview->setPixmap(pixmap);
@@ -78,19 +78,19 @@ void Brush::Widget::updatePreview()
 
 void Brush::Widget::updateBrush()
 {
-    if ( !tool )
+    if ( !tool_ )
         return;
 
     switch ( combo_shapes->currentIndex() )
     {
         case Rectangle:
-            tool->rectangleBrush(QSize(spin_width->value(), spin_height->value()));
+            tool_->rectangleBrush(QSize(spin_width->value(), spin_height->value()));
             return;
         case Circle:
-            tool->ballBrush(spin_diameter->value(), 2);
+            tool_->ballBrush(spin_diameter->value(), 2);
             return;
         case SuperCircle:
-            tool->ballBrush(spin_super_diameter->value(), spin_p_norm->value());
+            tool_->ballBrush(spin_super_diameter->value(), spin_p_norm->value());
             return;
         case Image:
             /// \todo
@@ -116,8 +116,13 @@ void Brush::Widget::setImageBrushEnabled(bool enabled)
 
 void Brush::Widget::setTool(Brush* tool)
 {
-    this->tool = tool;
+    this->tool_ = tool;
     updateBrush();
+}
+
+Brush* Brush::Widget::tool() const
+{
+    return tool_;
 }
 
 } // namespace tool

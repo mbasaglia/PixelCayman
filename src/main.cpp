@@ -28,8 +28,7 @@
 #include "info.hpp"
 #include "settings.hpp"
 #include "data.hpp"
-#include "tool/brush.hpp"
-#include "tool/eraser.hpp"
+#include "tool/registry.hpp"
 
 int main(int argc, char** argv)
 {
@@ -48,10 +47,8 @@ int main(int argc, char** argv)
         QIcon::setThemeName("pixel-cayman");*/
 
         MainWindow window;
-        tool::Brush b;
-        window.addTool(&b);
-        tool::Eraser e;
-        window.addTool(&e);
+        for ( const auto& tool : ::tool::Registry::instance().tools() )
+            window.addTool(tool.get());
 
         window.show();
         return app.exec();

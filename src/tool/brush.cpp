@@ -24,33 +24,38 @@
 
 #include "brush.hpp"
 
+#include "eraser.hpp"
 #include "view/graphics_widget.hpp"
 #include "draw.hpp"
 #include "math.hpp"
 #include "ui/tool_paint_widget.hpp"
+#include "registry.hpp"
+#include <QApplication>
 
 namespace tool {
 
+static Registry::StaticRegistrant<Brush> register_brush;
+static Registry::StaticRegistrant<Eraser> register_eraser;
 
-std::weak_ptr<Brush::Widget> Brush::options_widget_weak;
+Brush::Widget* Brush::options_widget = nullptr;
+int Brush::options_widget_counter = 0;
 
 Brush::Brush()
 {
-    if ( options_widget_weak.expired() )
-    {
-        options_widget = std::make_shared<Widget>();
-        options_widget_weak = options_widget;
-    }
-    else
-    {
-        options_widget = options_widget_weak.lock();
-    }
+    options_widget_counter++;
 
     ballBrush(1, 0);
 }
 
 Brush::~Brush()
 {
+    options_widget_counter--;
+
+    if ( !options_widget_counter )
+    {
+        delete options_widget;
+        options_widget = nullptr;
+    }
 }
 
 QIcon Brush::icon() const
@@ -149,8 +154,18 @@ void Brush::drawForeground(QPainter* painter, view::GraphicsWidget* widget)
 
 QWidget* Brush::optionsWidget()
 {
+    if ( !options_widget )
+    {
+        options_widget = new Widget;
+        // pretty much impossible to keep ownership of widgets
+        // once they are inserted in a layout
+        QObject::connect(options_widget, &QObject::destroyed, []{
+            options_widget = nullptr;
+        });
+    }
+
     options_widget->setTool(this);
-    return options_widget.get();
+    return options_widget;
 }
 
 QCursor Brush::cursor(const view::GraphicsWidget* widget) const
@@ -255,7 +270,9 @@ void Brush::ballBrush(int diameter, qreal p_norm)
     QPainterPath new_path;
     new_path.addRegion(brush_region);
     brush_path = new_path.simplified();
-    options_widget->updatePreview();
+
+    if ( options_widget && options_widget->tool() == this )
+        options_widget->updatePreview();
 }
 
 void Brush::rectangleBrush(const QSize& size)
@@ -267,7 +284,9 @@ void Brush::rectangleBrush(const QSize& size)
     brush_mask = QImage(size, QImage::Format_ARGB32_Premultiplied);
     brush_mask.fill(Qt::black);
     brush_mask.setOffset(-rect.center());
-    options_widget->updatePreview();
+
+    if ( options_widget && options_widget->tool() == this )
+        options_widget->updatePreview();
 }
 
 } // namespace tool

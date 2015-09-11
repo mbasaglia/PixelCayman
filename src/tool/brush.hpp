@@ -21,8 +21,6 @@
 #ifndef PIXEL_CAYMAN_TOOL_PAINT_HPP
 #define PIXEL_CAYMAN_TOOL_PAINT_HPP
 
-#include <memory>
-
 #include "tool.hpp"
 #include "document/image.hpp"
 
@@ -89,8 +87,21 @@ private:
     QImage       brush_mask;
     QPainterPath brush_path;
 
-    std::shared_ptr<Widget> options_widget;
-    static std::weak_ptr<Widget> options_widget_weak;
+    /**
+     * \brief Reference conter for \c options_widget.
+     *
+     * These are static to allow lazy initialization of \c options_widget.
+     * It can't be constructed before QApplication anyway,
+     * and tools might end up in static libraries.
+     */
+    static int options_widget_counter;
+    /**
+     * \brief Option widget, shared across all instances and derived classes
+     *
+     * Will be initialized on the first call to optionsWidget() and
+     * destructed when the last Brush is destroyed
+     */
+    static Widget* options_widget;
 };
 
 } // namespace tool
