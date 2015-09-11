@@ -49,11 +49,11 @@ public:
      * If returns true, the document's children will be visited
      * and after that, leave() will be called for that document
      */
-    virtual bool enter(Document& document) = 0;
+    virtual bool enter(Document& document) { return false; }
     /**
      * \brief Finish processing a document
      */
-    virtual void leave(Document& document) = 0;
+    virtual void leave(Document& document) {}
 
     /**
      * \brief Begin processing a layer
@@ -63,16 +63,16 @@ public:
      * If returns true, the layer's children will be visited
      * and after that, leave() will be called for that layer
      */
-    virtual bool enter(Layer& layer) = 0;
+    virtual bool enter(Layer& layer) { return false; }
     /**
      * \brief Finish processing a layer
      */
-    virtual void leave(Layer& layer) = 0;
+    virtual void leave(Layer& layer) {}
 
     /**
      * \brief Process an image
      */
-    virtual void visit(Image& image) = 0;
+    virtual void visit(Image& image) {}
 
     /**
      * \brief Begin processing an animation
@@ -82,16 +82,16 @@ public:
      * If returns true, the animation's children will be visited
      * and after that, leave() will be called for that animation
      */
-    virtual bool enter(Animation& animation) = 0;
+    virtual bool enter(Animation& animation)  { return false; }
     /**
      * \brief Finish processing an animation
      */
-    virtual void leave(Animation& animation) = 0;
+    virtual void leave(Animation& animation) {}
 
     /**
      * \brief Process a frame
      */
-    virtual void visit(Frame& frame) = 0;
+    virtual void visit(Frame& frame) {}
 };
 
 namespace visitor {
@@ -109,36 +109,15 @@ public:
         return true;
     }
 
-    void leave(Document& document) override
-    {
-    }
-
     bool enter(Layer& layer) override
     {
         return true;
-    }
-
-    void leave(Layer& layer) override
-    {
     }
 
     void visit(Image& image) override
     {
         if ( image.frame() == frame_ )
             render(image);
-    }
-
-    bool enter(Animation& animation) override
-    {
-        return false;
-    }
-
-    void leave(Animation& animation) override
-    {
-    }
-
-    void visit(Frame& frame)
-    {
     }
 
 protected:
@@ -188,6 +167,46 @@ private:
     QPainter* painter;
     bool full_alpha;
     QPainter::CompositionMode blend;
+};
+
+
+/**
+ * \brief Searches for a layer by name
+ */
+class FindLayer : public Visitor
+{
+public:
+    explicit FindLayer(const QString& name) : name_(name) {}
+
+    bool enter(Document& document) override
+    {
+        found_ = nullptr;
+        return true;
+    }
+
+    bool enter(Layer& layer) override
+    {
+        if ( layer.name() == name_ )
+            found_ = &layer;
+
+        return !found_;
+    }
+
+    Layer* found() const
+    {
+        return found_;
+    }
+
+    static Layer* find(Document& document, const QString& name)
+    {
+        FindLayer vis(name);
+        document.apply(vis);
+        return vis.found_;
+    }
+
+private:
+    QString name_;
+    Layer*  found_ = nullptr;
 };
 
 } // namespace visitor

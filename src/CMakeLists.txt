@@ -54,6 +54,7 @@ ui/main_window.hpp
 ui/main_window_p.hpp
 ui/tool_paint_widget.hpp
 ui/tool_paint_widget.cpp
+ui/dialog_layer.hpp
 view/graphics_item.hpp
 view/graphics_widget.hpp
 view/graphics_widget.cpp
@@ -85,6 +86,7 @@ ui/current_color.ui
 ui/main_window.ui
 ui/layer_widget.ui
 ui/tool_paint_widget.ui
+ui/dialog_layer.ui
 )
 qt5_wrap_ui(SOURCES ${UI_FILES})
 #endif()

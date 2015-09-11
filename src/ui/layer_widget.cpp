@@ -29,6 +29,8 @@
 #include "style/slider_delegate.hpp"
 #include "style/enum_combo_delegate.hpp"
 #include "misc/composition_mode.hpp"
+#include "document/visitor.hpp"
+#include "dialog_layer.hpp"
 
 LayerWidget::LayerWidget()
 {
@@ -110,20 +112,50 @@ void LayerWidget::setDocument(document::Document* document)
 
 void LayerWidget::addLayer()
 {
-    bool ok = false;
-    QString name = QInputDialog::getText(this, tr("New Layer"),
-        tr("Layer name"), QLineEdit::Normal, tr("Layer"), &ok );
+    QString name_template = tr("Layer%1");
 
-    if ( ok )
+    QString default_name = name_template.arg("");
+
+    using ::document::visitor::FindLayer;
+    for ( int i = 1; FindLayer::find(*model.document(), default_name); i++)
+    {
+        default_name = name_template.arg(i);
+    }
+
+    DialogLayer dialog(this);
+    dialog.setDefaultName(default_name);
+
+    if ( dialog.exec() )
     {
         QModelIndex index = tree_view->currentIndex();
-        QModelIndex parent = model.parent(index);
+        QModelIndex parent;
+        int row = -1;
+        switch ( dialog.position() )
+        {
+            case DialogLayer::Above:
+                parent = model.parent(index);
+                row = index.isValid() ? index.row() : 0;
+                break;
+            case DialogLayer::Below:
+                parent = model.parent(index);
+                row = index.isValid() ? index.row()+1 : -1;
+                break;
+            case DialogLayer::Top:
+                parent = QModelIndex();
+                row = 0;
+                break;
+            case DialogLayer::Child:
+                parent = index;
+                row = 0;
+                break;
+        }
 
-        QModelIndex new_index =
-            model.addLayer(name, index.isValid() ? index.row() : -1, parent);
-
+        QModelIndex new_index = model.addLayer(dialog.name(), row, parent);
         if ( new_index.isValid() )
+        {
             tree_view->setCurrentIndex(new_index);
+            /// \todo set color
+        }
     }
 }
 
