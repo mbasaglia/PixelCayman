@@ -108,4 +108,9 @@ int LayerContainer::layerIndex(Layer* layer) const
     return layers_.indexOf(layer);
 }
 
+int LayerContainer::countLayers() const
+{
+    return layers_.size();
+}
+
 } // namespace document

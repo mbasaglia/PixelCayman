@@ -120,7 +120,7 @@ void LayerWidget::addLayer()
         QModelIndex parent = model.parent(index);
 
         QModelIndex new_index =
-            model.addLayer(name, index.isValid() ? index.row()+1 : -1, parent);
+            model.addLayer(name, index.isValid() ? index.row() : -1, parent);
 
         if ( new_index.isValid() )
             tree_view->setCurrentIndex(new_index);

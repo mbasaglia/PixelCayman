@@ -56,7 +56,7 @@ QModelIndex LayerTree::index(int row, int column, const QModelIndex& parent) con
 
     LayerContainer* parent_container = container(parent);
 
-    if ( Layer* layer = parent_container->layer(row) )
+    if ( Layer* layer = reverseLayer(parent_container, row) )
         return createIndex(row, column, layer);
 
     return QModelIndex();
@@ -81,7 +81,7 @@ int LayerTree::rowCount(const QModelIndex& index) const
     if ( !document_ )
         return 0;
 
-    return container(index)->layers().size();
+    return container(index)->countLayers();
 }
 
 QVariant LayerTree::data(const QModelIndex& index, int role) const
@@ -187,7 +187,8 @@ QModelIndex LayerTree::addLayer(const QString& name, int row, const QModelIndex&
     /// \todo Should add a frame image for every frame (should use a visitor for that)
     new_layer->addFrameImage();
 
-    container(parent)->insertLayer(new_layer, row);
+    auto cont = container(parent);
+    cont->insertLayer(new_layer, reverseInsertRowNumber(cont, row));
 
     return index(new_layer);
 }
@@ -209,7 +210,7 @@ QModelIndex LayerTree::index(Layer* layer) const
     if ( !parent_layer )
         parent_layer = document_;
 
-    int index = parent_layer->layerIndex(layer);
+    int index = reverseLayerIndex(parent_layer, layer);
 
     if ( index != -1 )
         return createIndex(index, 0, layer);
@@ -225,13 +226,15 @@ bool LayerTree::moveRows(const QModelIndex &sourceParent, int sourceRow, int cou
 
     LayerContainer* from = container(sourceParent);
     LayerContainer* to = container(destinationParent);
-    Layer* subject = from->layer(sourceRow);
+    Layer* subject = reverseLayer(from, sourceRow);
 
     if ( !subject )
         return false;
 
+    document_->undoStack().beginMacro("Move Layer");
     from->removeLayer(subject);
-    to->insertLayer(subject);
+    to->insertLayer(subject, reverseInsertRowNumber(to, destinationChild));
+    document_->undoStack().endMacro();
 
     return true;
 }
@@ -248,7 +251,7 @@ bool LayerTree::removeRows(int row, int count, const QModelIndex &parent)
 bool LayerTree::removeLayer(int row, const QModelIndex &parent)
 {
     LayerContainer* cont = container(parent);
-    return cont->removeLayer(cont->layer(row));
+    return cont->removeLayer(reverseLayer(cont, row));
 }
 
 Qt::DropActions LayerTree::supportedDropActions() const
@@ -304,16 +307,21 @@ bool LayerTree::dropMimeData(const QMimeData *data, Qt::DropAction action,
     LayerContainer* to = container(parent);
 
 
+    int layer_index = from->layerIndex(source_layer);
+    int insert_row = reverseInsertRowNumber(to, row);
     if ( from == to )
     {
-        int layer_index = from->layerIndex(source_layer);
-        if ( layer_index == row || (row == -1 && layer_index == from->layers().size() - 1) )
+        // Do nothing if dropping back to the same spot
+        if ( layer_index == insert_row || (insert_row == -1 && layer_index == from->countLayers() - 1) )
             return false;
+        // Take in account that the element will be removed from the same parent
+        if ( layer_index < insert_row )
+            insert_row -= 1;
     }
 
     document_->undoStack().beginMacro("Move Layer");
     from->removeLayer(source_layer);
-    to->insertLayer(source_layer, row);
+    to->insertLayer(source_layer, insert_row);
     document_->undoStack().endMacro();
 
     emit rowDragged(index(source_layer));
@@ -323,13 +331,13 @@ bool LayerTree::dropMimeData(const QMimeData *data, Qt::DropAction action,
 
 void LayerTree::onLayerAdded(::document::Layer* layer, ::document::LayerContainer* parent, int index)
 {
-    beginInsertRows(parentIndex(layer), index, index);
+    beginInsertRows(parentIndex(layer), reverseRowNumber(parent, index), reverseRowNumber(parent, index));
     endInsertRows();
 }
 
 void LayerTree::onLayerRemoved(::document::Layer* layer, ::document::LayerContainer* parent, int index)
 {
-    beginRemoveRows(parentIndex(layer), index, index);
+    beginRemoveRows(parentIndex(layer), reverseRowNumber(parent, index), reverseRowNumber(parent, index));
     endRemoveRows();
 }
 
@@ -338,5 +346,28 @@ QModelIndex LayerTree::parentIndex(Layer* layer) const
     return layer && layer->parentLayer() ? index(layer->parentLayer()) : QModelIndex();
 }
 
+int LayerTree::reverseRowNumber(LayerContainer* parent, int row) const
+{
+    if ( row < 0 || row >= parent->countLayers() )
+        return 0;
+    return parent->countLayers() - 1 - row;
+}
+
+int LayerTree::reverseInsertRowNumber(LayerContainer* parent, int row) const
+{
+    if ( row < 0 || row >= parent->countLayers() )
+        return 0;
+    return parent->countLayers() - row;
+}
+
+Layer* LayerTree::reverseLayer(LayerContainer* parent, int row) const
+{
+    return parent->layer(reverseRowNumber(parent, row));
+}
+
+int LayerTree::reverseLayerIndex(LayerContainer* parent, Layer* layer) const
+{
+    return reverseRowNumber(parent, parent->layerIndex(layer));
+}
 
 } // namespace model

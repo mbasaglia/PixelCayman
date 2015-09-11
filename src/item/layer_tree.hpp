@@ -106,6 +106,14 @@ signals:
 
 private:
     ::document::LayerContainer* container(const QModelIndex& index) const;
+    /**
+     * \brief Inverts a row number so it would be the equivalent index
+     *        if the layers were reversed
+     */
+    int reverseRowNumber(::document::LayerContainer* parent, int row) const;
+    int reverseInsertRowNumber(::document::LayerContainer* parent, int row) const;
+    ::document::Layer* reverseLayer(::document::LayerContainer* parent, int row) const;
+    int reverseLayerIndex(document::LayerContainer* parent, document::Layer* layer) const;
 
     ::document::Document* document_;
 };

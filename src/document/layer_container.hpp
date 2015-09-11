@@ -46,6 +46,11 @@ public:
     }
 
     /**
+     * \brief Number of layers
+     */
+    int countLayers() const;
+
+    /**
      * \brief Add a layer to be in position \p index
      * \param layer Layer to be added
      * \param index Position it should be in, if an invalid position is given
