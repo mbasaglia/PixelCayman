@@ -81,11 +81,54 @@ LayerWidget::LayerWidget()
     };
 
     connect(&model, &QAbstractItemModel::rowsInserted, expand);
-    connect(&model, &QAbstractItemModel::rowsRemoved, expand);;
+    connect(&model, &QAbstractItemModel::rowsRemoved, expand);
     connect(&model, &::model::LayerTree::rowDragged,
     [this](const QModelIndex& index) {
-        tree_view->selectionModel()->setCurrentIndex(index,
-            QItemSelectionModel::SelectCurrent | QItemSelectionModel::Rows | QItemSelectionModel::Clear);
+        tree_view->setCurrentIndex(index);
+    });
+
+    connect(button_top, &QAbstractButton::clicked, [this]{
+        auto index = tree_view->currentIndex();
+        auto parent = index.parent();
+        if ( index.isValid() && index.row() != 0 )
+        {
+            auto layer = model.layer(index);
+            model.moveRow(parent, index.row(), parent, 1);
+            tree_view->setCurrentIndex(model.index(layer));
+        }
+    });
+
+    connect(button_bottom, &QAbstractButton::clicked, [this]{
+        auto index = tree_view->currentIndex();
+        auto parent = index.parent();
+        if ( index.isValid() && index.row() != model.rowCount(parent) - 1 )
+        {
+            auto layer = model.layer(index);
+            model.moveRow(parent, index.row(), parent, model.rowCount(parent));
+            tree_view->setCurrentIndex(model.index(layer));
+        }
+    });
+
+    connect(button_up, &QAbstractButton::clicked, [this]{
+        auto index = tree_view->currentIndex();
+        auto parent = index.parent();
+        if ( index.isValid() && index.row() != 0 )
+        {
+            auto layer = model.layer(index);
+            model.moveRow(parent, index.row(), parent, index.row());
+            tree_view->setCurrentIndex(model.index(layer));
+        }
+    });
+
+    connect(button_down, &QAbstractButton::clicked, [this]{
+        auto index = tree_view->currentIndex();
+        auto parent = index.parent();
+        if ( index.isValid() && index.row() != model.rowCount(parent) - 1 )
+        {
+            auto layer = model.layer(index);
+            model.moveRow(parent, index.row(), parent, index.row() + 2);
+            tree_view->setCurrentIndex(model.index(layer));
+        }
     });
 }
 

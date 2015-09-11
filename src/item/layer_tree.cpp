@@ -231,10 +231,33 @@ bool LayerTree::moveRows(const QModelIndex &sourceParent, int sourceRow, int cou
     if ( !subject )
         return false;
 
+    int layer_index = from->layerIndex(subject);
+    int insert_row = reverseInsertRowNumber(to, destinationChild);
+
+    if ( from == to )
+    {
+        // Do nothing if dropping back to the same spot
+        if ( layer_index == insert_row )
+            return false;
+
+        /*if ( sourceRow < destinationChild )
+            destinationChild += 1;
+        else
+            destinationChild -= 1;*/
+    }
+    // The attempt to use the proper utilities to keep persistent indexes
+    // consistent failed
+    /*bool qt_wants_to_move = beginMoveRows(sourceParent, sourceRow, sourceRow,
+                                destinationParent, destinationChild);
+    auto old_index = index(subject);*/
     document_->undoStack().beginMacro("Move Layer");
     from->removeLayer(subject);
-    to->insertLayer(subject, reverseInsertRowNumber(to, destinationChild));
+    to->insertLayer(subject, insert_row);
     document_->undoStack().endMacro();
+    /*if ( qt_wants_to_move )
+        endMoveRows();
+    else
+        changePersistentIndex(old_index, index(subject));*/
 
     return true;
 }
@@ -301,32 +324,17 @@ bool LayerTree::dropMimeData(const QMimeData *data, Qt::DropAction action,
     if ( stream.status() != QDataStream::Ok || source_doc != document_ )
         return false;
 
-    LayerContainer* from = source_layer->parentLayer();
-    if ( !from )
-        from = source_layer->parentDocument();
-    LayerContainer* to = container(parent);
+    if ( parent.isValid() && row == -1 )
+        row = 0;
 
-
-    int layer_index = from->layerIndex(source_layer);
-    int insert_row = reverseInsertRowNumber(to, row);
-    if ( from == to )
+    auto layer_index = index(source_layer);
+    if ( moveRow(layer_index.parent(), layer_index.row(), parent, row) )
     {
-        // Do nothing if dropping back to the same spot
-        if ( layer_index == insert_row || (insert_row == -1 && layer_index == from->countLayers() - 1) )
-            return false;
-        // Take in account that the element will be removed from the same parent
-        if ( layer_index < insert_row )
-            insert_row -= 1;
+        emit rowDragged(index(source_layer));
+        return true;
     }
 
-    document_->undoStack().beginMacro("Move Layer");
-    from->removeLayer(source_layer);
-    to->insertLayer(source_layer, insert_row);
-    document_->undoStack().endMacro();
-
-    emit rowDragged(index(source_layer));
-
-    return true;
+    return false;
 }
 
 void LayerTree::onLayerAdded(::document::Layer* layer, ::document::LayerContainer* parent, int index)
