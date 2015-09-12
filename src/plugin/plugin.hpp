@@ -21,8 +21,7 @@
 #ifndef PIXEL_CAYMAN_PLUGIN_HPP
 #define PIXEL_CAYMAN_PLUGIN_HPP
 
-#include <QString>
-#include <QList>
+#include <QStringList>
 #include <QFileInfo>
 #include <QHash>
 
@@ -186,6 +185,24 @@ public:
      */
     void unload();
 
+    /**
+     * \brief To search plugins into
+     */
+    QStringList searchPaths() const
+    {
+        return search_paths_;
+    }
+
+    void setSearchPaths(const QStringList& search_paths)
+    {
+        search_paths_ = search_paths;
+    }
+
+    void addSearchPath(const QString& path)
+    {
+        search_paths_.push_back(path);
+    }
+
 private:
     PluginRegistry() {}
 
@@ -206,6 +223,7 @@ private:
     QHash<QString, Plugin*> plugins_;
     QList<Plugin*>          queued_;
     QList<PluginFactory*>   factories_;
+    QStringList             search_paths_;
 };
 
 } // namespace plugin

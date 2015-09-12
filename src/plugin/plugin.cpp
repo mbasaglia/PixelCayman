@@ -23,7 +23,6 @@
  */
 
 #include "plugin.hpp"
-#include "data.hpp"
 
 #include <QDir>
 #include <QDebug>
@@ -36,7 +35,7 @@ void PluginRegistry::load()
         throw std::logic_error("Cannot call PluginRegistry::load() before calling PluginRegistry::unload()");
 
     // Queue plugins
-    for ( QDir dir : data().readableList("plugins") )
+    for ( QDir dir : search_paths_ )
     {
         if ( dir.exists() )
         {

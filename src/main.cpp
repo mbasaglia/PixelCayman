@@ -39,6 +39,7 @@ int main(int argc, char** argv)
 
     try
     {
+        plugin::PluginRegistry::instance().setSearchPaths(data().readableList("plugins"));
         plugin::PluginRegistry::instance().load();
         // Initialize Icon theme
         // NOTE: this is broken in Qt 5.4.1
