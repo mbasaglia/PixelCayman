@@ -24,14 +24,20 @@
 #include <QStringList>
 #include <QFileInfo>
 #include <QHash>
+#include <QObject>
 
 namespace plugin {
 
 /**
  * \brief Interface for plugin types
  */
-class Plugin
+class Plugin : public QObject
 {
+    Q_OBJECT
+
+    Q_PROPERTY(QString name READ name)
+    Q_PROPERTY(int version READ version)
+
 public:
     /**
      * \brief Plugin dependency descriptor
@@ -68,7 +74,13 @@ public:
     {
         if ( loaded_ )
             return false;
-        return loaded_ = onLoad();
+
+        loaded_ = onLoad();
+
+        if ( loaded_ )
+            emit loaded(QPrivateSignal());
+
+        return loaded_;
     }
 
     /**
@@ -80,13 +92,14 @@ public:
         {
             loaded_ = false;
             onUnload();
+            emit unloaded(QPrivateSignal());
         }
     }
 
     /**
      * \brief Whether the plugin has been loaded
      */
-    bool loaded()
+    bool isLoaded()
     {
         return loaded_;
     }
@@ -124,6 +137,10 @@ public:
 
         return dependencies_;
     }
+
+signals:
+    void loaded(QPrivateSignal);
+    void unloaded(QPrivateSignal);
 
 protected:
     /**
@@ -184,10 +201,11 @@ public:
 /**
  * \brief Class that handles plugins
  * \todo Functionality to define which plugins are to be loaded in the config
- *       and to load/unload valid plugins at run-time
  */
-class PluginRegistry
+class PluginRegistry : public QObject
 {
+    Q_OBJECT
+
 public:
     static PluginRegistry& instance()
     {
@@ -277,14 +295,15 @@ public:
         search_paths_.push_back(path);
     }
 
+signals:
+    void loaded(Plugin* plugin);
+    void unloaded(Plugin* plugin);
+
 private:
     PluginRegistry() {}
 
     ~PluginRegistry()
     {
-        for ( auto plugin : plugins_ )
-            delete plugin;
-
         for ( auto factory : factories_ )
             delete factory;
     }
@@ -293,6 +312,9 @@ private:
      * \brief Queue a plugin file for loading
      */
     bool queue(const QFileInfo& file);
+
+    void addPlugin(Plugin* plugin);
+    void removePlugin(Plugin* plugin);
 
     QHash<QString, Plugin*> plugins_;
     QList<Plugin*>          queued_;

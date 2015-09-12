@@ -58,10 +58,10 @@ void PluginRegistry::load()
         {
             if ( meetsDependency((*iter)->dependencies()) )
             {
+                addPlugin(*iter);
                 /// \todo Read from settings which plugins have to be loaded
                 (*iter)->load();
                 /// \todo Check load() was successful
-                plugins_[(*iter)->name()] = *iter;
                 iter = queued_.erase(iter);
             }
             else
@@ -112,12 +112,25 @@ void PluginRegistry::unload()
 {
     for ( auto plugin : plugins_ )
     {
-        /// \todo Check the plugin was loaded
         plugin->unload();
         delete plugin;
     }
 
     plugins_.clear();
+}
+
+void PluginRegistry::addPlugin(Plugin* plugin)
+{
+    plugin->setParent(this);
+    connect(plugin, &Plugin::loaded, [this, plugin]{ emit loaded(plugin); });
+    connect(plugin, &Plugin::unloaded, [this, plugin]{ emit unloaded(plugin); });
+    connect(plugin, &QObject::destroyed, [this, plugin]{ removePlugin(plugin); });
+    plugins_[plugin->name()] = plugin;
+}
+
+void PluginRegistry::removePlugin(Plugin* plugin)
+{
+    plugins_.remove(plugin->name());
 }
 
 } // namespace plugin
