@@ -72,7 +72,6 @@ void PluginRegistry::load()
         // No plugin has been loaded in this iteration, so bail out
         if ( size == queued_.size() )
         {
-            /// \todo Use a custom message system
             QStringList names;
             for ( auto plugin : queued_ )
             {
