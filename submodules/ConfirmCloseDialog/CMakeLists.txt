@@ -48,9 +48,8 @@ endif()
 # Sources
 include_directories("${PROJECT_SOURCE_DIR}/src")
 
-file(GLOB_RECURSE SOURCES src/confirm_close_dialog.cpp)
-
-file(GLOB_RECURSE HEADERS src/confirm_close_dialog.hpp)
+set(SOURCES src/confirm_close_dialog.cpp)
+set(HEADERS src/confirm_close_dialog.hpp)
 qt5_wrap_cpp(SOURCES ${HEADERS})
 qt5_wrap_ui(SOURCES src/confirm_close_dialog.ui)
 
