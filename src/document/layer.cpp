@@ -26,6 +26,7 @@
 #include "document.hpp"
 #include "visitor.hpp"
 #include "command/move_child_layers.hpp"
+#include "command/set_property.hpp"
 
 namespace document {
 
@@ -71,7 +72,11 @@ QString Layer::name() const
 void Layer::setName(const QString& name)
 {
     if ( name_ != name )
-        emit nameChanged( name_ = name );
+        owner_->pushCommand(command::newSetProperty(
+            tr("Change layer name"), name_, name,
+            [this](const QString& name) {
+                emit nameChanged( name_ = name );
+        }));
 }
 
 qreal Layer::opacity() const
@@ -81,7 +86,12 @@ qreal Layer::opacity() const
 
 void Layer::setOpacity(qreal opacity)
 {
-    emit opacityChanged( opacity_ = opacity );
+    owner_->pushCommand(command::newSetProperty(
+        tr("Change layer opacity"), opacity_, opacity,
+        [this](qreal opacity) {
+            emit opacityChanged( opacity_ = opacity );
+        }, command::SetPropertyMergeId(this, &Layer::opacity_)
+    ));
 }
 
 bool Layer::visible() const
@@ -92,7 +102,12 @@ bool Layer::visible() const
 void Layer::setVisible(bool visible)
 {
     if ( visible_ != visible )
-        emit visibleChanged( visible_ = visible );
+        owner_->pushCommand(command::newSetProperty(
+            visible ? tr("Show Layer") : tr("Hide Layer"),
+            visible_, visible,
+            [this](bool visible) {
+                emit visibleChanged( visible_ = visible );
+        }));
 }
 
 bool Layer::locked() const
@@ -103,7 +118,12 @@ bool Layer::locked() const
 void Layer::setLocked(bool locked)
 {
     if ( locked != locked_ )
-        emit lockedChanged( locked_ = locked );
+        owner_->pushCommand(command::newSetProperty(
+            locked ? tr("Lock Layer") : tr("Unlock Layer"),
+            locked_, locked,
+            [this](bool locked) {
+                emit visibleChanged( locked_ = locked );
+        }));
 }
 
 QList<Image*> Layer::frameImages()

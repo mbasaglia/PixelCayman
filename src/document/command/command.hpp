@@ -18,31 +18,20 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-#ifndef PIXELCAYMAN_UTIL_HPP
-#define PIXELCAYMAN_UTIL_HPP
-
-#include <utility>
-
-namespace util {
+#ifndef PIXEL_CAYMAN_DOCUMENT_COMMAND_HPP
+#define PIXEL_CAYMAN_DOCUMENT_COMMAND_HPP
+namespace document {
+namespace command {
 
 /**
- * \brief Utility to get a cleaner syntax when disambiguating function pointers
+ * \brief Generates an ID for QUndoCommand classes
  */
-template<class ...Args, class C, class R>
-    auto overload(R (C::*f)(Args...)) -> R (C::*)(Args...)
-    {
-        return f;
-    }
+inline int commandId()
+{
+    static int id = 0;
+    return id++;
+}
 
-/**
- * \brief Determine the distance between a data member and its object
- */
-template <typename Class, typename Type>
-    std::size_t offsetOf(const Class* object, Type Class::* member)
-    {
-        return reinterpret_cast<const char *>(&(object->*member)) -
-               reinterpret_cast<const char *>(object);
-    }
-
-} // namespace util
-#endif // PIXELCAYMAN_UTIL_HPP
+} // namespace command
+} // namespace document
+#endif // PIXEL_CAYMAN_DOCUMENT_COMMAND_HPP
