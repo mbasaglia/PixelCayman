@@ -63,6 +63,20 @@ QString Data::readable(const QString& file) const
     return QString();
 }
 
+QStringList Data::readableList(const QString& file) const
+{
+    QStringList paths;
+    for ( const QString& dir_path : directories() )
+    {
+        QDir dir(dir_path);
+        if ( dir.exists(file) )
+            paths << dir.absoluteFilePath(file);
+    }
+
+    return paths;
+
+}
+
 QString Data::writable(const QString& file) const
 {
     QFileInfo rel_file = file;

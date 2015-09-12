@@ -29,6 +29,7 @@
 #include "settings.hpp"
 #include "data.hpp"
 #include "tool/registry.hpp"
+#include "plugin/plugin.hpp"
 
 int main(int argc, char** argv)
 {
@@ -38,6 +39,7 @@ int main(int argc, char** argv)
 
     try
     {
+        plugin::PluginRegistry::instance().load();
         // Initialize Icon theme
         // NOTE: this is broken in Qt 5.4.1
         /*QIcon::setThemeSearchPaths(

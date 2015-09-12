@@ -35,6 +35,11 @@ public:
     QStringList directories() const;
 
     /**
+     * \brief Returns the list of existing files matching the given name
+     */
+    QStringList readableList(const QString& file) const;
+
+    /**
      * \brief Returns the path to a readable data file
      * \return A path to an existing file matching \p file,
      * an empty string if such file doesn't exists

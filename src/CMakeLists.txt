@@ -68,6 +68,8 @@ misc/composition_mode.hpp
 misc/composition_mode.cpp
 misc/color.hpp
 misc/color.cpp
+plugin/plugin.hpp
+plugin/plugin.cpp
 main.cpp
 util.hpp
 settings.hpp
