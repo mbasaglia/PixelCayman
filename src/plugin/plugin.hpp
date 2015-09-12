@@ -200,7 +200,6 @@ public:
 
 /**
  * \brief Class that handles plugins
- * \todo Functionality to define which plugins are to be loaded in the config
  */
 class PluginRegistry : public QObject
 {
@@ -318,6 +317,16 @@ signals:
      */
     void warning(const QString& msg);
 
+    /**
+     * \brief Emitted before the plugins get initialized
+     */
+    void beginLoad();
+
+    /**
+     * \brief Emitted after the plugins has been initialized
+     */
+    void endLoad();
+
 private:
     PluginRegistry() {}
 
@@ -340,6 +349,11 @@ private:
     QList<PluginFactory*>   factories_;
     QStringList             search_paths_;
 };
+
+inline PluginRegistry& registry()
+{
+    return PluginRegistry::instance();
+}
 
 } // namespace plugin
 #endif // PIXEL_CAYMAN_PLUGIN_HPP

@@ -39,10 +39,16 @@ int main(int argc, char** argv)
 
     try
     {
-        QObject::connect(&plugin::PluginRegistry::instance(),
-                         &plugin::PluginRegistry::warning,
-                         [](const QString& msg) { qWarning() << msg; });
-        plugin::PluginRegistry::instance().setSearchPaths(data().readableList("plugins"));
+        QObject::connect(&plugin::registry(), &plugin::PluginRegistry::warning,
+            [](const QString& msg) { qWarning() << msg; });
+        QObject::connect(&plugin::registry(), &plugin::PluginRegistry::beginLoad,
+            []{ plugin::registry().setSearchPaths(data().readableList("plugins")); }
+        );
+        QObject::connect(&plugin::registry(), &plugin::PluginRegistry::endLoad, []{
+            /// \todo Read from settings which plugins have to be loaded
+            for ( ::plugin::Plugin* plugin : plugin::registry().plugins() )
+                plugin->load();
+        });
         plugin::PluginRegistry::instance().load();
         // Initialize Icon theme
         // NOTE: this is broken in Qt 5.4.1

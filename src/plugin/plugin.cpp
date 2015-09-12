@@ -31,6 +31,8 @@ void PluginRegistry::load()
     if ( !plugins_.empty() )
         throw std::logic_error("Cannot call PluginRegistry::load() before calling PluginRegistry::unload()");
 
+    emit beginLoad();
+
     // Queue plugins
     for ( QDir dir : search_paths_ )
     {
@@ -59,9 +61,6 @@ void PluginRegistry::load()
             if ( meetsDependency((*iter)->dependencies()) )
             {
                 addPlugin(*iter);
-                /// \todo Read from settings which plugins have to be loaded
-                (*iter)->load();
-                /// \todo Check load() was successful
                 iter = queued_.erase(iter);
             }
             else
@@ -87,6 +86,7 @@ void PluginRegistry::load()
         }
     }
 
+    emit endLoad();
 }
 
 bool PluginRegistry::queue(const QFileInfo& file)
