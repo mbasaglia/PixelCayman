@@ -97,10 +97,10 @@ bool MainWindow::documentNew()
 bool MainWindow::documentOpen()
 {
     QString default_dir;
-    if ( document::Document* current = currentDocument() )
+    if ( p->current_view )
     {
-        if ( !current->fileName().isEmpty() )
-            default_dir = QFileInfo(current->fileName()).dir().path();
+        if ( !p->current_view->document()->fileName().isEmpty() )
+            default_dir = QFileInfo(p->current_view->document()->fileName()).dir().path();
     }
 
     QString image_formats;
@@ -133,14 +133,6 @@ bool MainWindow::documentOpen()
     }
 
     return false;
-}
-
-/// \todo Maybe can be removed (and use Private::widget)
-document::Document* MainWindow::currentDocument()
-{
-    if ( p->current_view )
-        return p->current_view->document();
-    return nullptr;
 }
 
 bool MainWindow::documentSave()
@@ -195,6 +187,9 @@ bool MainWindow::save(int tab, bool prompt)
             return false;
 
         /// \todo Ask confirmation if the file exists
+        /// QFileDialog should already do this but it doesnt,
+        /// At least not with the native KDE dialog.
+
         format = Private::DocumentSaveFormat(file_formats.indexOf(save_dialog.selectedNameFilter()));
         doc->setFileName(save_dialog.selectedFiles().front());
         p->main_tab->setTabText(tab, p->documentName(doc));
@@ -274,7 +269,7 @@ void MainWindow::addTool(::tool::Tool* tool)
         return;
 
     p->tools.push_back(tool);
-    /// \todo Retranslate them
+    /// \todo Retranslate them(?)
     QAction* tool_action = new QAction(tool->icon(), tool->name(), p->tools_group);
     tool_action->setCheckable(true);
     p->menu_tools->addAction(tool_action);

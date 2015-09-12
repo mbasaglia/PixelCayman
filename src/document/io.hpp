@@ -57,7 +57,6 @@ private:
 
 /**
  * \brief Save the document to an IODevice as XML
- * \todo Const-correct version
  */
 inline void save_xml(Document& doc, QIODevice* device)
 {
@@ -67,7 +66,6 @@ inline void save_xml(Document& doc, QIODevice* device)
 
 /**
  * \brief Save the document to its own file as XML
- * \todo Const-correct version
  * \return \b true on success
  */
 bool save_xml(Document& doc);

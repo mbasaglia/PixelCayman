@@ -70,7 +70,12 @@ public:
 GraphicsWidget::GraphicsWidget(::document::Document* document)
     : p(new Private)
 {
-    /// \todo if !document => throw exception
+    if ( !document )
+    {
+        delete p;
+        throw std::logic_error("GraphicsWidget::GraphicsWidget called with a null document");
+    }
+
     QGraphicsScene* scene = new QGraphicsScene(this);
     scene->setSceneRect(QRectF(QPointF(),document->imageSize()));
     p->document_item = new GraphicsItem(document);
@@ -194,7 +199,6 @@ void GraphicsWidget::mousePressEvent(QMouseEvent *event)
 
     if ( p->tool )
     {
-        /// \todo Maybe it needs info on the view/scene
         p->tool->mousePressEvent(event, this);
     }
 
@@ -215,7 +219,6 @@ void GraphicsWidget::mouseMoveEvent(QMouseEvent *event)
 
     if ( p->tool )
     {
-        /// \todo Maybe it needs info on the view/scene
         p->tool->mouseMoveEvent(event, this);
     }
 
@@ -234,7 +237,6 @@ void GraphicsWidget::mouseReleaseEvent(QMouseEvent *event)
 
     if ( p->tool )
     {
-        /// \todo Maybe it needs info on the view/scene
         p->tool->mouseReleaseEvent(event, this);
     }
 

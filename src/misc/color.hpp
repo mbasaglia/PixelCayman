@@ -24,6 +24,7 @@
 #include <QColor>
 
 namespace misc {
+namespace color {
 
 /**
  * \brief Returns a 4 bit integer for the color.
@@ -33,61 +34,10 @@ namespace misc {
  *  * 2 green
  *  * 4 blue
  *  * 8 bright
- * \todo no inline
  */
-inline int ColorTo4bit(const QColor& c) noexcept
-{
-    int color = 0;
-
-    float cmax = std::max({c.red(),c.green(),c.blue()});
-    float cmin = std::min({c.red(),c.green(),c.blue()});
-    float delta = cmax-cmin;
-
-    if ( delta > 0 )
-    {
-        float hue = 0;
-        if ( c.red() == cmax )
-            hue = (c.green()-c.blue())/delta;
-        else if ( c.green() == cmax )
-            hue = (c.blue()-c.red())/delta + 2;
-        else if ( c.blue() == cmax )
-            hue = (c.red()-c.green())/delta + 4;
-
-        float sat = delta / cmax;
-        if ( sat >= 0.3 )
-        {
-            if ( hue < 0 )
-                hue += 6;
-
-            if ( hue <= 0.5 )      color = 1; // red
-            else if ( hue <= 1.5 ) color = 3; // yellow
-            else if ( hue <= 2.5 ) color = 2; // green
-            else if ( hue <= 3.5 ) color = 6; // cyan
-            else if ( hue <= 4.5 ) color = 4; // blue
-            else if ( hue <= 5.5 ) color = 5; // magenta
-            else                   color = 1; // red
-        }
-        else if ( cmax >= 0.5 )
-            color = 7;
-
-        if ( ( cmax + cmin ) / 2 >= 0.64 )
-            color |= 8; // bright
-    }
-    else
-    {
-        if ( cmax > 0.8 )
-            color = 15; // white
-        else if ( cmax > 0.53 )
-            color = 7; // silver
-        else if ( cmax > 0.27 )
-            color = 8; // gray
-        else
-            color = 0; // black
-    }
-
-    return color;
-}
+int to4bit(const QColor& c) noexcept;
 
 
+} // namespace color
 } // namespace misc
 #endif // PIXEL_CAYMAN_MISC_COLOR_HPP

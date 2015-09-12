@@ -67,6 +67,7 @@ item/tree_view_accept_self.hpp
 misc/composition_mode.hpp
 misc/composition_mode.cpp
 misc/color.hpp
+misc/color.cpp
 main.cpp
 util.hpp
 settings.hpp

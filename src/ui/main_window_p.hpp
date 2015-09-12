@@ -354,7 +354,7 @@ bool MainWindow::Private::save(document::Document* doc, DocumentSaveFormat forma
         /// \todo if the format doesn't support alpha, read a color from the settings
         image.fill(Qt::transparent);
         QPainter painter(&image);
-        /// \todo detect frame (and fullAlpha from settings?)
+        /// \todo detect frame (and fullAlpha?) from settings
         document::visitor::Paint paint(nullptr, &painter, true);
         doc->apply(paint);
 
@@ -369,7 +369,7 @@ bool MainWindow::Private::save(document::Document* doc, DocumentSaveFormat forma
         QImage image(doc->imageSize(), QImage::Format_ARGB32);
         image.fill(Qt::transparent);
         QPainter painter(&image);
-        /// \todo detect frame (and fullAlpha from settings?)
+        /// \todo detect frame (and fullAlpha?) from settings
         document::visitor::Paint paint(nullptr, &painter, true);
         doc->apply(paint);
 
@@ -382,7 +382,7 @@ bool MainWindow::Private::save(document::Document* doc, DocumentSaveFormat forma
         {
             for ( int x = 0; x < image.height(); x++ )
             {
-                int color = misc::ColorTo4bit(image.pixel(x, y));
+                int color = misc::color::to4bit(image.pixel(x, y));
                 stream << "\x1b[" << ((color&8) ? 1 : 22) << ';' << 40+(color&~8) << 'm' << pixel;
             }
             stream << '\n';

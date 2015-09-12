@@ -105,11 +105,6 @@ protected:
      */
     bool closeTabPrompt(int tab);
 
-    /**
-     * \brief Document at the current tab
-     */
-    document::Document* currentDocument();
-
 private:
     class Private;
     Private* p;

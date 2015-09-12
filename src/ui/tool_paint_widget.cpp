@@ -93,7 +93,7 @@ void Brush::Widget::updateBrush()
             tool_->ballBrush(spin_super_diameter->value(), spin_p_norm->value());
             return;
         case Image:
-            /// \todo
+            /// \todo Image brush
             return;
     }
 }
