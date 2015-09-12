@@ -62,30 +62,104 @@ public:
 
     /**
      * \brief Loads the plugin functionality to make it ready for use
+     * \returns \b true on success
      */
-    virtual bool load() = 0;
+    bool load()
+    {
+        if ( loaded_ )
+            return false;
+        return loaded_ = onLoad();
+    }
 
     /**
      * \brief Removes the plugin functionality to disable the plugin
      */
-    virtual void unload() {}
+    void unload()
+    {
+        if ( loaded_ )
+        {
+            loaded_ = false;
+            onUnload();
+        }
+    }
+
+    /**
+     * \brief Whether the plugin has been loaded
+     */
+    bool loaded()
+    {
+        return loaded_;
+    }
+
+    /**
+     * \brief Returns the plugin name
+     */
+    QString name()
+    {
+        if ( name_.isEmpty() )
+            name_ = onName();
+        return name_;
+    }
+
+    /**
+     * \brief Plugin version number
+     */
+    int version()
+    {
+        if ( version_ < 0 )
+            version_ = onVersion();
+        return version_;
+    }
+
+    /**
+     * \brief List of dependencies to other plugins
+     */
+    QList<Dependency> dependencies()
+    {
+        if ( !dependencies_loaded_ )
+        {
+            dependencies_loaded_ = true;
+            dependencies_ = onDependencies();
+        }
+
+        return dependencies_;
+    }
+
+protected:
+    /**
+     * \brief Loads the plugin functionality to make it ready for use
+     * \returns \b true on success
+     */
+    virtual bool onLoad() = 0;
+
+    /**
+     * \brief Removes the plugin functionality to disable the plugin
+     */
+    virtual void onUnload() {}
 
     /**
      * \brief Returns the plugin name
      *
      * Must be unique across all plugins and not empty
      */
-    virtual QString name() = 0;
+    virtual QString onName() = 0;
 
     /**
      * \brief Plugin version number
      */
-    virtual int version() { return 0; }
+    virtual int onVersion() { return 0; }
 
     /**
      * \brief List of dependencies to other plugins
      */
-    virtual QList<Dependency> dependencies() { return {}; }
+    virtual QList<Dependency> onDependencies() { return {}; }
+
+private:
+    QString name_;
+    bool loaded_ = false;
+    int version_ = -1;
+    bool dependencies_loaded_ = false;
+    QList<Dependency> dependencies_;
 };
 
 /**
