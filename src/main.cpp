@@ -39,6 +39,9 @@ int main(int argc, char** argv)
 
     try
     {
+        QObject::connect(&plugin::PluginRegistry::instance(),
+                         &plugin::PluginRegistry::warning,
+                         [](const QString& msg) { qWarning() << msg; });
         plugin::PluginRegistry::instance().setSearchPaths(data().readableList("plugins"));
         plugin::PluginRegistry::instance().load();
         // Initialize Icon theme

@@ -23,7 +23,6 @@
 #include "plugin.hpp"
 
 #include <QDir>
-#include <QDebug>
 
 namespace plugin {
 
@@ -40,9 +39,10 @@ void PluginRegistry::load()
             for ( const QFileInfo& file : dir.entryInfoList() )
             {
                 if ( !queue(file) )
-                    /// \todo Use a custom message system
-                    qWarning() << QObject::tr("Plugin file could not be loaded: %1")
-                        .arg(file.canonicalFilePath());
+                {
+                    warning(tr("Plugin file could not be loaded: %1")
+                        .arg(file.canonicalFilePath()));
+                }
             }
         }
     }
@@ -74,12 +74,14 @@ void PluginRegistry::load()
         if ( size == queued_.size() )
         {
             /// \todo Use a custom message system
-            qWarning() << "Some plugins have missing dependencies:";
+            QStringList names;
             for ( auto plugin : queued_ )
             {
-                qWarning() << plugin->name();
+                names << plugin->name();
                 delete plugin;
             }
+            warning(tr("Plugins with missing dependencies:\n%1")
+                .arg(names.join("\n")));
             queued_.clear();
             break;
         }
@@ -103,8 +105,7 @@ try {
     }
     return false;
 } catch (const std::exception& exc) {
-    /// \todo Use a custom message system
-    qWarning() << QObject::tr("Exception during plugin creation: %1").arg(exc.what());
+    warning(tr("Exception during plugin creation: %1").arg(exc.what()));
     return false;
 }
 
@@ -126,11 +127,13 @@ void PluginRegistry::addPlugin(Plugin* plugin)
     connect(plugin, &Plugin::unloaded, [this, plugin]{ emit unloaded(plugin); });
     connect(plugin, &QObject::destroyed, [this, plugin]{ removePlugin(plugin); });
     plugins_[plugin->name()] = plugin;
+    emit created(plugin);
 }
 
 void PluginRegistry::removePlugin(Plugin* plugin)
 {
     plugins_.remove(plugin->name());
+    emit destroyed(plugin);
 }
 
 } // namespace plugin

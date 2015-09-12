@@ -296,8 +296,27 @@ public:
     }
 
 signals:
+    /**
+     * \brief Emitted when a plugin has been created
+     */
+    void created(Plugin* plugin);
+    /**
+     * \brief Emitted when a plugin is being destroyed
+     */
+    void destroyed(Plugin* plugin);
+    /**
+     * \brief Emitted when a plugin has been enabled
+     */
     void loaded(Plugin* plugin);
+    /**
+     * \brief Emitted when a plugin has been disabled
+     */
     void unloaded(Plugin* plugin);
+
+    /**
+     * \brief Emitted on minor issues with the plugins
+     */
+    void warning(const QString& msg);
 
 private:
     PluginRegistry() {}
