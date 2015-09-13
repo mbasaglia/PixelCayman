@@ -22,6 +22,7 @@
 #define PIXELCAYMAN_UTIL_HPP
 
 #include <utility>
+#include <tuple>
 
 namespace util {
 
@@ -43,6 +44,25 @@ template <typename Class, typename Type>
         return reinterpret_cast<const char *>(&(object->*member)) -
                reinterpret_cast<const char *>(object);
     }
+
+template<class T>
+    struct FunctionSignature;
+
+template<class Ret, class...Args>
+    struct FunctionSignature<Ret(Args...)>
+    {
+        using pointer_type = Ret (*) (Args...);
+        using return_type = Ret;
+        using arguments_types = std::tuple<Args...>;
+    };
+
+template<class Ret, class...Args>
+    struct FunctionSignature<Ret(*)(Args...)> : public FunctionSignature<Ret(Args...)>
+    {
+    };
+    
+template<class T>
+    using FunctionPointer = typename FunctionSignature<T>::pointer_type;
 
 } // namespace util
 #endif // PIXELCAYMAN_UTIL_HPP

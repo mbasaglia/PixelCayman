@@ -26,7 +26,6 @@
 
 namespace plugin {
 
-
 QAction* Plugin::createAction(QObject* parent)
 {
     QAction *action = new QAction(this->name(), parent);

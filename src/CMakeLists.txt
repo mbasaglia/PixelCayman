@@ -70,6 +70,8 @@ misc/color.hpp
 misc/color.cpp
 plugin/plugin.hpp
 plugin/plugin.cpp
+plugin/library_plugin.hpp
+plugin/library_plugin.cpp
 main.cpp
 util.hpp
 settings.hpp
