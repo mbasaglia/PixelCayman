@@ -117,12 +117,28 @@
      <string>&amp;Tools</string>
     </property>
    </widget>
+   <widget class="QMenu" name="menu_settings">
+    <property name="title">
+     <string>&amp;Settings</string>
+    </property>
+    <widget class="QMenu" name="menu_plugins">
+     <property name="title">
+      <string>Pl&amp;ugins</string>
+     </property>
+     <property name="icon">
+      <iconset theme="preferences-plugin"/>
+     </property>
+    </widget>
+    <addaction name="menu_plugins"/>
+    <addaction name="action_preferences"/>
+   </widget>
    <addaction name="menu_file"/>
    <addaction name="menu_edit"/>
    <addaction name="menu_image"/>
    <addaction name="menu_animation"/>
    <addaction name="menu_tools"/>
    <addaction name="menu_view"/>
+   <addaction name="menu_settings"/>
    <addaction name="menu_help"/>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
@@ -255,7 +271,9 @@
   </action>
   <action name="action_About">
    <property name="icon">
-    <iconset theme="help-about"/>
+    <iconset theme="help-about">
+     <normaloff/>
+    </iconset>
    </property>
    <property name="text">
     <string>&amp;About...</string>
@@ -264,6 +282,14 @@
   <action name="action_about_qt">
    <property name="text">
     <string>About &amp;Qt...</string>
+   </property>
+  </action>
+  <action name="action_preferences">
+   <property name="icon">
+    <iconset theme="configure"/>
+   </property>
+   <property name="text">
+    <string>&amp;Preferences...</string>
    </property>
   </action>
  </widget>

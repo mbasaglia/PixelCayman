@@ -26,9 +26,24 @@
 
 namespace plugin {
 
+
+QAction* Plugin::createAction(QObject* parent)
+{
+    QAction *action = new QAction(this->name(), parent);
+    action->setChecked(this->loaded_);
+    action->setEnabled(this->dependencies_met_);
+    connect(this, &Plugin::loadedChanged, action, &QAction::setChecked);
+    connect(this, &Plugin::dependenciesChecked, action, &QAction::setEnabled);
+    connect(this, &QObject::destroyed, action, &QObject::deleteLater);
+    connect(action, &QAction::triggered, this, &Plugin::setLoaded);
+    return action;
+}
+
 bool Plugin::checkDependencies()
 {
-    return dependencies_met_ = registry().meetsDependency(dependencies());
+    dependencies_met_ = registry().meetsDependency(dependencies());
+    emit dependenciesChecked( dependencies_met_ );
+    return dependencies_met_;
 }
 
 void PluginRegistry::load()
@@ -59,12 +74,13 @@ void PluginRegistry::load()
     {
         int size = queued_.size();
 
-        // For each plugin, load it if all of its dependencies are met
+        // For each plugin, add it if all of its dependencies are met
         auto iter = queued_.begin();
         while ( iter != queued_.end() )
         {
             if ( (*iter)->checkDependencies() )
             {
+                // This emits created() which can be used to load the plugin
                 addPlugin(*iter);
                 iter = queued_.erase(iter);
             }
@@ -80,11 +96,8 @@ void PluginRegistry::load()
             QStringList names;
             for ( auto plugin : queued_ )
             {
-                names << plugin->name();
-                delete plugin;
+                addPlugin(plugin);
             }
-            warning(tr("Plugins with missing dependencies:\n%1")
-                .arg(names.join("\n")));
             queued_.clear();
             break;
         }
@@ -127,9 +140,22 @@ void PluginRegistry::unload()
 void PluginRegistry::addPlugin(Plugin* plugin)
 {
     plugin->setParent(this);
-    connect(plugin, &Plugin::loaded, [this, plugin]{ emit loaded(plugin); });
-    connect(plugin, &Plugin::unloaded, [this, plugin]{ emit unloaded(plugin); });
-    connect(plugin, &QObject::destroyed, [this, plugin]{ removePlugin(plugin); });
+    connect(plugin, &Plugin::loaded, [this, plugin]{
+        for ( auto p : plugins_ )
+            if ( !p->dependenciesMet() )
+                p->checkDependencies();
+        emit loaded(plugin);
+    });
+    connect(plugin, &Plugin::unloaded, [this, plugin]{
+        for ( auto p : plugins_ )
+            if ( p->dependenciesMet() )
+                p->checkDependencies();
+        emit unloaded(plugin);
+    });
+    connect(plugin, &QObject::destroyed, [this, plugin]{
+        plugin->unload();
+        removePlugin(plugin);
+    });
     plugins_[plugin->name()] = plugin;
     emit created(plugin);
 }

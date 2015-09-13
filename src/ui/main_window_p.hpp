@@ -43,7 +43,9 @@
 #include "util.hpp"
 #include "view/graphics_widget.hpp"
 #include "layer_widget.hpp"
-#include <misc/color.hpp>
+#include "plugin/plugin.hpp"
+
+#include "misc/color.hpp"
 
 #include "ui_current_color.h"
 #include "ui_main_window.h"
@@ -295,6 +297,12 @@ void MainWindow::Private::initMenus()
     action_redo->setIcon(QIcon::fromTheme("edit-redo"));
     action_redo->setShortcut(QKeySequence::Redo);
     menu_edit->insertAction(action_after_undo_redo, action_redo);
+
+    // Plugins
+    for ( auto* plugin : ::plugin::registry().plugins() )
+    {
+        menu_plugins->addAction(plugin->createAction(parent));
+    }
 
     // Help
     connect(action_about_qt, &QAction::triggered, &QApplication::aboutQt);

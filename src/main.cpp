@@ -45,10 +45,16 @@ int main(int argc, char** argv)
             []{ plugin::registry().setSearchPaths(data().readableList("plugins")); }
         );
         QObject::connect(&plugin::registry(), &plugin::PluginRegistry::endLoad, []{
-            /// \todo Read from settings which plugins have to be loaded
             for ( ::plugin::Plugin* plugin : plugin::registry().plugins() )
                 plugin->load();
         });
+        QObject::connect(&plugin::registry(), &plugin::PluginRegistry::created,
+            /// \todo Read from settings which plugins have to be loaded
+            [](plugin::Plugin* plugin){
+                if ( plugin->dependenciesMet() )
+                    plugin->load();
+
+            });
         plugin::PluginRegistry::instance().load();
         // Initialize Icon theme
         // NOTE: this is broken in Qt 5.4.1

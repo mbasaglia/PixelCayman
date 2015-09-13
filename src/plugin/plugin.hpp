@@ -25,6 +25,7 @@
 #include <QFileInfo>
 #include <QHash>
 #include <QObject>
+#include <QAction>
 
 namespace plugin {
 
@@ -62,23 +63,41 @@ public:
          * Zero means no maximum version
          */
         int maximum_version = 0;
+
+        /**
+         * \brief Whether a plugin matches this dependency
+         */
+        bool match(Plugin* plugin) const
+        {
+            if ( plugin->name() != name )
+                return false;
+            if ( minimum_version && minimum_version > plugin->version() )
+                return false;
+            if ( maximum_version && maximum_version < plugin->version() )
+                return false;
+            return true;
+        }
     };
 
     virtual ~Plugin() {}
 
     /**
      * \brief Loads the plugin functionality to make it ready for use
+     * \note Checks dependencies
      * \returns \b true on success
      */
     bool load()
     {
-        if ( loaded_ )
+        if ( loaded_ || !checkDependencies() )
             return false;
 
         loaded_ = onLoad();
 
         if ( loaded_ )
+        {
             emit loaded(QPrivateSignal());
+            emit loadedChanged(true, QPrivateSignal());
+        }
 
         return loaded_;
     }
@@ -93,7 +112,19 @@ public:
             loaded_ = false;
             onUnload();
             emit unloaded(QPrivateSignal());
+            emit loadedChanged(false, QPrivateSignal());
         }
+    }
+
+    /**
+     * \brief Calls either load() or unload() depending on \p loaded
+     */
+    void setLoaded(bool loaded)
+    {
+        if ( loaded )
+            load();
+        else
+            unload();
     }
 
     /**
@@ -154,10 +185,16 @@ public:
         return dependencies_met_;
     }
 
+    /**
+     * \brief Creates a QAction which can be used to toggle the plugin
+     */
+    QAction* createAction(QObject* parent = nullptr);
 
 signals:
     void loaded(QPrivateSignal);
     void unloaded(QPrivateSignal);
+    void loadedChanged(bool loaded, QPrivateSignal);
+    void dependenciesChecked(bool met);
 
 protected:
     /**
@@ -253,12 +290,8 @@ public:
     {
         if ( auto plugin = plugins_.value(dependency.name) )
         {
-            int version = plugin->version();
-            if ( dependency.minimum_version && dependency.minimum_version > version )
-                return false;
-            if ( dependency.maximum_version && dependency.maximum_version < version )
-                return false;
-            return true;
+            if ( dependency.match(plugin) )
+                return true;
         }
         return false;
     }
@@ -315,6 +348,8 @@ public:
 signals:
     /**
      * \brief Emitted when a plugin has been created
+     *
+     * Can be used to load the plugin automatically
      */
     void created(Plugin* plugin);
     /**
