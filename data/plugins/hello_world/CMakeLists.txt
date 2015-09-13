@@ -15,21 +15,10 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-set(DATA_TARGETS "")
+get_filename_component(PLUGIN_NAME ${CMAKE_CURRENT_SOURCE_DIR} NAME)
+set(SOURCES main.cpp)
 
-macro(data_file file)
-    get_filename_component(directory ${file} DIRECTORY)
-    file(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/${directory})
-    add_custom_command(OUTPUT ${file}
-        COMMAND ln -rfs -T ${CMAKE_CURRENT_SOURCE_DIR}/${file} ${file}
-        DEPENDS ${file}
-    )
-    install(FILES ${test} DESTINATION share/${EXECUTABLE_NAME})
-    list(APPEND DATA_TARGETS ${file})
-endmacro()
+find_package(Qt5Widgets REQUIRED)
+include_directories(${Qt5Core_INCLUDE_DIRS})
 
-data_file(icons/pixel-cayman)
-
-add_custom_target(data ALL DEPENDS ${DATA_TARGETS})
-
-add_subdirectory(plugins)
+add_library(${PLUGIN_NAME} MODULE ${SOURCES})

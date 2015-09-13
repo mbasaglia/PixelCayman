@@ -107,6 +107,7 @@ void PluginRegistry::load()
 
 bool PluginRegistry::queue(const QFileInfo& file)
 try {
+    QString name = file.fileName();
     for ( auto factory : factories_ )
     {
         if ( factory->canCreate(file) )
@@ -119,7 +120,7 @@ try {
             return false;
         }
     }
-    return false;
+    return true;
 } catch (const std::exception& exc) {
     warning(tr("Exception during plugin creation: %1").arg(exc.what()));
     return false;
@@ -151,10 +152,10 @@ void PluginRegistry::addPlugin(Plugin* plugin)
                 p->checkDependencies();
         emit unloaded(plugin);
     });
-    connect(plugin, &QObject::destroyed, [this, plugin]{
+    /*connect(plugin, &QObject::destroyed, [this, plugin]{
         plugin->unload();
         removePlugin(plugin);
-    });
+    });*/
     plugins_[plugin->name()] = plugin;
     emit created(plugin);
 }

@@ -97,7 +97,6 @@ class LibraryPlugin : public Plugin
 public:
     LibraryPlugin(const QString& library_file, Library::LoadHints hints = Library::DefaultHints);
 
-
     static QString functionPrefix();
     static void setFunctionPrefix(const QString prefix);
 
@@ -120,7 +119,7 @@ private:
     util::FunctionPointer<QList<Dependency>()>  func_deps    = nullptr;
 };
 
-class LibraryPluginFactory : PluginFactory
+class LibraryPluginFactory : public PluginFactory
 {
 public:
     bool canCreate(const QFileInfo& file) const override;

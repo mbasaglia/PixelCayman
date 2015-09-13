@@ -15,21 +15,6 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-set(DATA_TARGETS "")
+set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR})
 
-macro(data_file file)
-    get_filename_component(directory ${file} DIRECTORY)
-    file(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/${directory})
-    add_custom_command(OUTPUT ${file}
-        COMMAND ln -rfs -T ${CMAKE_CURRENT_SOURCE_DIR}/${file} ${file}
-        DEPENDS ${file}
-    )
-    install(FILES ${test} DESTINATION share/${EXECUTABLE_NAME})
-    list(APPEND DATA_TARGETS ${file})
-endmacro()
-
-data_file(icons/pixel-cayman)
-
-add_custom_target(data ALL DEPENDS ${DATA_TARGETS})
-
-add_subdirectory(plugins)
+add_subdirectory(hello_world)

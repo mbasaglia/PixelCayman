@@ -30,6 +30,7 @@
 #include "data.hpp"
 #include "tool/registry.hpp"
 #include "plugin/plugin.hpp"
+#include "plugin/library_plugin.hpp"
 
 int main(int argc, char** argv)
 {
@@ -39,6 +40,7 @@ int main(int argc, char** argv)
 
     try
     {
+        plugin::registry().addFactory(new plugin::LibraryPluginFactory);
         QObject::connect(&plugin::registry(), &plugin::PluginRegistry::warning,
             [](const QString& msg) { qWarning() << msg; });
         QObject::connect(&plugin::registry(), &plugin::PluginRegistry::beginLoad,

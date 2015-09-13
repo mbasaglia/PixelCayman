@@ -88,7 +88,7 @@ int LibraryPlugin::onVersion()
 bool LibraryPluginFactory::canCreate(const QFileInfo& file) const
 {
     /// \todo System-specific suffixes
-    static QString library_suffix = ".so";
+    static QString library_suffix = "so";
     return file.suffix() == library_suffix && file.isFile();
 }
 
