@@ -62,6 +62,16 @@ private:
 class AbstractFormat
 {
 public:
+    /**
+     * \brief Enum to distinguish some operations depending on whether
+     *        they are being used to save or open a file
+     */
+    enum class Action
+    {
+        Save,
+        Open
+    };
+
     virtual ~AbstractFormat(){}
 
     /**
@@ -75,11 +85,7 @@ public:
     /**
      * \brief List of file extensions to filter in the file dialog
      */
-    virtual QStringList saveExtensions() const { return {id()}; }
-    /**
-     * \brief List of file extensions to filter in the file dialog
-     */
-    virtual QStringList openExtensions() const { return saveExtensions(); }
+    virtual QStringList extensions(Action action = Action::Save) const { return {id()}; }
     /**
      * \brief Whether the file format supports saving document
      */
@@ -114,6 +120,16 @@ public:
      */
     Document* open(const QString& filename);
 
+    /**
+     * \brief Name filter string suitable for file dialogs
+     */
+    QString nameFilter(Action action = Action::Save) const
+    {
+        QString namefilters;
+        for ( const auto& ext : extensions(action) )
+            namefilters += " *."+ext;
+        return QObject::tr("%1 (%2)").arg(name()).arg(namefilters);
+    }
 
 protected:
     /**
@@ -156,8 +172,7 @@ class FormatBitmap : public AbstractFormat
 public:
     QString id() const override;
     QString name() const override;
-    QStringList saveExtensions() const override;
-    QStringList openExtensions() const override;
+    QStringList extensions(Action action = Action::Save) const override;
     bool canSave() const override { return true; }
     bool canOpen() const override { return true; }
 
@@ -192,6 +207,8 @@ protected:
 class Formats
 {
 public:
+    using Action = AbstractFormat::Action;
+
     /**
      * \brief Singleton instance
      */
@@ -228,9 +245,20 @@ public:
     AbstractFormat* format(const QString& id) const;
 
     /**
+     * \brief Returns a format by index
+     * \return The same as formats()[index] or nullptr
+     */
+    AbstractFormat* format(int index) const;
+
+    /**
      * \brief List of available formats
      */
     QList<AbstractFormat*> formats() const;
+
+    /**
+     * \brief Returns a format that can handle the given file extension
+     */
+    AbstractFormat* formatFromFileName(const QString& file, Action action = Action::Save) const;
 
     /**
      * \brief Save \p document with the format with the matching id
@@ -260,6 +288,11 @@ private:
 
     QList<AbstractFormat*> formats_;
 };
+
+inline Formats& formats()
+{
+    return Formats::instance();
+}
 
 } // namespace document
 #endif // PIXEl_CAYMAN_DOCUMENT_IO_HPP

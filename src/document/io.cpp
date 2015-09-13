@@ -215,19 +215,11 @@ QString FormatBitmap::name() const
     return QObject::tr("All Bitmap Images");
 }
 
-QStringList FormatBitmap::saveExtensions() const
+QStringList FormatBitmap::extensions(Action action) const
 {
-    auto bytearr = QImageWriter::supportedImageFormats();
-    QStringList formats;
-    formats.reserve(bytearr.size());
-    for ( const auto& fmt : bytearr )
-        formats.push_back(fmt);
-    return formats;
-}
-
-QStringList FormatBitmap::openExtensions() const
-{
-    auto bytearr = QImageReader::supportedImageFormats();
+    QByteArrayList bytearr = action == Action::Save ?
+        QImageWriter::supportedImageFormats() :
+        QImageReader::supportedImageFormats();
     QStringList formats;
     formats.reserve(bytearr.size());
     for ( const auto& fmt : bytearr )
@@ -300,10 +292,23 @@ AbstractFormat* Formats::format(const QString& id) const
     return nullptr;
 }
 
+AbstractFormat* Formats::format(int index) const
+{
+    return index < 0 || index >= formats_.size() ? nullptr : formats_[index];
+}
+
 QList<AbstractFormat*> Formats::formats() const
 {
     return formats_;
 }
 
+AbstractFormat* Formats::formatFromFileName(const QString& file, Formats::Action action) const
+{
+    QString ext = QFileInfo(file).suffix().toLower();
+    for ( auto format : formats_ )
+        if ( format->extensions(action).contains(ext) )
+            return format;
+    return nullptr;
+}
 
 } // namespace document

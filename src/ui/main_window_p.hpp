@@ -53,15 +53,6 @@
 class MainWindow::Private : public Ui_MainWindow
 {
 public:
-
-    enum DocumentSaveFormat
-    {
-        Cayman,
-        Bitmap,
-        AnsiText,
-        Unknown
-    };
-
     Private(MainWindow* parent) : parent(parent) {}
 
     QDockWidget* createDock(QWidget* widget, const QString& theme_icon,
@@ -76,11 +67,6 @@ public:
     QAction* recentFileAction(const QString& file_name);
 
     void pushRecentFile(const QString& name);
-
-    /**
-     * \brief Saves \p doc
-     */
-    bool save(document::Document* doc, DocumentSaveFormat file_format);
 
     /**
      * \brief Link colorChanged and setColor between two classes
@@ -346,22 +332,6 @@ void MainWindow::Private::saveSettings()
         settings::put("geometry", parent->saveGeometry());
         settings::put("state", parent->saveState(ui_version));
     }
-}
-
-bool MainWindow::Private::save(document::Document* doc, DocumentSaveFormat format)
-{
-    /// \todo if format == Unknown, determine from file extension
-
-    if ( format == Cayman )
-    {
-        return document::Formats::instance().save("mela", doc);
-    }
-    else if ( format == Bitmap )
-    {
-        return document::Formats::instance().save("bitmap", doc);
-    }
-
-    return false;
 }
 
 QAction* MainWindow::Private::recentFileAction(const QString& file_name)

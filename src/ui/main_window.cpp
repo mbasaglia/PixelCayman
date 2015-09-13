@@ -159,29 +159,26 @@ bool MainWindow::save(int tab, bool prompt)
     if ( doc->fileName().isEmpty() )
         prompt = true;
 
-    Private::DocumentSaveFormat format = Private::Unknown;
-    if ( prompt )
+    /// \todo Store preferred format in the document
+    document::AbstractFormat* format = document::formats().formatFromFileName(doc->fileName());
+    if ( prompt || !format )
     {
         // Ensure the the image is visible so the user knows what they are saving
         if ( tab != p->main_tab->currentIndex() )
             p->main_tab->setCurrentIndex(tab);
 
-        QString image_formats;
-        for ( const auto& ba : QImageWriter::supportedImageFormats() )
-            image_formats += " *."+QString(ba);
-
-        QStringList file_formats = QStringList()
-            << tr("Cayman Files (*.mela)")
-            /// \todo split "All Bitmap Images" in png etc
-            << tr("All Bitmap Images (%1)").arg(image_formats)
-            << tr("Ansi text (*.ansi *.txt)")
-            << tr("All Files (*)");
+        QStringList file_formats;
+        for ( auto* fmt : document::formats().formats() )
+            file_formats << fmt->nameFilter(document::Formats::Action::Save);
+        file_formats << tr("All Files (*)");
 
         /// \todo if doc->filename is a bitmap, select that filter
         QFileDialog save_dialog(this, tr("Save Image"), doc->fileName());
         save_dialog.setFileMode(QFileDialog::AnyFile);
         save_dialog.setAcceptMode(QFileDialog::AcceptSave);
         save_dialog.setNameFilters(file_formats);
+        if ( format )
+            save_dialog.selectNameFilter(format->nameFilter(document::Formats::Action::Save));
 
         if ( !save_dialog.exec() )
             return false;
@@ -190,18 +187,30 @@ bool MainWindow::save(int tab, bool prompt)
         /// QFileDialog should already do this but it doesnt,
         /// At least not with the native KDE dialog.
 
-        format = Private::DocumentSaveFormat(file_formats.indexOf(save_dialog.selectedNameFilter()));
-        doc->setFileName(save_dialog.selectedFiles().front());
+        QString selected_file = save_dialog.selectedFiles().front();
+
+        format = document::formats().format(
+                    file_formats.indexOf(save_dialog.selectedNameFilter()));
+        if ( !format )
+        {
+            format = document::formats().formatFromFileName(selected_file);
+            /// \todo Show an error message (Unknown format)
+            if ( !format )
+                return false;
+        }
+
+        doc->setFileName(selected_file);
         p->main_tab->setTabText(tab, p->documentName(doc));
         p->updateTitle();
     }
 
-    if ( p->save(doc, format) )
+    if ( format->save(doc) )
     {
-        widget->document()->undoStack().setClean();
+        doc->undoStack().setClean();
         p->pushRecentFile(doc->fileName());
     }
 
+    /// \todo Show an error message (Error while saving)
     return false;
 }
 
