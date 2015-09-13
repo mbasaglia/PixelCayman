@@ -18,7 +18,4 @@
 get_filename_component(PLUGIN_NAME ${CMAKE_CURRENT_SOURCE_DIR} NAME)
 set(SOURCES main.cpp)
 
-find_package(Qt5Widgets REQUIRED)
-include_directories(${Qt5Core_INCLUDE_DIRS})
-
 add_library(${PLUGIN_NAME} MODULE ${SOURCES})

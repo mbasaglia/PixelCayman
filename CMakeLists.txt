@@ -83,6 +83,8 @@ if(DOXYGEN_FOUND)
         "src/*.dox"
         "src/*.cpp"
         "src/*.hpp"
+        "data/plugins/*.cpp"
+        "data/plugins/*.hpp"
         "submodules/*/src/*.cpp"
         "submodules/*/src/*.hpp"
         "submodules/*/include/*.hpp"

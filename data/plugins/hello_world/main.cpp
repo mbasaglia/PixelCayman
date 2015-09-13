@@ -20,16 +20,23 @@
  *
  */
 
-#include <QString>
 #include <QDebug>
+#include "plugin.hpp"
 
-extern "C" bool Plugin_load()
+class HelloWorld : public Plugin
 {
-    qDebug() << "Plugin Hello World loaded!";
-    return true;
-}
+protected:
+    bool onLoad()
+    {
+        qDebug() << "Plugin Hello World loaded!";
+        return true;
+    }
 
-extern "C" QString Plugin_name()
-{
-    return "Hello World";
-}
+    QString onName()
+    {
+        return "Hello World";
+    }
+
+};
+
+INIT_PLUGIN(HelloWorld)
