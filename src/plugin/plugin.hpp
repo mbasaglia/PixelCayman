@@ -138,6 +138,23 @@ public:
         return dependencies_;
     }
 
+    /**
+     * \brief Checks whether the dependencies are met
+     */
+    bool checkDependencies();
+
+    /**
+     * \brief Returns whether the dependencies are met
+     *
+     * It doesn't perform the check but returns the value returned by the
+     * last call of checkDependencies()
+     */
+    bool dependenciesMet() const
+    {
+        return dependencies_met_;
+    }
+
+
 signals:
     void loaded(QPrivateSignal);
     void unloaded(QPrivateSignal);
@@ -177,6 +194,7 @@ private:
     int version_ = -1;
     bool dependencies_loaded_ = false;
     QList<Dependency> dependencies_;
+    bool dependencies_met_ = false;
 };
 
 /**

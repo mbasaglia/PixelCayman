@@ -26,6 +26,11 @@
 
 namespace plugin {
 
+bool Plugin::checkDependencies()
+{
+    return dependencies_met_ = registry().meetsDependency(dependencies());
+}
+
 void PluginRegistry::load()
 {
     if ( !plugins_.empty() )
@@ -58,7 +63,7 @@ void PluginRegistry::load()
         auto iter = queued_.begin();
         while ( iter != queued_.end() )
         {
-            if ( meetsDependency((*iter)->dependencies()) )
+            if ( (*iter)->checkDependencies() )
             {
                 addPlugin(*iter);
                 iter = queued_.erase(iter);
