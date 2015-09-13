@@ -29,6 +29,7 @@ namespace plugin {
 QAction* Plugin::createAction(QObject* parent)
 {
     QAction *action = new QAction(this->name(), parent);
+    action->setCheckable(true);
     action->setChecked(this->loaded_);
     action->setEnabled(this->dependencies_met_);
     connect(this, &Plugin::loadedChanged, action, &QAction::setChecked);
