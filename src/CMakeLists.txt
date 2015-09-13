@@ -81,10 +81,12 @@ data.cpp
 data.hpp
 draw.hpp
 math.hpp
-${CMAKE_CURRENT_BINARY_DIR}/info.cpp
+info.cpp
+info.hpp
+${CMAKE_CURRENT_BINARY_DIR}/static_info.hpp
 )
 
-configure_file(info.in.cpp info.cpp)
+configure_file(static_info.in.hpp static_info.hpp)
 
 # Enable extra Qt tools
 find_package(Qt5Widgets REQUIRED)

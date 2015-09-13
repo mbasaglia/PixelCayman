@@ -1,4 +1,3 @@
-#line 2 "${CMAKE_CURRENT_SOURCE_DIR}/info.in.cpp"
 /**
  * \file
  *
@@ -22,12 +21,12 @@
 #include "info.hpp"
 #include <QApplication>
 #include <QUrl>
-
+#include "static_info.hpp"
 void init_info()
 {
-    QApplication::setApplicationName("${EXECUTABLE_NAME}");
-    QApplication::setApplicationDisplayName("${NICE_NAME}");
-    QApplication::setApplicationVersion("${PROJECT_VERSION}");
-    QApplication::setOrganizationName("${EXECUTABLE_NAME}");
-    QApplication::setOrganizationDomain(QUrl("${PROJECT_WEBSITE}").host());
+    QApplication::setApplicationName(EXECUTABLE_NAME);
+    QApplication::setApplicationDisplayName(NICE_NAME);
+    QApplication::setApplicationVersion(PROJECT_VERSION);
+    QApplication::setOrganizationName(EXECUTABLE_NAME);
+    QApplication::setOrganizationDomain(QUrl(PROJECT_WEBSITE).host());
 }
