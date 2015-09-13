@@ -23,22 +23,11 @@
 #include "io.hpp"
 #include "misc/composition_mode.hpp"
 
+#include <QImageReader>
+#include <QImageWriter>
+#include <QFileInfo>
+
 namespace document {
-
-bool save_xml(Document& doc)
-{
-    if ( doc.fileName().isEmpty() )
-        return false;
-
-    QFile file(doc.fileName());
-
-    if ( !file.open(QFile::WriteOnly) )
-        return false;
-
-    save_xml(doc, &file);
-
-    return true;
-}
 
 namespace visitor {
 
@@ -163,5 +152,158 @@ void SaverXml::writeId(const DocumentElement& element, const QString& attr)
 }
 
 } // namespace visitor
+
+bool AbstractFormat::save(document::Document* document, const QString& filename)
+{
+    if ( filename.isEmpty() )
+        return false;
+
+    QFile file(filename);
+
+    if ( !file.open(QFile::WriteOnly) )
+        return false;
+
+    return save(document, &file);
+}
+
+bool AbstractFormat::save(document::Document* document)
+{
+    return save(document, document->fileName());
+}
+
+Document* AbstractFormat::open(const QString& filename)
+{
+    if ( filename.isEmpty() )
+        return nullptr;
+
+    QFile file(filename);
+
+    if ( !file.open(QFile::ReadOnly) )
+        return nullptr;
+
+    return open(&file);
+}
+
+bool FormatBitmap::save(Document* input, QIODevice* device)
+{
+    QImage image(input->imageSize(), imageFormat(input, device));
+    image.fill(Qt::transparent);
+    QPainter painter(&image);
+    painter.fillRect(image.rect(), fillColor(input, device));
+    /// \todo detect frame (and fullAlpha?) from settings
+    document::visitor::Paint paint(nullptr, &painter, true);
+    input->apply(paint);
+
+    return saveImage(image, device);
+}
+
+Document* FormatBitmap::open(QIODevice* device)
+{
+    QImage image = openImage(device);
+    if ( image.isNull() )
+        return nullptr;
+    return new Document(image, fileName(device));
+}
+
+QString FormatBitmap::id() const
+{
+    return "bitmap";
+}
+
+QString FormatBitmap::name() const
+{
+    return QObject::tr("All Bitmap Images");
+}
+
+QStringList FormatBitmap::saveExtensions() const
+{
+    auto bytearr = QImageWriter::supportedImageFormats();
+    QStringList formats;
+    formats.reserve(bytearr.size());
+    for ( const auto& fmt : bytearr )
+        formats.push_back(fmt);
+    return formats;
+}
+
+QStringList FormatBitmap::openExtensions() const
+{
+    auto bytearr = QImageReader::supportedImageFormats();
+    QStringList formats;
+    formats.reserve(bytearr.size());
+    for ( const auto& fmt : bytearr )
+        formats.push_back(fmt);
+    return formats;
+}
+
+QImage::Format FormatBitmap::imageFormat(const document::Document* input, const QIODevice* device) const
+{
+    return QImage::Format_ARGB32;
+}
+
+QColor FormatBitmap::fillColor(const document::Document* input, const QIODevice* device) const
+{
+    /// \todo if the format doesn't support alpha, read a color from the settings
+    return Qt::transparent;
+}
+
+bool FormatBitmap::saveImage(const QImage& image, QIODevice* device)
+{
+    QImageWriter writer(device, QByteArray());
+
+    /// \todo some way to determine quality for jpg
+    /// (low priority since Jpeg isn't a good format for pixel art)
+
+    return writer.write(image);
+}
+
+QImage FormatBitmap::openImage(QIODevice* device)
+{
+    QImageReader reader(device);
+    return reader.read();
+}
+
+Formats::~Formats()
+{
+    for ( auto format : formats_ )
+        delete format;
+}
+
+bool Formats::addFormat(AbstractFormat* format)
+{
+    for ( auto fmt : formats_ )
+        if ( fmt->id() == format->id() )
+        {
+            delete format;
+            return false;
+        }
+    formats_.push_back(format);
+    return true;
+}
+
+bool Formats::deleteFormat(AbstractFormat* format)
+{
+    for ( auto it = formats_.begin(); it != formats_.end(); ++it )
+        if ( *it == format )
+        {
+            delete *it;
+            formats_.erase(it);
+            return true;
+        }
+    return false;
+}
+
+AbstractFormat* Formats::format(const QString& id) const
+{
+    for ( auto format : formats_ )
+        if ( id == format->id() )
+            return format;
+    return nullptr;
+}
+
+QList<AbstractFormat*> Formats::formats() const
+{
+    return formats_;
+}
+
 
 } // namespace document

@@ -354,50 +354,11 @@ bool MainWindow::Private::save(document::Document* doc, DocumentSaveFormat forma
 
     if ( format == Cayman )
     {
-        return document::save_xml(*doc);
+        return document::Formats::instance().save("mela", doc);
     }
     else if ( format == Bitmap )
     {
-        QImage image(doc->imageSize(), QImage::Format_ARGB32);
-        /// \todo if the format doesn't support alpha, read a color from the settings
-        image.fill(Qt::transparent);
-        QPainter painter(&image);
-        /// \todo detect frame (and fullAlpha?) from settings
-        document::visitor::Paint paint(nullptr, &painter, true);
-        doc->apply(paint);
-
-        /// \todo some way to determine quality for jpg
-        /// (low priority since Jpeg isn't a good format for pixel art)
-        return image.save(doc->fileName());
-    }
-    else if ( format == AnsiText )
-    {
-        /// \todo Move this into an external plug-in
-        /// \todo Extended codes
-        QImage image(doc->imageSize(), QImage::Format_ARGB32);
-        image.fill(Qt::transparent);
-        QPainter painter(&image);
-        /// \todo detect frame (and fullAlpha?) from settings
-        document::visitor::Paint paint(nullptr, &painter, true);
-        doc->apply(paint);
-
-        QFile output(doc->fileName());
-        if ( !output.open(QFile::WriteOnly) )
-            return false;
-        QTextStream stream(&output);
-        QString pixel = "  ";
-        for ( int y = 0; y < image.height(); y++ )
-        {
-            for ( int x = 0; x < image.height(); x++ )
-            {
-                int color = misc::color::to4bit(image.pixel(x, y));
-                stream << "\x1b[" << ((color&8) ? 1 : 22) << ';' << 40+(color&~8) << 'm' << pixel;
-            }
-            stream << '\n';
-        }
-        stream << "\x1b[0m";
-
-        return true;
+        return document::Formats::instance().save("bitmap", doc);
     }
 
     return false;

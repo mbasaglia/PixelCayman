@@ -32,6 +32,7 @@
 #include "plugin/plugin.hpp"
 #include "plugin/library_plugin.hpp"
 #include "plugin/plugin_api.hpp"
+#include "document/io.hpp"
 
 void initPlugins()
 {
@@ -77,6 +78,9 @@ int main(int argc, char** argv)
 
     try
     {
+        document::Formats::instance().addFormat(new document::FormatXmlMela);
+        document::Formats::instance().addFormat(new document::FormatBitmap);
+
         // Initialize Icon theme
         // NOTE: this is broken in Qt 5.4.1
         /*QIcon::setThemeSearchPaths(

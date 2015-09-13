@@ -56,20 +56,210 @@ private:
 } // namespace visitor
 
 /**
- * \brief Save the document to an IODevice as XML
+ * \brief A document file format
+ * \todo Mime types?
  */
-inline void save_xml(Document& doc, QIODevice* device)
+class AbstractFormat
 {
-    visitor::SaverXml xml(device);
-    doc.apply(xml);
-}
+public:
+    virtual ~AbstractFormat(){}
+
+    /**
+     * \brief Unique machine-readable identifier for the file format
+     */
+    virtual QString id() const = 0;
+    /**
+     * \brief A human-readable name of the file format shown in the file dialog
+     */
+    virtual QString name() const { return id(); }
+    /**
+     * \brief List of file extensions to filter in the file dialog
+     */
+    virtual QStringList saveExtensions() const { return {id()}; }
+    /**
+     * \brief List of file extensions to filter in the file dialog
+     */
+    virtual QStringList openExtensions() const { return saveExtensions(); }
+    /**
+     * \brief Whether the file format supports saving document
+     */
+    virtual bool canSave() const { return false; }
+    /**
+     * \brief Save the document contents to the output device
+     * \return \b true on success
+     */
+    virtual bool save(Document* input, QIODevice* device)  { return false; }
+    /**
+     * \brief Save the document to a file with the given name
+     * \return \b true on success
+     */
+    bool save(Document* document, const QString& filename);
+    /**
+     * \brief Save the document to the file stored in its filename
+     * \return \b true on success
+     */
+    bool save(Document* document);
+    /**
+     * \brief Whether the file format supports opening documents
+     */
+    virtual bool canOpen() const { return false; }
+    /**
+     * \brief Load the device contents in a new document
+     * \return A new Document object, \b nullptr on error
+     */
+    virtual Document* open(QIODevice* device) { return nullptr; }
+    /**
+     * \brief Load the file contents in a new document
+     * \return A new Document object, \b nullptr on error
+     */
+    Document* open(const QString& filename);
+
+
+protected:
+    /**
+     * \brief Extract a file name from a i/o device
+     */
+    static QString fileName(const QIODevice* device)
+    {
+        if ( const QFile* file = qobject_cast<const QFile*>(device) )
+            return file->fileName();
+        return QObject::tr("Image");
+    }
+};
 
 /**
- * \brief Save the document to its own file as XML
- * \return \b true on success
+ * \brief Writes a .mela file
+ * \todo Read files
  */
-bool save_xml(Document& doc);
+class FormatXmlMela : public AbstractFormat
+{
+public:
+    QString id() const override { return "mela"; }
+    QString name() const override { return QObject::tr("Cayman Files"); }
+    bool canSave() const override { return true; }
+    bool save(Document* input, QIODevice* device) override
+    {
+        visitor::SaverXml xml(device);
+        input->apply(xml);
+        return true;
+    }
+};
 
+/**
+ * \brief Reads and writes bitmap images with the Qt image reader/writer
+ *
+ * Can be used as base class for formats that need to render the file to a
+ * bitmap before saving it to a file
+ */
+class FormatBitmap : public AbstractFormat
+{
+public:
+    QString id() const override;
+    QString name() const override;
+    QStringList saveExtensions() const override;
+    QStringList openExtensions() const override;
+    bool canSave() const override { return true; }
+    bool canOpen() const override { return true; }
+
+    bool save(document::Document* input, QIODevice* device) final;
+    Document* open(QIODevice* device) final;
+
+protected:
+    /**
+     * \brief Format used by for the QImage generated from the document
+     */
+    virtual QImage::Format imageFormat(const Document* input, const QIODevice* device) const;
+
+    /**
+     * \brief The color used to fill the QImage generated from the document
+     */
+    virtual QColor fillColor(const Document* input, const QIODevice* device) const;
+
+    /**
+     * \brief Saves the image to the device
+     */
+    virtual bool saveImage(const QImage& img, QIODevice* device);
+
+    /**
+     * \brief Opens an image from the device
+     */
+    virtual QImage openImage(QIODevice* device);
+};
+
+/**
+ * \brief Keeps track of file formats
+ */
+class Formats
+{
+public:
+    /**
+     * \brief Singleton instance
+     */
+    static Formats& instance()
+    {
+        static Formats singleton;
+        return singleton;
+    }
+
+    /**
+     * \brief Registers a format
+     *
+     * Takes ownership of \p format
+     *
+     * \returns \b true on success
+     *
+     * \note If the function fails (because a format with the same id is found)
+     * \p format will be destroyed
+     */
+    bool addFormat(AbstractFormat* format);
+
+    /**
+     * \brief Removes and deletes a format
+     *
+     * \p format is destroyed if successful
+     *
+     * \returns \b true on success
+     */
+    bool deleteFormat(AbstractFormat* format);
+
+    /**
+     * \brief Returns a format by id
+     */
+    AbstractFormat* format(const QString& id) const;
+
+    /**
+     * \brief List of available formats
+     */
+    QList<AbstractFormat*> formats() const;
+
+    /**
+     * \brief Save \p document with the format with the matching id
+     */
+    template<class... Args>
+        bool save(const QString& format_id, Document* document, Args&&... args)
+    {
+        if ( auto fmt = format(format_id) )
+            return fmt->save(document, std::forward<Args>(args)...);
+        return false;
+    }
+
+    /**
+     * \brief Open a document with the format with the matching id
+     */
+    template<class... Args>
+        Document* open(const QString& format_id, Args&&... args)
+    {
+        if ( auto fmt = format(format_id) )
+            return fmt->open(std::forward<Args>(args)...);
+        return nullptr;
+    }
+
+private:
+    Formats(){}
+    ~Formats();
+
+    QList<AbstractFormat*> formats_;
+};
 
 } // namespace document
 #endif // PIXEl_CAYMAN_DOCUMENT_IO_HPP
