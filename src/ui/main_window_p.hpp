@@ -35,7 +35,6 @@
 #include "color_palette_model.hpp"
 #include "color_palette_widget.hpp"
 #include "color_selector.hpp"
-#include "document/io.hpp"
 #include "item/layer_tree.hpp"
 #include "settings.hpp"
 #include "style/dockwidget_style_icon.hpp"
@@ -44,8 +43,6 @@
 #include "view/graphics_widget.hpp"
 #include "layer_widget.hpp"
 #include "plugin/plugin.hpp"
-
-#include "misc/color.hpp"
 
 #include "ui_current_color.h"
 #include "ui_main_window.h"

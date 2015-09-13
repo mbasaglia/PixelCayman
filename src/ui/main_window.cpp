@@ -97,31 +97,31 @@ bool MainWindow::documentNew()
 bool MainWindow::documentOpen()
 {
     QString default_dir;
+    document::AbstractFormat* format = nullptr;
     if ( p->current_view )
     {
         if ( !p->current_view->document()->fileName().isEmpty() )
             default_dir = QFileInfo(p->current_view->document()->fileName()).dir().path();
+        /// \todo set format to the preferred format for the document
     }
 
-    QString image_formats;
-    for ( const auto& ba : QImageReader::supportedImageFormats() )
-        image_formats += " *."+QString(ba);
-
-    QStringList file_formats = QStringList()
-        << tr("All Bitmap Images (%1)").arg(image_formats)
-        << tr("All Files (*)");
+    auto action = document::Formats::Action::Open;
     QFileDialog open_dialog(this, tr("Open Image"), default_dir);
     open_dialog.setFileMode(QFileDialog::ExistingFiles);
     open_dialog.setAcceptMode(QFileDialog::AcceptOpen);
-    open_dialog.setNameFilters(file_formats);
+    open_dialog.setNameFilters(document::formats().nameFilters(action));
+    if ( format )
+        open_dialog.selectNameFilter(format->nameFilter(action));
 
     if ( !open_dialog.exec() )
         return false;
 
+    format = document::formats().formatFromNameFilter(open_dialog.selectedNameFilter(), action);
+
     int tab = -1;
     for ( const QString& file_name : open_dialog.selectedFiles() )
     {
-        int new_tab = openTab(file_name, false);
+        int new_tab = openTab(file_name, false, format);
         if ( new_tab != -1 )
             tab = new_tab;
     }
@@ -159,26 +159,21 @@ bool MainWindow::save(int tab, bool prompt)
     if ( doc->fileName().isEmpty() )
         prompt = true;
 
+    auto action = document::Formats::Action::Save;
     /// \todo Store preferred format in the document
-    document::AbstractFormat* format = document::formats().formatFromFileName(doc->fileName());
+    document::AbstractFormat* format = document::formats().formatFromFileName(doc->fileName(),action);
     if ( prompt || !format )
     {
         // Ensure the the image is visible so the user knows what they are saving
         if ( tab != p->main_tab->currentIndex() )
             p->main_tab->setCurrentIndex(tab);
 
-        QStringList file_formats;
-        for ( auto* fmt : document::formats().formats() )
-            file_formats << fmt->nameFilter(document::Formats::Action::Save);
-        file_formats << tr("All Files (*)");
-
-        /// \todo if doc->filename is a bitmap, select that filter
         QFileDialog save_dialog(this, tr("Save Image"), doc->fileName());
         save_dialog.setFileMode(QFileDialog::AnyFile);
         save_dialog.setAcceptMode(QFileDialog::AcceptSave);
-        save_dialog.setNameFilters(file_formats);
+        save_dialog.setNameFilters(document::formats().nameFilters(action));
         if ( format )
-            save_dialog.selectNameFilter(format->nameFilter(document::Formats::Action::Save));
+            save_dialog.selectNameFilter(format->nameFilter(action));
 
         if ( !save_dialog.exec() )
             return false;
@@ -189,11 +184,10 @@ bool MainWindow::save(int tab, bool prompt)
 
         QString selected_file = save_dialog.selectedFiles().front();
 
-        format = document::formats().format(
-                    file_formats.indexOf(save_dialog.selectedNameFilter()));
+        format = document::formats().formatFromNameFilter(save_dialog.selectedNameFilter(), action);
         if ( !format )
         {
-            format = document::formats().formatFromFileName(selected_file);
+            format = document::formats().formatFromFileName(selected_file, action);
             /// \todo Show an error message (Unknown format)
             if ( !format )
                 return false;
@@ -214,18 +208,25 @@ bool MainWindow::save(int tab, bool prompt)
     return false;
 }
 
-int MainWindow::openTab(const QString& file_name, bool set_current)
+int MainWindow::openTab(const QString& file_name, bool set_current,
+                        document::AbstractFormat* format)
 {
-    QImage image(file_name);
-
-    if ( !image.isNull() )
+    if ( !format )
     {
-        document::Document* doc = new document::Document(image, file_name);
+        format = document::formats().formatFromFileName(file_name,document::Formats::Action::Open);
+        if ( !format )
+            return -1; /// \todo Error message (unknown format)
+    }
+
+    /// \todo Open should set the preferred format
+    document::Document* doc = format->open(file_name);
+    if ( doc )
+    {
         p->pushRecentFile(doc->fileName());
         return p->addDocument(doc, set_current);
     }
 
-    return -1;
+    return -1; /// \todo Error message (error while opening)
 }
 
 bool MainWindow::documentClose()

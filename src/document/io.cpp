@@ -292,11 +292,6 @@ AbstractFormat* Formats::format(const QString& id) const
     return nullptr;
 }
 
-AbstractFormat* Formats::format(int index) const
-{
-    return index < 0 || index >= formats_.size() ? nullptr : formats_[index];
-}
-
 QList<AbstractFormat*> Formats::formats() const
 {
     return formats_;
@@ -307,6 +302,28 @@ AbstractFormat* Formats::formatFromFileName(const QString& file, Formats::Action
     QString ext = QFileInfo(file).suffix().toLower();
     for ( auto format : formats_ )
         if ( format->extensions(action).contains(ext) )
+            return format;
+    return nullptr;
+}
+
+QStringList Formats::nameFilters(Formats::Action action, bool all_files) const
+{
+    QStringList filters;
+
+    for ( auto* format : formats_ )
+        if ( format->supportsAction(action) )
+            filters << format->nameFilter(action);
+
+    if ( all_files )
+        filters << QObject::tr("All Files (*)");
+
+    return filters;
+}
+
+AbstractFormat* Formats::formatFromNameFilter(const QString& filter, Formats::Action action) const
+{
+    for ( auto* format : formats_ )
+        if ( format->supportsAction(action) && format->nameFilter(action) == filter )
             return format;
     return nullptr;
 }

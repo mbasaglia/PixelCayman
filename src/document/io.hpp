@@ -82,10 +82,23 @@ public:
      * \brief A human-readable name of the file format shown in the file dialog
      */
     virtual QString name() const { return id(); }
+
+    /**
+     * \brief Whether the format supports the given action
+     */
+    bool supportsAction(Action action)
+    {
+        if ( action == Action::Save )
+            return canSave();
+        if ( action == Action::Open )
+            return canOpen();
+        return false;
+    }
+
     /**
      * \brief List of file extensions to filter in the file dialog
      */
-    virtual QStringList extensions(Action action = Action::Save) const { return {id()}; }
+    virtual QStringList extensions(Action action) const { return {id()}; }
     /**
      * \brief Whether the file format supports saving document
      */
@@ -123,7 +136,7 @@ public:
     /**
      * \brief Name filter string suitable for file dialogs
      */
-    QString nameFilter(Action action = Action::Save) const
+    QString nameFilter(Action action) const
     {
         QString namefilters;
         for ( const auto& ext : extensions(action) )
@@ -172,7 +185,7 @@ class FormatBitmap : public AbstractFormat
 public:
     QString id() const override;
     QString name() const override;
-    QStringList extensions(Action action = Action::Save) const override;
+    QStringList extensions(Action action) const override;
     bool canSave() const override { return true; }
     bool canOpen() const override { return true; }
 
@@ -245,12 +258,6 @@ public:
     AbstractFormat* format(const QString& id) const;
 
     /**
-     * \brief Returns a format by index
-     * \return The same as formats()[index] or nullptr
-     */
-    AbstractFormat* format(int index) const;
-
-    /**
      * \brief List of available formats
      */
     QList<AbstractFormat*> formats() const;
@@ -258,7 +265,7 @@ public:
     /**
      * \brief Returns a format that can handle the given file extension
      */
-    AbstractFormat* formatFromFileName(const QString& file, Action action = Action::Save) const;
+    AbstractFormat* formatFromFileName(const QString& file, Action action) const;
 
     /**
      * \brief Save \p document with the format with the matching id
@@ -281,6 +288,19 @@ public:
             return fmt->open(std::forward<Args>(args)...);
         return nullptr;
     }
+
+    /**
+     * \brief Returns a list of name filters for the given action
+     * \param action    Action the format must support
+     * \param all_files Whether to add an item that includes all files
+     * \see formatFromNameFilter()
+     */
+    QStringList nameFilters(Action action, bool all_files = true) const;
+    /**
+     * \brief Returns the format matching the given name filter
+     * \see nameFilters()
+     */
+    AbstractFormat* formatFromNameFilter(const QString& filter, Action action) const;
 
 private:
     Formats(){}

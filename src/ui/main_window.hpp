@@ -22,8 +22,8 @@
 #define MAIN_WINDOW_HPP
 
 #include <QMainWindow>
-#include "document/document.hpp"
 #include "tool/tool.hpp"
+#include "document/io.hpp"
 
 class MainWindow : public QMainWindow
 {
@@ -90,7 +90,8 @@ protected:
      * \brief Open a file
      * \return The index of the newly opened tab, -1 on failure
      */
-    int openTab(const QString& file_name, bool set_current);
+    int openTab(const QString& file_name, bool set_current,
+                document::AbstractFormat* fomat = nullptr);
 
     /**
      * \brief Closes a tab
