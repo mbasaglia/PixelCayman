@@ -72,6 +72,8 @@ plugin/plugin.hpp
 plugin/plugin.cpp
 plugin/library_plugin.hpp
 plugin/library_plugin.cpp
+plugin/plugin_api.hpp
+plugin/plugin_api.cpp
 main.cpp
 util.hpp
 settings.hpp

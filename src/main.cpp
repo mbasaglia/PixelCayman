@@ -31,6 +31,42 @@
 #include "tool/registry.hpp"
 #include "plugin/plugin.hpp"
 #include "plugin/library_plugin.hpp"
+#include "plugin/plugin_api.hpp"
+
+void initPlugins()
+{
+    // Register factories (plugin types)
+    plugin::registry().addFactory(new plugin::LibraryPluginFactory);
+
+    // Connect warnings
+    QObject::connect(&plugin::registry(), &plugin::PluginRegistry::warning,
+        [](const QString& msg) { qWarning() << msg; });
+
+    // Refresh the list of available paths every time the plugins are loaded
+    QObject::connect(&plugin::registry(), &plugin::PluginRegistry::beginLoad,
+        []{ plugin::registry().setSearchPaths(data().readableList("plugins")); }
+    );
+
+    // Load the plugins that are supposed to be enabled
+    QObject::connect(&plugin::registry(), &plugin::PluginRegistry::created,
+        [](plugin::Plugin* plugin){
+            if ( plugin->dependenciesMet() &&
+                    ::plugin::settingsGet(plugin, "loaded", true) )
+            {
+                plugin->load();
+            }
+
+        });
+
+    // Update settings each time a plugin is loaded or unloaded
+    QObject::connect(&plugin::registry(), &plugin::PluginRegistry::loadedChanged,
+        [](plugin::Plugin* plugin, bool loaded){
+            ::plugin::settingsPut(plugin, "loaded", loaded);
+    });
+
+    // Load all plugins
+    plugin::PluginRegistry::instance().load();
+}
 
 int main(int argc, char** argv)
 {
@@ -40,24 +76,6 @@ int main(int argc, char** argv)
 
     try
     {
-        plugin::registry().addFactory(new plugin::LibraryPluginFactory);
-        QObject::connect(&plugin::registry(), &plugin::PluginRegistry::warning,
-            [](const QString& msg) { qWarning() << msg; });
-        QObject::connect(&plugin::registry(), &plugin::PluginRegistry::beginLoad,
-            []{ plugin::registry().setSearchPaths(data().readableList("plugins")); }
-        );
-        QObject::connect(&plugin::registry(), &plugin::PluginRegistry::endLoad, []{
-            for ( ::plugin::Plugin* plugin : plugin::registry().plugins() )
-                plugin->load();
-        });
-        QObject::connect(&plugin::registry(), &plugin::PluginRegistry::created,
-            /// \todo Read from settings which plugins have to be loaded
-            [](plugin::Plugin* plugin){
-                if ( plugin->dependenciesMet() )
-                    plugin->load();
-
-            });
-        plugin::PluginRegistry::instance().load();
         // Initialize Icon theme
         // NOTE: this is broken in Qt 5.4.1
         /*QIcon::setThemeSearchPaths(
@@ -65,6 +83,8 @@ int main(int argc, char** argv)
             << data().readable("icons")
         );
         QIcon::setThemeName("pixel-cayman");*/
+
+        initPlugins();
 
         MainWindow window;
         for ( const auto& tool : ::tool::Registry::instance().tools() )

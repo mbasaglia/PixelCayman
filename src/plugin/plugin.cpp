@@ -132,6 +132,7 @@ void PluginRegistry::unload()
     for ( auto plugin : plugins_ )
     {
         plugin->unload();
+        emit destroyed(plugin);
         delete plugin;
     }
 
@@ -153,10 +154,9 @@ void PluginRegistry::addPlugin(Plugin* plugin)
                 p->checkDependencies();
         emit unloaded(plugin);
     });
-    /*connect(plugin, &QObject::destroyed, [this, plugin]{
-        plugin->unload();
-        removePlugin(plugin);
-    });*/
+    connect(plugin, &Plugin::loadedChanged, [this, plugin](bool loaded){
+        emit loadedChanged(plugin, loaded);
+    });
     plugins_[plugin->name()] = plugin;
     emit created(plugin);
 }

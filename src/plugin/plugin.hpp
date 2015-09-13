@@ -364,6 +364,10 @@ signals:
      * \brief Emitted when a plugin has been disabled
      */
     void unloaded(Plugin* plugin);
+    /**
+     * \brief Emitted when a plugin has been enabled or disabled
+     */
+    void loadedChanged(Plugin* plugin, bool loaded);
 
     /**
      * \brief Emitted on minor issues with the plugins
