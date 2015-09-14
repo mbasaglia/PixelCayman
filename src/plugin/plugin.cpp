@@ -46,18 +46,14 @@ bool Plugin::checkDependencies()
     return dependencies_met_;
 }
 
-void PluginRegistry::load()
+void PluginRegistry::scanDirectories()
 {
-    if ( !plugins_.empty() )
-        throw std::logic_error("Cannot call PluginRegistry::load() before calling PluginRegistry::unload()");
-
-    emit beginLoad();
-
     // Queue plugins
     for ( QDir dir : search_paths_ )
     {
         if ( dir.exists() )
         {
+            dir.setFilter(dir.filter()|QDir::NoDotAndDotDot);
             for ( const QFileInfo& file : dir.entryInfoList() )
             {
                 if ( !queue(file) )
@@ -68,7 +64,10 @@ void PluginRegistry::load()
             }
         }
     }
+}
 
+void PluginRegistry::resolveQueue()
+{
     // Check dependencies
     while ( !queued_.isEmpty() )
     {
@@ -92,16 +91,29 @@ void PluginRegistry::load()
 
         // No plugin has been loaded in this iteration, so bail out
         if ( size == queued_.size() )
-        {
-            QStringList names;
-            for ( auto plugin : queued_ )
-            {
-                addPlugin(plugin);
-            }
-            queued_.clear();
             break;
-        }
     }
+}
+
+void PluginRegistry::clearQueue()
+{
+    for ( auto plugin : queued_ )
+    {
+        addPlugin(plugin);
+    }
+    queued_.clear();
+}
+
+void PluginRegistry::load()
+{
+    if ( !plugins_.empty() )
+        throw std::logic_error("Cannot call PluginRegistry::load() before calling PluginRegistry::unload()");
+
+    emit beginLoad();
+
+    scanDirectories();
+    resolveQueue();
+    clearQueue();
 
     emit endLoad();
 }

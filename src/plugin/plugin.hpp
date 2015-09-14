@@ -394,9 +394,24 @@ private:
     }
 
     /**
+     * \brief Scans plugin directories and adds created plugins to the queue
+     */
+    void scanDirectories();
+
+    /**
      * \brief Queue a plugin file for loading
      */
     bool queue(const QFileInfo& file);
+
+    /**
+     * \brief Installs the queued plugins, resolving dependencies where possible
+     */
+    void resolveQueue();
+
+    /**
+     * \brief Installs the queued plugins without bothering resolving dependencies
+     */
+    void clearQueue();
 
     void addPlugin(Plugin* plugin);
     void removePlugin(Plugin* plugin);
