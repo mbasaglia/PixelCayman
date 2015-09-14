@@ -20,11 +20,14 @@
  */
 #ifndef PIXEl_CAYMAN_DOCUMENT_IO_HPP
 #define PIXEl_CAYMAN_DOCUMENT_IO_HPP
-#include "visitor.hpp"
+
 #include <QXmlStreamWriter>
 #include <QFile>
 #include <QBuffer>
 #include <QMimeType>
+
+#include "visitor.hpp"
+#include "settings.hpp"
 
 namespace document {
 
@@ -146,6 +149,20 @@ public:
             namefilters += " *."+ext;
         return QObject::tr("%1 (%2)").arg(name()).arg(namefilters);
     }
+
+    /**
+     * \brief Get a single option from the document or the global settings
+     */
+    template<class T>
+        T setting(const QString& key, Document* document = nullptr, T&& default_value = T()) const
+        {
+            QVariant variant;
+            if ( document )
+                variant = document->formatSettings().get(this, key);
+            if ( !variant.canConvert<typename std::remove_reference<T>::type>() )
+                return settings::get("format/"+id()+"/"+key, std::forward<T>(default_value));
+            return variant.value<T>();
+        }
 
 protected:
     /**

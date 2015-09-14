@@ -31,7 +31,6 @@ class AbstractFormat;
 
 /**
  * \brief Document format settings
- * \todo Some clean way to handle global settings
  */
 class FormatSettings
 {
@@ -55,7 +54,7 @@ public:
     /**
      * \brief All settings
      */
-    const QMap<AbstractFormat*, QMap<QString, QVariant>>& settings() const
+    const QMap<const AbstractFormat*, QMap<QString, QVariant>>& settings() const
     {
         return settings_;
     }
@@ -79,7 +78,7 @@ public:
     /**
      * \brief Get a single option
      */
-    QVariant get(AbstractFormat* format, const QString& key) const
+    QVariant get(const AbstractFormat* format, const QString& key) const
     {
         return settings_[format][key];
     }
@@ -88,7 +87,7 @@ public:
      * \brief Get a single option with an explicit type
      */
     template<class T>
-        T get(AbstractFormat* format, const QString& key, const T& default_value = T()) const
+        T get(const AbstractFormat* format, const QString& key, const T& default_value = T()) const
         {
             QVariant variant = settings_[format][key];
             if ( !variant.canConvert<typename std::remove_reference<T>::type>() )
@@ -99,7 +98,7 @@ public:
     /**
      * \brief Set a single option
      */
-    void put(AbstractFormat* format, const QString& key, const QVariant& value)
+    void put(const AbstractFormat* format, const QString& key, const QVariant& value)
     {
         settings_[format][key] = value;
     }
@@ -108,14 +107,14 @@ public:
      * \brief Set a single option with an explicit type
      */
     template<class T>
-        void put(AbstractFormat* format, const QString& key, T&& value)
+        void put(const AbstractFormat* format, const QString& key, T&& value)
         {
             settings_[format][key] = QVariant::fromValue(std::forward<T>(value));
         }
 
 private:
     AbstractFormat* preferred_ = nullptr;
-    QMap<AbstractFormat*, QMap<QString, QVariant>> settings_;
+    QMap<const AbstractFormat*, QMap<QString, QVariant>> settings_;
 };
 
 } // namespace document

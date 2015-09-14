@@ -46,11 +46,9 @@ SaverXml::~SaverXml()
 
 bool SaverXml::enter(Document& document)
 {
-    QString format = document.formatSettings().get(formats().format("mela"), "image_format").toString();
+    QString format = formats().format("mela")->setting<QString>("image_format", "image/png", &document);
     QMimeDatabase mime;
-    image_format = mime.mimeTypeForName(format);
-    if ( !image_format.isValid() )
-        image_format = mime.mimeTypeForName("image/png");
+    image_format = QMimeDatabase().mimeTypeForName(format);
 
     writer.writeStartElement("document");
     writeId(document);
