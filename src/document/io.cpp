@@ -206,9 +206,8 @@ Document* AbstractFormat::open(const QString& filename)
 bool FormatBitmap::save(Document* input, QIODevice* device)
 {
     QImage image(input->imageSize(), imageFormat(input, device));
-    image.fill(Qt::transparent);
+    image.fill(fillColor(input, device));
     QPainter painter(&image);
-    painter.fillRect(image.rect(), fillColor(input, device));
     /// \todo detect frame
     document::visitor::Paint paint(nullptr, &painter, setting("full_alpha", input, true));
     input->apply(paint);

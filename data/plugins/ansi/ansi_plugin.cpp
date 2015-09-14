@@ -19,11 +19,12 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
+#include <QTextStream>
+
 #include "plugin.hpp"
 #include "document/io.hpp"
 #include "ansi.hpp"
-#include <QTextStream>
-
+#include "color_parser.hpp"
 /**
  * \brief Handles ANSI-colored text files
  */
@@ -45,23 +46,23 @@ public:
         return {"ansi", "txt"};
     }
 
-    /**
-     * \todo Open
-     */
-    bool canOpen() const override { return false; }
+    QImage openImage(QIODevice* device) override
+    {
+        return ansi::ColorParser(device, ansi::ColorParser::Option::Foreground).image();
+    }
 
     bool saveImage(const QImage& img, QIODevice* device,
                    const ::document::Document* document) override
     {
         /// \todo Read pixel string, newline and ANSI options from config
         QTextStream stream(device);
-        QString pixel = "  ";
-        QString newline = "\n";
+        device->setTextModeEnabled(true);
+        QString pixel = "..";
         for ( int y = 0; y < img.height(); y++ )
         {
             for ( int x = 0; x < img.width(); x++ )
                 stream << ansi::color(img.pixel(x, y)) << pixel;
-            stream << newline;
+            stream << '\n';
         }
         stream << ansi::sgrClear();
         return true;
