@@ -31,6 +31,10 @@ document/layer.cpp
 document/visitor.hpp
 document/io.hpp
 document/io.cpp
+document/io_bitmap.hpp
+document/io_bitmap.cpp
+document/io_xml.hpp
+document/io_xml.cpp
 document/layer_container.hpp
 document/layer_container.cpp
 document/format_settings.hpp

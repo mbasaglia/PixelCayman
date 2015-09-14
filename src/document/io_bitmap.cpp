@@ -1,0 +1,112 @@
+/**
+ * \file
+ *
+ * \author Mattia Basaglia
+ *
+ * \copyright Copyright (C) 2015 Mattia Basaglia
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ */
+
+#include "io_bitmap.hpp"
+
+#include <QImageReader>
+#include <QImageWriter>
+
+namespace document {
+
+bool FormatBitmap::save(Document* input, QIODevice* device)
+{
+    QImage image(input->imageSize(), imageFormat(input, device));
+    image.fill(fillColor(input, device));
+    QPainter painter(&image);
+    /// \todo detect frame
+    document::visitor::Paint paint(nullptr, &painter, setting("full_alpha", input, true));
+    input->apply(paint);
+
+    return saveImage(image, device, input);
+}
+
+Document* FormatBitmap::open(QIODevice* device)
+{
+    QImage image = openImage(device);
+    if ( image.isNull() )
+        return nullptr;
+    auto doc = new Document(image, fileName(device));
+    imageOpened(doc);
+    return doc;
+}
+
+void FormatBitmap::imageOpened(Document* document)
+{
+
+}
+
+QByteArray FormatBitmap::physicalFormat() const
+{
+    return QByteArray();
+}
+
+QString FormatBitmap::id() const
+{
+    return "bitmap";
+}
+
+QString FormatBitmap::name() const
+{
+    return QObject::tr("All Bitmap Images");
+}
+
+QStringList FormatBitmap::extensions(Action action) const
+{
+    QByteArrayList bytearr = action == Action::Save ?
+        QImageWriter::supportedImageFormats() :
+        QImageReader::supportedImageFormats();
+    QStringList formats;
+    formats.reserve(bytearr.size());
+    for ( const auto& fmt : bytearr )
+        formats.push_back(fmt);
+    return formats;
+}
+
+QImage::Format FormatBitmap::imageFormat(const document::Document* input, const QIODevice* device) const
+{
+    return QImage::Format_ARGB32;
+}
+
+QColor FormatBitmap::fillColor(const document::Document* input, const QIODevice* device) const
+{
+    /// \todo if the format doesn't support alpha, read a color from the settings
+    return Qt::transparent;
+}
+
+bool FormatBitmap::saveImage(const QImage& image, QIODevice* device, const Document* document)
+{
+    QImageWriter writer(device, physicalFormat());
+
+    /// \todo some way to determine quality for jpg
+    /// (low priority since Jpeg isn't a good format for pixel art)
+
+    return writer.write(image);
+}
+
+QImage FormatBitmap::openImage(QIODevice* device)
+{
+    QImageReader reader(device, physicalFormat());
+    return reader.read();
+}
+
+
+} // namespace document

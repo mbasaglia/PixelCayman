@@ -32,7 +32,8 @@
 #include "plugin/plugin.hpp"
 #include "plugin/library_plugin.hpp"
 #include "plugin/plugin_api.hpp"
-#include "document/io.hpp"
+#include "document/io_bitmap.hpp"
+#include "document/io_xml.hpp"
 
 void initPlugins()
 {
@@ -69,6 +70,12 @@ void initPlugins()
     plugin::PluginRegistry::instance().load();
 }
 
+void initFormats()
+{
+    document::Formats::instance().addFormat(new document::FormatXmlMela);
+    document::Formats::instance().addFormat(new document::FormatBitmap);
+}
+
 int main(int argc, char** argv)
 {
     QApplication app(argc, argv);
@@ -77,9 +84,6 @@ int main(int argc, char** argv)
 
     try
     {
-        document::Formats::instance().addFormat(new document::FormatXmlMela);
-        document::Formats::instance().addFormat(new document::FormatBitmap);
-
         // Initialize Icon theme
         // NOTE: this is broken in Qt 5.4.1
         /*QIcon::setThemeSearchPaths(
@@ -88,6 +92,7 @@ int main(int argc, char** argv)
         );
         QIcon::setThemeName("pixel-cayman");*/
 
+        initFormats();
         initPlugins();
 
         MainWindow window;

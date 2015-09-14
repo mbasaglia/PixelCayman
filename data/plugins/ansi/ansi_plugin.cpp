@@ -22,7 +22,7 @@
 #include <QTextStream>
 
 #include "plugin.hpp"
-#include "document/io.hpp"
+#include "document/io_bitmap.hpp"
 #include "ansi.hpp"
 #include "color_parser.hpp"
 /**

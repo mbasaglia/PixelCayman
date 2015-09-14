@@ -21,45 +21,11 @@
 #ifndef PIXEl_CAYMAN_DOCUMENT_IO_HPP
 #define PIXEl_CAYMAN_DOCUMENT_IO_HPP
 
-#include <QXmlStreamWriter>
 #include <QFile>
-#include <QBuffer>
-#include <QMimeType>
-
-#include "visitor.hpp"
 #include "settings.hpp"
+#include "document/visitor.hpp"
 
 namespace document {
-
-namespace visitor {
-
-/**
- * \brief Visitor that recursively writes XML on a IODevice
- */
-class SaverXml : public Visitor
-{
-public:
-    explicit SaverXml(QIODevice* output);
-    ~SaverXml();
-
-    bool enter(Document& document) override;
-    void leave(Document& document) override;
-    bool enter(Layer& layer) override;
-    void leave(Layer& layer) override;
-    void visit(Image& image) override;
-    bool enter(Animation& animation) override;
-    void leave(Animation& animation) override;
-    void visit(Frame& frame) override;
-
-private:
-    void writeMetadata(const Metadata& data);
-    void writeId(const DocumentElement& element, const QString& attr = "id");
-    QXmlStreamWriter writer;
-
-    QMimeType image_format;
-};
-
-} // namespace visitor
 
 /**
  * \brief A document file format
@@ -174,74 +140,6 @@ protected:
             return file->fileName();
         return QObject::tr("Image");
     }
-};
-
-/**
- * \brief Writes a .mela file
- * \todo Read files
- */
-class FormatXmlMela : public AbstractFormat
-{
-public:
-    QString id() const override { return "mela"; }
-    QString name() const override { return QObject::tr("Cayman Files"); }
-    bool canSave() const override { return true; }
-    bool save(Document* input, QIODevice* device) override
-    {
-        visitor::SaverXml xml(device);
-        input->apply(xml);
-        return true;
-    }
-};
-
-/**
- * \brief Reads and writes bitmap images with the Qt image reader/writer
- *
- * Can be used as base class for formats that need to render the file to a
- * bitmap before saving it to a file
- */
-class FormatBitmap : public AbstractFormat
-{
-public:
-    QString id() const override;
-    QString name() const override;
-    QStringList extensions(Action action) const override;
-    bool canSave() const override { return true; }
-    bool canOpen() const override { return true; }
-
-    bool save(document::Document* input, QIODevice* device) final;
-    Document* open(QIODevice* device) final;
-
-protected:
-    /**
-     * \brief Format used by for the QImage generated from the document
-     */
-    virtual QImage::Format imageFormat(const Document* input, const QIODevice* device) const;
-
-    /**
-     * \brief The color used to fill the QImage generated from the document
-     */
-    virtual QColor fillColor(const Document* input, const QIODevice* device) const;
-
-    /**
-     * \brief Saves the image to the device
-     */
-    virtual bool saveImage(const QImage& img, QIODevice* device, const Document* document);
-
-    /**
-     * \brief Opens an image from the device
-     */
-    virtual QImage openImage(QIODevice* device);
-
-    /**
-     * \brief Called after a document has been created
-     */
-    virtual void imageOpened(Document* document);
-
-    /**
-     * \brief Image writer/reader format
-     */
-    virtual QByteArray physicalFormat() const;
 };
 
 /**
