@@ -28,12 +28,6 @@ LibraryPluginFactory::LibraryPluginFactory(const QString& init_function)
     : init_function(init_function)
 {}
 
-LibraryPluginFactory::~LibraryPluginFactory()
-{
-    for ( auto library : libraries )
-        delete library;
-}
-
 bool LibraryPluginFactory::canCreate(const QFileInfo& file) const
 {
     /// \todo System-specific suffixes
@@ -54,21 +48,9 @@ Plugin* LibraryPluginFactory::create(const QString& fileName)
     }
 
     auto plugin = init();
-    libraries[plugin] = lib;
-    //connect(plugin, &QObject::destroyed, this, &LibraryPluginFactory::remove);
+    if ( plugin )
+        connect(plugin, &QObject::destroyed, lib, &QObject::deleteLater);
     return plugin;
 }
-
-void LibraryPluginFactory::remove(QObject* plugin)
-{
-    disconnect(plugin, nullptr, this, nullptr);
-    auto it = libraries.find(plugin);
-    if ( it != libraries.end() )
-    {
-        delete *it;
-        libraries.erase(it);
-    }
-}
-
 
 } // namespace plugin

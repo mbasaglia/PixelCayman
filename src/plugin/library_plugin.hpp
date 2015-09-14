@@ -32,8 +32,9 @@ namespace plugin {
 /**
  * \brief Access symbols in a dynamic libarary
  */
-class Library
+class Library : public QObject
 {
+    Q_OBJECT
 public:
     using LoadHint = QLibrary::LoadHint;
     using LoadHints = QLibrary::LoadHints;
@@ -96,17 +97,12 @@ class LibraryPluginFactory : public PluginFactory
     Q_OBJECT
 public:
     LibraryPluginFactory(const QString& init_function = "Plugin_init");
-    ~LibraryPluginFactory();
 
     bool canCreate(const QFileInfo& file) const override;
     Plugin* create(const QString& fileName) override;
 
-private slots:
-    void remove(QObject* plugin);
-
 private:
     QString init_function;
-    QHash<QObject*, Library*> libraries;
 };
 
 } // namespace plugin
