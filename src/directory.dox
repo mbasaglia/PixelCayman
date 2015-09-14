@@ -55,3 +55,13 @@ All ui files and implementation of classes that use them shall go here.
 
 Everything must be in the \c view namespace.
 */
+/**
+\dir src/plugin
+\brief Componenents of the plugin API
+
+Everything must be in the \c plugin namespace.
+*/
+/**
+\dir data/plugins
+\brief Sources for the plugins
+*/

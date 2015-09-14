@@ -1,0 +1,67 @@
+/**
+\page plugins Plugins
+\brief This page describes the plugin interface
+
+\section plugin_create Creating a plugin
+
+To create a new plugin, you need to add a subdirectory to data/plugins.
+
+To use the CMake build system, you need to add the subdirectory to
+data/plugins/CMakeLists.txt.
+
+\subsection plugin_create_cmake CMakeLists.txt
+The CMakeLists.txt for the plugin itself should be pretty simple as
+the toplevel one sets up most of the work.
+\code{.unparsed}
+# Example CMakeLists.txt
+# Automatically detect the library name
+get_filename_component(PLUGIN_NAME ${CMAKE_CURRENT_SOURCE_DIR} NAME)
+# List source files
+set(SOURCES my_plugin.cpp)
+# Add the plugin to the build system
+add_library(${PLUGIN_NAME} MODULE ${SOURCES})
+\endcode
+
+You don't need to link to the Qt libraries as they will be linked when the
+plugin is loaded.
+
+\subsection plugin_create_implement Implementation of the plugin interface
+The plugin sources must define a class derived from plugin::Plugin to
+specify metadata and have execution hooks.
+
+To simplify things, you can include data/plugins/plugin.hpp and inherit from CaymanPlugin
+which provides some extra functionality.
+
+\subsubsection plugin_create_implement_required Required methods to override
+
+\b onLoad is executed when the
+plugin is enabled and should be used to register the extra functionality
+to the required places.
+Must return a bool indicating whether the initialization was successful.
+
+\b onName returns a string with a unique name for the plugin.
+
+If \b onLoad makes some changes to the overall system, those changes must
+be undone in \b onUnload.
+
+\subsubsection plugin_create_implement_optional Other methods to override
+
+\b onVersion can be used to return a version number for the plugin as an integer.
+
+\b onDependencies can be used to return a list of dependencies to other plugins.
+
+\subsubsection plugin_create_export Exporting symbols
+
+data/plugins/plugin.hpp offers a macro called INIT_PLUGIN() that will define a
+function which will create and export the plugin object as well as a (global)
+pointer to keep track of said object.
+
+To export plugins manually, you must define a function called
+\b PixelCaymanPlugin_init (see #PLUGIN_INIT_FUNCTION) which has C linkage,
+is suitable for being exported from a dynamic library and returns a
+pointer to a heap object of plugin::Plugin.
+
+\section plugin_hooks Available interfaces the plugins can tap into
+\todo Implement and write
+
+*/
