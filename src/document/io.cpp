@@ -46,7 +46,7 @@ SaverXml::~SaverXml()
 
 bool SaverXml::enter(Document& document)
 {
-    QString format = formats().format("mela")->setting<QString>("image_format", "image/png", &document);
+    QString format = formats().format("mela")->setting<QString>("image_format", &document, "image/png");
     QMimeDatabase mime;
     image_format = QMimeDatabase().mimeTypeForName(format);
 
@@ -209,11 +209,11 @@ bool FormatBitmap::save(Document* input, QIODevice* device)
     image.fill(Qt::transparent);
     QPainter painter(&image);
     painter.fillRect(image.rect(), fillColor(input, device));
-    /// \todo detect frame (and fullAlpha?) from settings
-    document::visitor::Paint paint(nullptr, &painter, true);
+    /// \todo detect frame
+    document::visitor::Paint paint(nullptr, &painter, setting("full_alpha", input, true));
     input->apply(paint);
 
-    return saveImage(image, device);
+    return saveImage(image, device, input);
 }
 
 Document* FormatBitmap::open(QIODevice* device)
@@ -221,7 +221,19 @@ Document* FormatBitmap::open(QIODevice* device)
     QImage image = openImage(device);
     if ( image.isNull() )
         return nullptr;
-    return new Document(image, fileName(device));
+    auto doc = new Document(image, fileName(device));
+    imageOpened(doc);
+    return doc;
+}
+
+void FormatBitmap::imageOpened(Document* document)
+{
+
+}
+
+QByteArray FormatBitmap::physicalFormat() const
+{
+    return QByteArray();
 }
 
 QString FormatBitmap::id() const
@@ -257,9 +269,9 @@ QColor FormatBitmap::fillColor(const document::Document* input, const QIODevice*
     return Qt::transparent;
 }
 
-bool FormatBitmap::saveImage(const QImage& image, QIODevice* device)
+bool FormatBitmap::saveImage(const QImage& image, QIODevice* device, const Document* document)
 {
-    QImageWriter writer(device, QByteArray());
+    QImageWriter writer(device, physicalFormat());
 
     /// \todo some way to determine quality for jpg
     /// (low priority since Jpeg isn't a good format for pixel art)
@@ -269,7 +281,7 @@ bool FormatBitmap::saveImage(const QImage& image, QIODevice* device)
 
 QImage FormatBitmap::openImage(QIODevice* device)
 {
-    QImageReader reader(device);
+    QImageReader reader(device, physicalFormat());
     return reader.read();
 }
 

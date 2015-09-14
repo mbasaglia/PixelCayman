@@ -50,7 +50,8 @@ public:
      */
     bool canOpen() const override { return false; }
 
-    bool saveImage(const QImage& img, QIODevice* device) override
+    bool saveImage(const QImage& img, QIODevice* device,
+                   const ::document::Document* document) override
     {
         /// \todo Read pixel string, newline and ANSI options from config
         QTextStream stream(device);

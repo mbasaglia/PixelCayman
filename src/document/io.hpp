@@ -226,12 +226,22 @@ protected:
     /**
      * \brief Saves the image to the device
      */
-    virtual bool saveImage(const QImage& img, QIODevice* device);
+    virtual bool saveImage(const QImage& img, QIODevice* device, const Document* document);
 
     /**
      * \brief Opens an image from the device
      */
     virtual QImage openImage(QIODevice* device);
+
+    /**
+     * \brief Called after a document has been created
+     */
+    virtual void imageOpened(Document* document);
+
+    /**
+     * \brief Image writer/reader format
+     */
+    virtual QByteArray physicalFormat() const;
 };
 
 /**
