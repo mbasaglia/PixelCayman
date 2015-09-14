@@ -46,9 +46,9 @@ public:
     struct Dependency
     {
         /**
-         * \brief Name of the plugin that is required to be loaded
+         * \brief Id of the plugin that is required to be loaded
          */
-        QString name;
+        QString id;
 
         /**
          * \brief Minimum version.
@@ -69,7 +69,7 @@ public:
          */
         bool match(Plugin* plugin) const
         {
-            if ( plugin->name() != name )
+            if ( plugin->id() != id )
                 return false;
             if ( minimum_version && minimum_version > plugin->version() )
                 return false;
@@ -133,6 +133,16 @@ public:
     bool isLoaded()
     {
         return loaded_;
+    }
+
+    /**
+     * \brief Returns the plugin unique identifier
+     */
+    QString id()
+    {
+        if ( id_.isEmpty() )
+            id_ = onId();
+        return id_;
     }
 
     /**
@@ -209,11 +219,16 @@ protected:
     virtual void onUnload() {}
 
     /**
-     * \brief Returns the plugin name
+     * \brief Returns the plugin unique ID
      *
      * Must be unique across all plugins and not empty
      */
-    virtual QString onName() = 0;
+    virtual QString onId() = 0;
+
+    /**
+     * \brief Returns the plugin human-readable name
+     */
+    virtual QString onName(){ return onId(); }
 
     /**
      * \brief Plugin version number
@@ -226,6 +241,7 @@ protected:
     virtual QList<Dependency> onDependencies() { return {}; }
 
 private:
+    QString id_;
     QString name_;
     bool loaded_ = false;
     int version_ = -1;
@@ -277,11 +293,11 @@ public:
     }
 
     /**
-     * \brief The plugin with the given name
+     * \brief The plugin with the given id
      */
-    Plugin* plugin(const QString& name) const
+    Plugin* plugin(const QString& id) const
     {
-        return plugins_.value(name);
+        return plugins_.value(id);
     }
 
     /**
@@ -289,7 +305,7 @@ public:
      */
     bool meetsDependency(const Plugin::Dependency& dependency)
     {
-        if ( auto plugin = plugins_.value(dependency.name) )
+        if ( auto plugin = plugins_.value(dependency.id) )
         {
             if ( dependency.match(plugin) )
                 return true;

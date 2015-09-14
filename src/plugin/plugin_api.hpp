@@ -27,18 +27,11 @@
 namespace plugin {
 
 /**
- * \brief A machine-readable name
- * \returns A string all lowercase alphanumric or underscore characters
- *          derived from the plugin name
- */
-QString machineName(Plugin* plugin);
-
-/**
  * \brief Returns a string representing a settings key for the plugin
  */
 inline QString settingsKey(Plugin* plugin, const QString& key )
 {
-    return QString("plugins/%1/%2").arg(machineName(plugin)).arg(key);
+    return QString("plugins/%1/%2").arg(plugin->id()).arg(key);
 }
 
 /**

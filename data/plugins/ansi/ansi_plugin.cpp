@@ -73,6 +73,11 @@ public:
 class Ansi : public CaymanPlugin
 {
 protected:
+    QString onId() override
+    {
+        return "ansi";
+    }
+
     bool onLoad() override
     {
         document::formats().addFormat(new FormatAnsi);
@@ -86,7 +91,7 @@ protected:
 
     QString onName() override
     {
-        return "Ansi I/O";
+        return tr("Ansi I/O");
     }
 
 };

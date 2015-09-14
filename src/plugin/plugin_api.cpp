@@ -22,22 +22,7 @@
 
 #include "plugin_api.hpp"
 
-#include <QRegularExpression>
-
 namespace plugin {
 
-
-QString machineName(Plugin* plugin)
-{
-    static QRegularExpression regex("[^a-z0-9_]+",
-#if QT_VERSION >= 0x050400
-    QRegularExpression::OptimizeOnFirstUsageOption
-#else
-    0
-#endif
-    );
-
-    return plugin->name().toLower().replace(regex, "_");
-}
 
 } // namespace plugin

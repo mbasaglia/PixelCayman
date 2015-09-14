@@ -28,6 +28,7 @@ namespace plugin {
 
 QAction* Plugin::createAction(QObject* parent)
 {
+    /// \todo Re-translate
     QAction *action = new QAction(this->name(), parent);
     action->setCheckable(true);
     action->setChecked(this->loaded_);
@@ -168,13 +169,13 @@ void PluginRegistry::addPlugin(Plugin* plugin)
     connect(plugin, &Plugin::loadedChanged, [this, plugin](bool loaded){
         emit loadedChanged(plugin, loaded);
     });
-    plugins_[plugin->name()] = plugin;
+    plugins_[plugin->id()] = plugin;
     emit created(plugin);
 }
 
 void PluginRegistry::removePlugin(Plugin* plugin)
 {
-    plugins_.remove(plugin->name());
+    plugins_.remove(plugin->id());
     emit destroyed(plugin);
 }
 
