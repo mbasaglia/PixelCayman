@@ -18,6 +18,8 @@
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR})
 
 find_package(Qt5Widgets REQUIRED)
+set(CMAKE_AUTOMOC ON)
+set(CMAKE_INCLUDE_CURRENT_DIR ON)
 include_directories(${Qt5Widgets_INCLUDE_DIRS})
 include_directories("${CMAKE_CURRENT_SOURCE_DIR}/../../src")
 include_directories("${CMAKE_CURRENT_SOURCE_DIR}")

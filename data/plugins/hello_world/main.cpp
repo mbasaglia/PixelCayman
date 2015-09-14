@@ -23,7 +23,7 @@
 #include <QDebug>
 #include "plugin.hpp"
 
-class HelloWorld : public Plugin
+class HelloWorld : public CaymanPlugin
 {
 protected:
     bool onLoad()

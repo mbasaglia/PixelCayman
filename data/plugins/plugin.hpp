@@ -22,49 +22,7 @@
 #define PIXEL_CAYMAN_PLUGINS_PLUGIN_HPP
 #include "plugin/plugin_api.hpp"
 
-/**
- * \brief Class that structures the required functions of a library plugin
- */
-class Plugin : public plugin::Plugin
-{
-public:
-
-    /**
-     * \brief Writes a plugin setting
-     */
-    template<class T>
-        void settingsPut(const QString& key, T&& value)
-        {
-            settings::put(plugin::settingsKey(this, key), std::forward<T>(value));
-        }
-
-    /**
-     * \brief Reads a plugin setting
-     */
-    template<class T>
-        typename std::remove_reference<T>::type
-            settingsGet(const QString& key, T&& default_value = T())
-        {
-            return settings::get(plugin::settingsKey(this, key), std::forward<T>(default_value));
-        }
-};
-
-/**
- * \see INIT_PLUGIN()
- */
-#define INIT_PLUGIN_RAW(pluginClass, prefix) \
-    pluginClass globalPlugin; \
-    extern "C" Q_DECL_EXPORT bool prefix##load() \
-    { return globalPlugin.load(); } \
-    extern "C" Q_DECL_EXPORT QString prefix##name() \
-    { return globalPlugin.name(); } \
-    extern "C" Q_DECL_EXPORT int prefix##version() \
-    { return globalPlugin.version(); } \
-    extern "C" Q_DECL_EXPORT void prefix##unload() \
-    { return globalPlugin.unload(); } \
-    extern "C" Q_DECL_EXPORT QList<plugin::Plugin::Dependency> prefix##dependencies() \
-    { return globalPlugin.dependencies(); }
-
+using plugin::CaymanPlugin;
 /**
  * \brief Generate boilerplate code for the plugin
  *
@@ -72,6 +30,15 @@ public:
  * and a global variable called \b globalPlugin that can be used to access the
  * plugin metadata.
  */
-#define INIT_PLUGIN(pluginClass) INIT_PLUGIN_RAW(pluginClass, PixelCaymanPlugin_)
+#define INIT_PLUGIN(pluginClass) \
+    pluginClass* globalPlugin = nullptr; \
+    extern "C" Q_DECL_EXPORT plugin::Plugin* PLUGIN_INIT_FUNCTION() { \
+        if ( globalPlugin ) \
+            return nullptr; \
+        globalPlugin = new pluginClass(); \
+        QObject::connect(globalPlugin, &QObject::destroyed, \
+            []{ globalPlugin = nullptr; }); \
+        return globalPlugin; \
+    }
 
 #endif // PIXEL_CAYMAN_PLUGINS_PLUGIN_HPP

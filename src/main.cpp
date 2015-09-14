@@ -37,8 +37,7 @@
 void initPlugins()
 {
     // Register factories (plugin types)
-    plugin::registry().addFactory(new plugin::LibraryPluginFactory);
-    plugin::LibraryPlugin::setFunctionPrefix("PixelCaymanPlugin_");
+    plugin::registry().addFactory(new plugin::LibraryPluginFactory(PLUGIN_INIT_FUNCTION_STRING));
 
     // Connect warnings
     QObject::connect(&plugin::registry(), &plugin::PluginRegistry::warning,

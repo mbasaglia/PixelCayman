@@ -237,8 +237,9 @@ private:
 /**
  * \brief Interface for classes that can create plugin objects from files
  */
-class PluginFactory
+class PluginFactory : public QObject
 {
+    Q_OBJECT
 public:
     virtual ~PluginFactory() {}
 
@@ -389,6 +390,9 @@ private:
 
     ~PluginRegistry()
     {
+        for ( auto plugin : plugins_ )
+            delete plugin;
+
         for ( auto factory : factories_ )
             delete factory;
     }

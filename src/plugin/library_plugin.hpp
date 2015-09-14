@@ -91,39 +91,22 @@ private:
     QLibrary lib;
 };
 
-class LibraryPlugin : public Plugin
+class LibraryPluginFactory : public PluginFactory
 {
     Q_OBJECT
 public:
-    LibraryPlugin(const QString& library_file, Library::LoadHints hints = Library::DefaultHints);
+    LibraryPluginFactory(const QString& init_function = "Plugin_init");
+    ~LibraryPluginFactory();
 
-    static QString functionPrefix();
-    static void setFunctionPrefix(const QString prefix);
-
-protected:
-    bool onLoad() override;
-    void onUnload() override;
-    QString onName() override;
-    int onVersion() override;
-    QList<Dependency> onDependencies() override;
-
-private:
-    template<class T>
-    void resolve(T& to, const QString& name, bool required);
-
-    Library library;
-    util::FunctionPointer<bool()>               func_load    = nullptr;
-    util::FunctionPointer<void()>               func_unload  = nullptr;
-    util::FunctionPointer<QString()>            func_name    = nullptr;
-    util::FunctionPointer<int()>                func_version = nullptr;
-    util::FunctionPointer<QList<Dependency>()>  func_deps    = nullptr;
-};
-
-class LibraryPluginFactory : public PluginFactory
-{
-public:
     bool canCreate(const QFileInfo& file) const override;
     Plugin* create(const QString& fileName) override;
+
+private slots:
+    void remove(QObject* plugin);
+
+private:
+    QString init_function;
+    QHash<QObject*, Library*> libraries;
 };
 
 } // namespace plugin

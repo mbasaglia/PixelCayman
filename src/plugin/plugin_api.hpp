@@ -60,5 +60,37 @@ template<class T>
         return settings::get(settingsKey(plugin, key), std::forward<T>(default_value));
     }
 
+/**
+ * \brief Class that structures the required functions of a library plugin
+ */
+class CaymanPlugin : public plugin::Plugin
+{
+    Q_OBJECT
+public:
+    /**
+     * \brief Writes a plugin setting
+     */
+    template<class T>
+        void settingsPut(const QString& key, T&& value)
+        {
+            settings::put(plugin::settingsKey(this, key), std::forward<T>(value));
+        }
+
+    /**
+     * \brief Reads a plugin setting
+     */
+    template<class T>
+        typename std::remove_reference<T>::type
+            settingsGet(const QString& key, T&& default_value = T())
+        {
+            return settings::get(plugin::settingsKey(this, key), std::forward<T>(default_value));
+        }
+};
+
+#define MACRO_TO_STRING_IMPL(x) #x
+#define MACRO_TO_STRING(x) MACRO_TO_STRING_IMPL(x)
+#define PLUGIN_INIT_FUNCTION PixelCaymanPlugin_init
+#define PLUGIN_INIT_FUNCTION_STRING MACRO_TO_STRING(PLUGIN_INIT_FUNCTION)
+
 } // namespace plugin
 #endif // PIXEL_CAYMAN_PLUGIN_API_HPP

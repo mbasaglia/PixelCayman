@@ -153,7 +153,6 @@ void PluginRegistry::unload()
 
 void PluginRegistry::addPlugin(Plugin* plugin)
 {
-    plugin->setParent(this);
     connect(plugin, &Plugin::loaded, [this, plugin]{
         for ( auto p : plugins_ )
             if ( !p->dependenciesMet() )

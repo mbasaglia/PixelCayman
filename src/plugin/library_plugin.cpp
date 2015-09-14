@@ -24,65 +24,14 @@
 
 namespace plugin {
 
-static QString function_prefix = "Plugin_";
+LibraryPluginFactory::LibraryPluginFactory(const QString& init_function)
+    : init_function(init_function)
+{}
 
-template<class T>
-void LibraryPlugin::resolve(T& to, const QString& name, bool required)
+LibraryPluginFactory::~LibraryPluginFactory()
 {
-    to = library.resolve<T>(function_prefix+name);
-    if ( required && !to )
-        throw std::logic_error(
-            tr("Missing plugin function %1 in %2")
-                .arg(function_prefix+name+"()")
-                .arg(library.fileName())
-            .toUtf8().data()
-        );
-}
-
-LibraryPlugin::LibraryPlugin(const QString& library_file, Library::LoadHints hints)
-    : library(library_file, hints)
-{
-    resolve(func_load, "load", true);
-    resolve(func_name, "name", true);
-    resolve(func_version, "version", false);
-    resolve(func_unload, "unload", false);
-    resolve(func_deps, "dependencies", false);
-}
-
-QString LibraryPlugin::functionPrefix()
-{
-    return function_prefix;
-}
-
-void LibraryPlugin::setFunctionPrefix(const QString prefix)
-{
-    function_prefix = prefix;
-}
-
-QList<Plugin::Dependency> LibraryPlugin::onDependencies()
-{
-    return func_deps ? func_deps() : QList<Plugin::Dependency>();
-}
-
-bool LibraryPlugin::onLoad()
-{
-    return func_load();
-}
-
-QString LibraryPlugin::onName()
-{
-    return func_name();
-}
-
-void LibraryPlugin::onUnload()
-{
-    if ( func_unload )
-        func_unload();
-}
-
-int LibraryPlugin::onVersion()
-{
-    return func_version ? func_version() : plugin::Plugin::onVersion();
+    for ( auto library : libraries )
+        delete library;
 }
 
 bool LibraryPluginFactory::canCreate(const QFileInfo& file) const
@@ -94,7 +43,31 @@ bool LibraryPluginFactory::canCreate(const QFileInfo& file) const
 
 Plugin* LibraryPluginFactory::create(const QString& fileName)
 {
-    return new LibraryPlugin(fileName);
+    Library* lib = new Library(fileName);
+    auto init = lib->resolve<Plugin*()>(init_function);
+    if ( !init )
+    {
+        delete lib;
+        emit registry().warning(tr("Missing function %1() in %2")
+            .arg(init_function).arg(fileName));
+        return nullptr;
+    }
+
+    auto plugin = init();
+    libraries[plugin] = lib;
+    //connect(plugin, &QObject::destroyed, this, &LibraryPluginFactory::remove);
+    return plugin;
+}
+
+void LibraryPluginFactory::remove(QObject* plugin)
+{
+    disconnect(plugin, nullptr, this, nullptr);
+    auto it = libraries.find(plugin);
+    if ( it != libraries.end() )
+    {
+        delete *it;
+        libraries.erase(it);
+    }
 }
 
 
