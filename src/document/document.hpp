@@ -24,6 +24,7 @@
 #include <QUndoStack>
 #include "animation.hpp"
 #include "layer.hpp"
+#include "format_settings.hpp"
 
 namespace document {
 
@@ -110,6 +111,16 @@ public:
      */
     void pushCommand(QUndoCommand* command);
 
+    FormatSettings& formatSettings()
+    {
+        return format_settings;
+    }
+
+    const FormatSettings& formatSettings() const
+    {
+        return format_settings;
+    }
+
 signals:
     void fileNameChanged(const QString& fileName);
 
@@ -124,6 +135,7 @@ private:
     QSize               image_size;
     QString             file_name;
     QUndoStack          undo_stack;
+    FormatSettings      format_settings;
 };
 
 } // namespace document

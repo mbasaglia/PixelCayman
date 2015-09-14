@@ -33,6 +33,7 @@ document/io.hpp
 document/io.cpp
 document/layer_container.hpp
 document/layer_container.cpp
+document/format_settings.hpp
 document/command/change_image.hpp
 document/command/change_image.cpp
 document/command/move_child_layers.hpp

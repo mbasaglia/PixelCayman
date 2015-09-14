@@ -24,6 +24,7 @@
 #include <QXmlStreamWriter>
 #include <QFile>
 #include <QBuffer>
+#include <QMimeType>
 
 namespace document {
 
@@ -51,6 +52,8 @@ private:
     void writeMetadata(const Metadata& data);
     void writeId(const DocumentElement& element, const QString& attr = "id");
     QXmlStreamWriter writer;
+
+    QMimeType image_format;
 };
 
 } // namespace visitor

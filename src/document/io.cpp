@@ -26,6 +26,7 @@
 #include <QImageReader>
 #include <QImageWriter>
 #include <QFileInfo>
+#include <QMimeDatabase>
 
 namespace document {
 
@@ -45,11 +46,31 @@ SaverXml::~SaverXml()
 
 bool SaverXml::enter(Document& document)
 {
+    QString format = document.formatSettings().get(formats().format("mela"), "image_format").toString();
+    QMimeDatabase mime;
+    image_format = mime.mimeTypeForName(format);
+    if ( !image_format.isValid() )
+        image_format = mime.mimeTypeForName("image/png");
+
     writer.writeStartElement("document");
     writeId(document);
     writer.writeAttribute("width", QString::number(document.imageSize().width()));
     writer.writeAttribute("height", QString::number(document.imageSize().height()));
     writeMetadata(document.metadata());
+    const auto& settings = document.formatSettings().settings();
+    if ( !settings.empty() )
+    {
+        writer.writeStartElement("formats");
+        for ( auto i = settings.begin(); i != settings.end(); ++i )
+        {
+            QString element = i.key() ? i.key()->id() : "default";
+            writer.writeStartElement(element);
+            for ( auto j = i->begin(); j != i->end(); ++j )
+                writer.writeTextElement(j.key(), j.value().toString());
+            writer.writeEndElement();
+        }
+        writer.writeEndElement();
+    }
     return true;
 }
 
@@ -90,11 +111,11 @@ void SaverXml::visit(Image& image)
         writer.writeStartElement("bitmap");
     }
 
-    /// \todo Option to choose the format
-    writer.writeAttribute("type", "image/png");
+    writer.writeAttribute("type", image_format.name());
     QByteArray image_data;
     QBuffer buffer(&image_data);
-    image.image().save(&buffer, "PNG");
+    QImageWriter image_writer(&buffer, image_format.preferredSuffix().toLatin1());
+    image_writer.write(image.image());
     writer.writeCharacters(image_data.toBase64());
 
     if ( !image.metadata().empty() )

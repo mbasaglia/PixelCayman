@@ -97,26 +97,26 @@ bool MainWindow::documentNew()
 bool MainWindow::documentOpen()
 {
     QString default_dir;
-    document::AbstractFormat* format = nullptr;
     if ( p->current_view )
     {
         if ( !p->current_view->document()->fileName().isEmpty() )
             default_dir = QFileInfo(p->current_view->document()->fileName()).dir().path();
-        /// \todo set format to the preferred format for the document
     }
 
     auto action = document::Formats::Action::Open;
+    auto filters = document::formats().nameFilters(action);
     QFileDialog open_dialog(this, tr("Open Image"), default_dir);
     open_dialog.setFileMode(QFileDialog::ExistingFiles);
     open_dialog.setAcceptMode(QFileDialog::AcceptOpen);
-    open_dialog.setNameFilters(document::formats().nameFilters(action));
-    if ( format )
-        open_dialog.selectNameFilter(format->nameFilter(action));
+    open_dialog.setNameFilters(filters);
+    /// \todo A filter that shows only the supported files
+    open_dialog.selectNameFilter(filters.back());
 
     if ( !open_dialog.exec() )
         return false;
 
-    format = document::formats().formatFromNameFilter(open_dialog.selectedNameFilter(), action);
+    document::AbstractFormat* format
+        = document::formats().formatFromNameFilter(open_dialog.selectedNameFilter(), action);
 
     int tab = -1;
     for ( const QString& file_name : open_dialog.selectedFiles() )
@@ -160,8 +160,11 @@ bool MainWindow::save(int tab, bool prompt)
         prompt = true;
 
     auto action = document::Formats::Action::Save;
-    /// \todo Store preferred format in the document
-    document::AbstractFormat* format = document::formats().formatFromFileName(doc->fileName(),action);
+
+    document::AbstractFormat* format = doc->formatSettings().preferred();
+    if ( !format )
+        format = document::formats().formatFromFileName(doc->fileName(), action);
+
     if ( prompt || !format )
     {
         // Ensure the the image is visible so the user knows what they are saving
@@ -193,6 +196,7 @@ bool MainWindow::save(int tab, bool prompt)
                 return false;
         }
 
+        doc->formatSettings().setPreferred(format);
         doc->setFileName(selected_file);
         p->main_tab->setTabText(tab, p->documentName(doc));
         p->updateTitle();
@@ -218,10 +222,10 @@ int MainWindow::openTab(const QString& file_name, bool set_current,
             return -1; /// \todo Error message (unknown format)
     }
 
-    /// \todo Open should set the preferred format
     document::Document* doc = format->open(file_name);
     if ( doc )
     {
+        doc->formatSettings().setPreferred(format);
         p->pushRecentFile(doc->fileName());
         return p->addDocument(doc, set_current);
     }
