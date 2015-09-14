@@ -24,5 +24,4 @@ include_directories(${Qt5Widgets_INCLUDE_DIRS})
 include_directories("${CMAKE_CURRENT_SOURCE_DIR}/../../src")
 include_directories("${CMAKE_CURRENT_SOURCE_DIR}")
 
-add_subdirectory(hello_world)
 add_subdirectory(ansi)
