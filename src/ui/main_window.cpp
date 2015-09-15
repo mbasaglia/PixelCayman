@@ -50,6 +50,7 @@ MainWindow::MainWindow(QWidget* parent)
     p->initDocks();
     p->initMenus();
     p->loadSettings();
+    p->setCurrentView(nullptr);
 
     connect(p->main_tab, &QTabWidget::tabCloseRequested,
             this, &MainWindow::closeTabPrompt);

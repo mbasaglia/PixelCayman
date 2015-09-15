@@ -417,18 +417,24 @@ void MainWindow::Private::setCurrentView(view::GraphicsWidget* widget)
                 widget, &view::GraphicsWidget::setActiveLayer);
         connect(widget, &view::GraphicsWidget::activeLayerChanged,
                 layer_widget, &LayerWidget::setActiveLayer);
-
-        for ( auto* dock : parent->findChildren<QDockWidget*>() )
-            dock->setEnabled(true);
     }
     else
     {
         layer_widget->setDocument(nullptr);
-
-        for ( auto* dock : parent->findChildren<QDockWidget*>() )
-            dock->setEnabled(false);
     }
-    
+
+    bool editors_enabled = widget != nullptr;
+    for ( auto* dock : parent->findChildren<QDockWidget*>() )
+        dock->setEnabled(editors_enabled);
+    action_save->setEnabled(editors_enabled);
+    action_save_as->setEnabled(editors_enabled);
+    action_save_all->setEnabled(editors_enabled);
+    action_close->setEnabled(editors_enabled);
+    action_close_all->setEnabled(editors_enabled);
+    action_print->setEnabled(editors_enabled);
+    action_reload->setEnabled(editors_enabled && !widget->document()->fileName().isEmpty());
+    tools_group->setEnabled(editors_enabled);
+
     current_view = widget;
 
     updateTitle();
@@ -438,16 +444,7 @@ void MainWindow::Private::updateTitle()
 {
     int tab = main_tab->currentIndex();
 
-    bool has_documents = main_tab->count();
-    bool has_active_document = tab != -1;
-    action_save->setEnabled(has_active_document);
-    action_save_as->setEnabled(has_active_document);
-    action_save_all->setEnabled(has_documents);
-    action_close->setEnabled(has_active_document);
-    action_close_all->setEnabled(has_documents);
-    action_print->setEnabled(has_active_document);
-
-    if ( !has_active_document )
+    if ( tab == -1 )
     {
         parent->setWindowTitle(QString());
         return;

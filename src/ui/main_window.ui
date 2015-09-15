@@ -64,6 +64,7 @@
     <addaction name="action_save"/>
     <addaction name="action_save_as"/>
     <addaction name="action_save_all"/>
+    <addaction name="action_reload"/>
     <addaction name="separator"/>
     <addaction name="action_print"/>
     <addaction name="separator"/>
@@ -155,9 +156,7 @@
   </widget>
   <action name="action_new">
    <property name="icon">
-    <iconset theme="document-new">
-     <normaloff/>
-    </iconset>
+    <iconset theme="document-new"/>
    </property>
    <property name="text">
     <string>&amp;New</string>
@@ -165,9 +164,7 @@
   </action>
   <action name="action_open">
    <property name="icon">
-    <iconset theme="document-open">
-     <normaloff/>
-    </iconset>
+    <iconset theme="document-open"/>
    </property>
    <property name="text">
     <string>&amp;Open</string>
@@ -178,9 +175,7 @@
     <bool>false</bool>
    </property>
    <property name="icon">
-    <iconset theme="document-save">
-     <normaloff/>
-    </iconset>
+    <iconset theme="document-save"/>
    </property>
    <property name="text">
     <string>&amp;Save</string>
@@ -191,9 +186,7 @@
     <bool>false</bool>
    </property>
    <property name="icon">
-    <iconset theme="document-save-as">
-     <normaloff/>
-    </iconset>
+    <iconset theme="document-save-as"/>
    </property>
    <property name="text">
     <string>Save &amp;As...</string>
@@ -204,9 +197,7 @@
     <bool>false</bool>
    </property>
    <property name="icon">
-    <iconset theme="document-save-all">
-     <normaloff/>
-    </iconset>
+    <iconset theme="document-save-all"/>
    </property>
    <property name="text">
     <string>Save A&amp;ll</string>
@@ -214,9 +205,7 @@
   </action>
   <action name="action_print">
    <property name="icon">
-    <iconset theme="document-print">
-     <normaloff/>
-    </iconset>
+    <iconset theme="document-print"/>
    </property>
    <property name="text">
     <string>&amp;Print...</string>
@@ -227,9 +216,7 @@
     <bool>false</bool>
    </property>
    <property name="icon">
-    <iconset theme="document-close">
-     <normaloff/>
-    </iconset>
+    <iconset theme="document-close"/>
    </property>
    <property name="text">
     <string>&amp;Close</string>
@@ -237,9 +224,7 @@
   </action>
   <action name="action_quit">
    <property name="icon">
-    <iconset theme="application-exit">
-     <normaloff/>
-    </iconset>
+    <iconset theme="application-exit"/>
    </property>
    <property name="text">
     <string>&amp;Quit</string>
@@ -258,9 +243,7 @@
     <bool>false</bool>
    </property>
    <property name="icon">
-    <iconset theme="window-close">
-     <normaloff/>
-    </iconset>
+    <iconset theme="window-close"/>
    </property>
    <property name="text">
     <string>Clos&amp;e All</string>
@@ -271,9 +254,7 @@
   </action>
   <action name="action_About">
    <property name="icon">
-    <iconset theme="help-about">
-     <normaloff/>
-    </iconset>
+    <iconset theme="help-about"/>
    </property>
    <property name="text">
     <string>&amp;About...</string>
@@ -290,6 +271,14 @@
    </property>
    <property name="text">
     <string>&amp;Preferences...</string>
+   </property>
+  </action>
+  <action name="action_reload">
+   <property name="icon">
+    <iconset theme="document-revert"/>
+   </property>
+   <property name="text">
+    <string>Reloa&amp;d</string>
    </property>
   </action>
  </widget>
