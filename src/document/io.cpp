@@ -53,7 +53,9 @@ Document* AbstractFormat::open(const QString& filename)
     if ( !file.open(QFile::ReadOnly) )
         return nullptr;
 
-    return open(&file);
+    auto doc = open(&file);
+    doc->setFileName(filename);
+    return doc;
 }
 
 Formats::~Formats()

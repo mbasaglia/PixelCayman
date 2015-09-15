@@ -20,6 +20,7 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR})
 set(SOURCES
 document/animation.hpp
 document/animation.cpp
+document/builder.hpp
 document/document.hpp
 document/document.cpp
 document/document_element.hpp
@@ -73,6 +74,7 @@ misc/composition_mode.hpp
 misc/composition_mode.cpp
 misc/color.hpp
 misc/color.cpp
+misc/misc.hpp
 plugin/plugin.hpp
 plugin/plugin.cpp
 plugin/library_plugin.hpp
@@ -95,6 +97,7 @@ configure_file(static_info.in.hpp static_info.hpp)
 
 # Enable extra Qt tools
 find_package(Qt5Widgets REQUIRED)
+find_package(Qt5Xml REQUIRED)
 set(CMAKE_AUTOMOC ON)
 #set(CMAKE_AUTOUIC ON)
 #if ( CMAKE_MAJOR_VERSION LESS 3 )
@@ -125,6 +128,7 @@ target_link_libraries(${EXECUTABLE_NAME} ConfirmClose)
 
 # Qt
 target_link_libraries(${EXECUTABLE_NAME} Qt5::Widgets)
+target_link_libraries(${EXECUTABLE_NAME} Qt5::Xml)
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
 # Install

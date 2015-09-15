@@ -25,8 +25,10 @@
 #include <QXmlStreamWriter>
 #include <QBuffer>
 #include <QMimeType>
+#include <QDomDocument>
 
 #include "io.hpp"
+#include "builder.hpp"
 
 namespace document {
 
@@ -60,6 +62,89 @@ private:
 
 } // namespace visitor
 
+class LoaderXml
+{
+    Q_DISABLE_COPY(LoaderXml)
+public:
+    class XmlError : public std::runtime_error
+    {
+    public:
+        XmlError(const QString& message)
+            : runtime_error(message.toStdString()) {}
+    };
+
+    LoaderXml(QIODevice* device)
+    {
+        QString error_msg;
+        int error_line = 0;
+        int error_column = 0;
+        bool ok = xml.setContent(device, &error_msg, &error_line, &error_column);
+        file_name = misc::fileName(device, QObject::tr("stream"));
+        if ( !ok )
+            error(error_msg, error_line, error_column);
+    }
+
+    ~LoaderXml()
+    {
+        delete builder.currentDocument();
+    }
+
+    Document* document()
+    {
+        if ( !document_ )
+            root();
+        return document_;
+    }
+
+private:
+    void error(const QString& message, int line, int column)
+    {
+        throw XmlError(QObject::tr("XML error %1:%2:%3: %4")
+            .arg(file_name).arg(line).arg(column).arg(message));
+    }
+
+    void error(const QString& message)
+    {
+        throw XmlError(QObject::tr("XML error %1: %4")
+            .arg(file_name).arg(message));
+    }
+
+    QDomElement requireElement(const QDomNode& node, const QString& name)
+    {
+        auto element = node.firstChildElement(name);
+        if ( element.isNull() )
+            error(QObject::tr("Expected <%1>").arg(name));
+        return element;
+    }
+
+    void root();
+
+    void animations(const QDomElement& node)
+    {
+        if ( node.isNull() ) return;
+        /// \todo Animations
+    }
+
+    void formats(const QDomElement& node)
+    {
+        if ( node.isNull() ) return;
+        /// \todo read document_->formatSettings()
+    }
+
+    void metadata(const QDomElement& node);
+    void layers(const QDomElement& node);
+    void layer(const QDomElement& node);
+    void image(const QDomElement& node);
+    void bitmap(const QDomElement& node);
+    void id(const QDomElement& node);
+
+    QDomDocument xml;
+    Builder builder;
+    Document* document_ = nullptr;
+    QString file_name;
+};
+
+
 /**
  * \brief Writes a .mela file
  * \todo Read files
@@ -76,6 +161,8 @@ public:
         input->apply(xml);
         return true;
     }
+    bool canOpen() const override { return true; }
+    Document* open(QIODevice* device) override;
 };
 
 } // namespace document

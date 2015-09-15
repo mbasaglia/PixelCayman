@@ -133,4 +133,9 @@ void Document::onRemoveLayer(Layer* layer)
 {
 }
 
+void Document::setImageSize(const QSize& size)
+{
+    image_size = size;
+}
+
 } // namespace document

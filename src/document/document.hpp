@@ -38,11 +38,22 @@ class Document : public LayerContainer
     Q_PROPERTY(QString fileName READ fileName WRITE setFileName NOTIFY fileNameChanged)
 
 public:
-    explicit Document(const QSize& size = {},
+    /**
+     * \brief Build a document with a single layer of the given size
+     */
+    explicit Document(const QSize& size,
                       const QString& file_name = {},
                       const Metadata& metadata = {});
 
+    /**
+     * \brief Build a document with a single layer with the given image
+     */
     explicit Document(const QImage& image, const QString& file_name);
+
+    /**
+     * \brief Build a document with no layers and an invalid size
+     */
+    Document(){}
 
     ~Document();
 
@@ -56,6 +67,13 @@ public:
      * \brief Image size, must be consistent with the size of the layer images
      */
     QSize imageSize() const;
+
+    /**
+     * \brief Set the image size
+     * \note It doesn't resize the layers, only set this if you can keep everything
+     * consistent
+     */
+    void setImageSize(const QSize& size);
 
     /**
      * \brief Rect at (0,0) with imageSize

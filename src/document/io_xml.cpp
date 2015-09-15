@@ -23,8 +23,20 @@
 
 #include <QMimeDatabase>
 #include <QImageWriter>
+#include <QImageReader>
 
 #include "misc/composition_mode.hpp"
+
+static QMimeType mimeType(const QString &name, const QString& fallback)
+{
+    QMimeDatabase mime;
+    QMimeType type;
+    if ( !name.isEmpty() )
+        type = mime.mimeTypeForName(name);
+    if ( !type.isValid() && fallback != name )
+        type = mime.mimeTypeForName(fallback);
+    return type;
+}
 
 namespace document {
 namespace visitor {
@@ -43,9 +55,8 @@ SaverXml::~SaverXml()
 
 bool SaverXml::enter(Document& document)
 {
-    QString format = formats().format("mela")->setting<QString>("image_format", &document, "image/png");
-    QMimeDatabase mime;
-    image_format = QMimeDatabase().mimeTypeForName(format);
+    QString format = formats().format("mela")->setting<QString>("image_format", &document);
+    image_format = mimeType(format, "image/png");
 
     writer.writeStartElement("document");
     writeId(document);
@@ -168,4 +179,101 @@ void SaverXml::writeId(const DocumentElement& element, const QString& attr)
 }
 
 } // namespace visitor
+
+void LoaderXml::root()
+{
+    auto doc = requireElement(xml,"document");
+    builder.beginDocument();
+    id(doc);
+    document_ = builder.currentDocument();
+    /// \todo file format version
+    document_->setImageSize(QSize(
+        doc.attribute("width","32").toInt(),
+        doc.attribute("height","32").toInt()
+                            ));
+    metadata(doc.firstChildElement("metadata"));
+    animations(doc.firstChildElement("animations"));
+    formats(doc.firstChildElement("formats"));
+    layers(doc);
+    builder.endDocument();
+}
+
+void LoaderXml::metadata(const QDomElement& node)
+{
+    if ( node.isNull() ) return;
+
+    auto& meta = builder.currentElement()->metadata();
+    for ( auto data = node.firstChildElement("entry"); !data.isNull();
+            data = data.nextSiblingElement("entry") )
+    {
+        if ( data.hasAttribute("name") )
+            meta[data.attribute("name")] = data.text();
+    }
+}
+
+void LoaderXml::layers(const QDomElement& node)
+{
+    for ( auto lay = node.firstChildElement("layer"); !lay.isNull();
+            lay = lay.nextSiblingElement("layer") )
+    {
+        layer(lay);
+    }
+}
+
+void LoaderXml::layer(const QDomElement& node)
+{
+    Layer* layer = builder.beginLayer();
+    id(node);
+    layer->setName(node.attribute("name", QObject::tr("Layer")));
+    layer->setOpacity(node.attribute("opacity", "1").toDouble());
+    layer->setVisible(node.attribute("visible", "1").toInt());
+    layer->setLocked(node.attribute("locked", "0").toInt());
+    layer->setBlendMode(misc::composition_from_string(node.attribute("blend")));
+
+    metadata(node);
+
+    for ( auto img = node.firstChildElement("image"); !img.isNull();
+            img = img.nextSiblingElement("image") )
+    {
+        image(img);
+    }
+
+    layers(node);
+    builder.endLayer();
+}
+
+void LoaderXml::image(const QDomElement& node)
+{
+    builder.beginImage();
+    id(node);
+    builder.setImageFrame(node.attribute("frame"));
+    metadata(node);
+    auto bitmap_node = node.firstChildElement("bitmap");
+    if ( bitmap_node.isNull() )
+        bitmap(node);
+    else
+        bitmap(bitmap_node);
+    builder.endImage();
+}
+
+void LoaderXml::bitmap(const QDomElement& node)
+{
+    auto content_type = mimeType(node.attribute("type"), "image/png");
+    QByteArray image_data = QByteArray::fromBase64(node.text().toLatin1());
+    QBuffer buffer(&image_data);
+    QImageReader reader(&buffer, content_type.preferredSuffix().toUtf8());
+    reader.read(&builder.currentImage()->image());
+}
+
+void LoaderXml::id(const QDomElement& node)
+{
+    if ( node.hasAttribute("id") )
+        builder.currentElement()->setObjectName(node.attribute("id"));
+}
+
+Document* FormatXmlMela::open(QIODevice* device)
+{
+    return LoaderXml(device).document();
+}
+
 } // namespace document

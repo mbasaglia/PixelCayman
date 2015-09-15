@@ -24,6 +24,7 @@
 #include <QFile>
 #include "settings.hpp"
 #include "document/visitor.hpp"
+#include "misc/misc.hpp"
 
 namespace document {
 
@@ -136,9 +137,7 @@ protected:
      */
     static QString fileName(const QIODevice* device)
     {
-        if ( const QFile* file = qobject_cast<const QFile*>(device) )
-            return file->fileName();
-        return QObject::tr("Image");
+        return misc::fileName(device, QObject::tr("Image"));
     }
 };
 
