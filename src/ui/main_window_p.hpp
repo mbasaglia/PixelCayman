@@ -187,14 +187,12 @@ void MainWindow::Private::initDocks()
     // Color editor
     color_editor = new ColorEditor;
     dock_set_color = createDock(color_editor, "format-stroke-color", "dock_set_color");
-    parent->addDockWidget(Qt::RightDockWidgetArea, dock_set_color);
 
     // Color display
     {
         QWidget* container = new QWidget;
         current_color_selector.setupUi(container);
         dock_current_color = createDock(container, "format-stroke-color", "dock_current_color");
-        parent->addDockWidget(Qt::RightDockWidgetArea, dock_current_color);
         linkColor(color_editor, current_color_selector.color);
     }
 
@@ -203,8 +201,8 @@ void MainWindow::Private::initDocks()
     palette_widget = new PalWid;
     palette_widget->setModel(&palette_model);
     palette_widget->setReadOnly(true);
+    palette_widget->setMinimumSize(0, 140);
     dock_palette = createDock(palette_widget, "preferences-desktop-icons", "dock_palette");
-    parent->addDockWidget(Qt::RightDockWidgetArea, dock_palette);
     connect(palette_widget, util::overload<const QColor&>(&PalWid::currentColorChanged),
             current_color_selector.color, &color_widgets::ColorSelector::setColor);
     connect(current_color_selector.color, &color_widgets::ColorSelector::colorChanged,
@@ -217,9 +215,6 @@ void MainWindow::Private::initDocks()
     palette_editor = new PalWid;
     palette_editor->setModel(&palette_model);
     dock_palette_editor = createDock(palette_editor, "preferences-desktop-icons", "dock_palette_editor");
-    parent->addDockWidget(Qt::RightDockWidgetArea, dock_palette_editor);
-    parent->tabifyDockWidget(dock_palette, dock_palette_editor);
-    dock_palette->raise();
     linkSame(palette_widget, palette_editor, &PalWid::currentRowChanged, &PalWid::setCurrentRow);
     linkSame(palette_widget, palette_editor,
         util::overload<int>(&PalWid::currentColorChanged),
@@ -228,18 +223,28 @@ void MainWindow::Private::initDocks()
     // Undo history
     QUndoView* undo_view = new QUndoView(&undo_group);
     dock_undo_history = createDock(undo_view, "view-history", "dock_undo_history");
-    parent->addDockWidget(Qt::LeftDockWidgetArea, dock_undo_history);
 
     // Layers
     layer_widget = new LayerWidget();
     dock_layers = createDock(layer_widget, "format-list-unordered", "dock_layers");
-    parent->addDockWidget(Qt::LeftDockWidgetArea, dock_layers);
 
     // Tool Options
     dock_tool_options = createDock(nullptr, "preferences-other", "dock_tool_options");
+
+    // Default Layout
+    // left
+    parent->addDockWidget(Qt::LeftDockWidgetArea, dock_undo_history);
     parent->addDockWidget(Qt::LeftDockWidgetArea, dock_tool_options);
-    parent->tabifyDockWidget(dock_tool_options, dock_undo_history);
+    parent->addDockWidget(Qt::LeftDockWidgetArea, dock_set_color);
+    parent->tabifyDockWidget(dock_tool_options, dock_set_color);
     dock_tool_options->raise();
+    // right
+    parent->addDockWidget(Qt::RightDockWidgetArea, dock_layers);
+    parent->addDockWidget(Qt::RightDockWidgetArea, dock_palette);
+    parent->addDockWidget(Qt::RightDockWidgetArea, dock_palette_editor);
+    parent->tabifyDockWidget(dock_palette, dock_palette_editor);
+    dock_palette->raise();
+    parent->addDockWidget(Qt::RightDockWidgetArea, dock_current_color);
 
     // Common stuff
     translateDocks();
