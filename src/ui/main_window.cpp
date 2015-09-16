@@ -176,6 +176,8 @@ bool MainWindow::save(int tab, bool prompt)
         save_dialog.setFileMode(QFileDialog::AnyFile);
         save_dialog.setAcceptMode(QFileDialog::AcceptSave);
         save_dialog.setNameFilters(document::formats().nameFilters(action));
+        if ( !format )
+            format = document::formats().format("mela");
         if ( format )
             save_dialog.selectNameFilter(format->nameFilter(action));
 

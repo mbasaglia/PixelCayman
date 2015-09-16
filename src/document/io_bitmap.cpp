@@ -24,6 +24,7 @@
 
 #include <QImageReader>
 #include <QImageWriter>
+#include <QDebug>
 
 namespace document {
 
@@ -98,15 +99,21 @@ bool FormatBitmap::saveImage(const QImage& image, QIODevice* device, const Docum
 
     /// \todo some way to determine quality for jpg
     /// (low priority since Jpeg isn't a good format for pixel art)
+    qDebug() << QImageWriter::supportedImageFormats();
 
-    return writer.write(image);
+    bool ok = writer.write(image);
+    if ( !ok )
+        qWarning() << "Cannot save image: " << writer.errorString();
+    return ok;
 }
 
 QImage FormatBitmap::openImage(QIODevice* device)
 {
     QImageReader reader(device, physicalFormat());
-    return reader.read();
+    QImage img = reader.read();
+    if ( img.isNull() )
+        qWarning() << "Cannot open image: " << reader.errorString();
+    return img;
 }
-
 
 } // namespace document

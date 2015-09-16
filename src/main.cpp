@@ -72,8 +72,8 @@ void initPlugins()
 
 void initFormats()
 {
-    document::Formats::instance().addFormat(new document::FormatXmlMela);
-    document::Formats::instance().addFormat(new document::FormatBitmap);
+    document::formats().addFormat(new document::FormatXmlMela);
+    document::formats().addFormat(new document::FormatBitmap);
 }
 
 int main(int argc, char** argv)

@@ -54,7 +54,8 @@ Document* AbstractFormat::open(const QString& filename)
         return nullptr;
 
     auto doc = open(&file);
-    doc->setFileName(filename);
+    if ( doc )
+        doc->setFileName(filename);
     return doc;
 }
 
@@ -118,6 +119,8 @@ QStringList Formats::nameFilters(Formats::Action action, bool all_files) const
         if ( format->supportsAction(action) )
             filters << format->nameFilter(action);
 
+    filters.sort();
+    
     if ( all_files )
         filters << QObject::tr("All Files (*)");
 
