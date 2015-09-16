@@ -215,10 +215,11 @@ bool MainWindow::save(int tab, bool prompt)
         doc->undoStack().setClean();
         p->pushRecentFile(doc->fileName());
     }
-
-
-    Message(Message::Dialog|Message::Error)
-        << tr("Error saving %1: %2").arg(doc->fileName()).arg(format->errorString());
+    else
+    {
+        Message(Message::Dialog|Message::Error)
+            << tr("Error saving %1: %2").arg(doc->fileName()).arg(format->errorString());
+    }
     return false;
 }
 
