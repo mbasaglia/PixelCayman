@@ -203,6 +203,11 @@ bool MainWindow::save(int tab, bool prompt)
                 return false;
             }
         }
+        else if ( QFileInfo(selected_file).suffix().isEmpty() )
+        {
+            selected_file.append("."+
+                format->extensions(document::AbstractFormat::Action::Save).front());
+        }
 
         doc->formatSettings().setPreferred(format);
         doc->setFileName(selected_file);
