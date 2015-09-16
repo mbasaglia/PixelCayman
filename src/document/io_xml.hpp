@@ -155,14 +155,20 @@ public:
     QString id() const override { return "mela"; }
     QString name() const override { return QObject::tr("Cayman Files"); }
     bool canSave() const override { return true; }
-    bool save(Document* input, QIODevice* device) override
+    bool canOpen() const override { return true; }
+
+protected:
+    bool onSave(Document* input, QIODevice* device) override
     {
         visitor::SaverXml xml(device);
         input->apply(xml);
         return true;
     }
-    bool canOpen() const override { return true; }
-    Document* open(QIODevice* device) override;
+
+    Document* onOpen(QIODevice* device) override
+    {
+        return LoaderXml(device).document();
+    }
 };
 
 } // namespace document

@@ -40,10 +40,11 @@ public:
     bool canSave() const override { return true; }
     bool canOpen() const override { return true; }
 
-    bool save(document::Document* input, QIODevice* device) final;
-    Document* open(QIODevice* device) final;
-
 protected:
+
+    bool onSave(document::Document* input, QIODevice* device) final;
+    Document* onOpen(QIODevice* device) final;
+
     /**
      * \brief Format used by for the QImage generated from the document
      */

@@ -90,6 +90,8 @@ draw.hpp
 math.hpp
 info.cpp
 info.hpp
+message.hpp
+message.cpp
 ${CMAKE_CURRENT_BINARY_DIR}/static_info.hpp
 )
 

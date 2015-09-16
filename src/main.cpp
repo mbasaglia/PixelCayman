@@ -21,7 +21,6 @@
  */
 #include <exception>
 #include <QApplication>
-#include <QDebug>
 #include <QIcon>
 
 #include "ui/main_window.hpp"
@@ -34,6 +33,7 @@
 #include "plugin/plugin_api.hpp"
 #include "document/io_bitmap.hpp"
 #include "document/io_xml.hpp"
+#include "message.hpp"
 
 void initPlugins()
 {
@@ -42,7 +42,7 @@ void initPlugins()
 
     // Connect warnings
     QObject::connect(&plugin::registry(), &plugin::PluginRegistry::warning,
-        [](const QString& msg) { qWarning() << msg; });
+        [](const QString& msg) { Message(Message::Error|Message::Stream) << msg; });
 
     // Refresh the list of available paths every time the plugins are loaded
     QObject::connect(&plugin::registry(), &plugin::PluginRegistry::beginLoad,
@@ -98,17 +98,16 @@ int main(int argc, char** argv)
         MainWindow window;
         for ( const auto& tool : ::tool::Registry::instance().tools() )
             window.addTool(tool.get());
-
         window.show();
         return app.exec();
     }
     catch ( const std::exception& exc )
     {
-        qWarning() << "Exception: " << exc.what();
+        Message(Message::AllOutput|Message::Critical) << "Exception: " << exc.what();
     }
     catch ( ... )
     {
-        qWarning() << "Unknown Exception";
+        Message(Message::AllOutput|Message::Critical) << "Unknown Exception";
     }
 
     return 1;

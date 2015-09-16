@@ -71,35 +71,51 @@ public:
     /**
      * \brief List of file extensions to filter in the file dialog
      */
+
     virtual QStringList extensions(Action action) const { return {id()}; }
     /**
      * \brief Whether the file format supports saving document
      */
+
     virtual bool canSave() const { return false; }
+
     /**
      * \brief Save the document contents to the output device
      * \return \b true on success
      */
-    virtual bool save(Document* input, QIODevice* device)  { return false; }
+    bool save(Document* input, QIODevice* device)
+    {
+        clearError();
+        return onSave(input, device);
+    }
+
     /**
      * \brief Save the document to a file with the given name
      * \return \b true on success
      */
     bool save(Document* document, const QString& filename);
+
     /**
      * \brief Save the document to the file stored in its filename
      * \return \b true on success
      */
     bool save(Document* document);
+
     /**
      * \brief Whether the file format supports opening documents
      */
     virtual bool canOpen() const { return false; }
+
     /**
      * \brief Load the device contents in a new document
      * \return A new Document object, \b nullptr on error
      */
-    virtual Document* open(QIODevice* device) { return nullptr; }
+    Document* open(QIODevice* device)
+    {
+        clearError();
+        return onOpen(device);
+    }
+
     /**
      * \brief Load the file contents in a new document
      * \return A new Document object, \b nullptr on error
@@ -131,6 +147,22 @@ public:
             return variant.value<T>();
         }
 
+    /**
+     * \brief Whether the last operation resulted in an error
+     */
+    bool hasError() const
+    {
+        return  !error_string.isEmpty();
+    }
+
+    /**
+     * \brief The current error string
+     */
+    QString errorString() const
+    {
+        return error_string;
+    }
+
 protected:
     /**
      * \brief Extract a file name from a i/o device
@@ -139,6 +171,37 @@ protected:
     {
         return misc::fileName(device, QObject::tr("Image"));
     }
+
+    /**
+     * \brief Set an error message
+     */
+    void setError(const QString& message)
+    {
+        error_string = message;
+    }
+
+    /**
+     * \brief Clears the current error
+     */
+    void clearError()
+    {
+        error_string.clear();
+    }
+
+    /**
+     * \brief Save the document contents to the output device
+     * \return \b true on success
+     */
+    virtual bool onSave(Document* input, QIODevice* device)  { return false; }
+
+    /**
+     * \brief Load the file contents in a new document
+     * \return A new Document object, \b nullptr on error
+     */
+    virtual Document* onOpen(QIODevice* device) { return nullptr; }
+
+private:
+    QString error_string;
 };
 
 /**

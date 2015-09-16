@@ -29,6 +29,7 @@
 
 #include "data.hpp"
 #include "confirm_close_dialog.hpp"
+#include "message.hpp"
 
 MainWindow::MainWindow(QWidget* parent)
     : QMainWindow(parent), p(new Private(this))
@@ -61,12 +62,14 @@ MainWindow::MainWindow(QWidget* parent)
 
     p->current_color_selector.color->setColor(Qt::black);
 
+    Message::manager().setDialogParent(this);
 }
 
 MainWindow::~MainWindow()
 {
     p->saveSettings();
     p->dock_tool_options->setWidget(nullptr);
+    Message::manager().setDialogParent(nullptr);
     delete p;
 }
 
@@ -194,9 +197,11 @@ bool MainWindow::save(int tab, bool prompt)
         if ( !format )
         {
             format = document::formats().formatFromFileName(selected_file, action);
-            /// \todo Show an error message (Unknown format)
             if ( !format )
+            {
+                Message(Message::Dialog|Message::Error) << tr("Unknown format");
                 return false;
+            }
         }
 
         doc->formatSettings().setPreferred(format);
@@ -211,7 +216,9 @@ bool MainWindow::save(int tab, bool prompt)
         p->pushRecentFile(doc->fileName());
     }
 
-    /// \todo Show an error message (Error while saving)
+
+    Message(Message::Dialog|Message::Error)
+        << tr("Error saving %1: %2").arg(doc->fileName()).arg(format->errorString());
     return false;
 }
 
@@ -222,7 +229,11 @@ int MainWindow::openTab(const QString& file_name, bool set_current,
     {
         format = document::formats().formatFromFileName(file_name,document::Formats::Action::Open);
         if ( !format )
-            return -1; /// \todo Error message (unknown format)
+        {
+            Message(Message::Dialog|Message::Error)
+                << tr("Unknown format for %1").arg(file_name);
+            return -1;
+        }
     }
 
     document::Document* doc = format->open(file_name);
@@ -233,7 +244,10 @@ int MainWindow::openTab(const QString& file_name, bool set_current,
         return p->addDocument(doc, set_current);
     }
 
-    return -1; /// \todo Error message (error while opening)
+    Message(Message::Dialog|Message::Error)
+        << tr("Error opening %1: %2").arg(file_name).arg(format->errorString());
+
+    return -1;
 }
 
 bool MainWindow::documentClose()

@@ -271,9 +271,4 @@ void LoaderXml::id(const QDomElement& node)
         builder.currentElement()->setObjectName(node.attribute("id"));
 }
 
-Document* FormatXmlMela::open(QIODevice* device)
-{
-    return LoaderXml(device).document();
-}
-
 } // namespace document
