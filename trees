@@ -1,0 +1,33 @@
+#!/usr/bin/python
+import sys
+import os
+
+subtrees = {}
+
+class Subtree:
+    def __init__(self, name, path, url, branch = "master"):
+        self.path = path
+        self.url = url
+        self.branch = branch
+        subtrees[name.lower()] = self
+
+Subtree("ColorWidgets", "submodules/ColorWidgets",              "git@github.com:mbasaglia/Qt-Color-Widgets.git")
+Subtree("TabWidget",    "submodules/Qt-Extended-TabWidget",     "git@github.com:mbasaglia/Qt-Extended-TabWidget.git")
+Subtree("CloseDialog",  "submodules/ConfirmCloseDialog",        "git@github.com:mbasaglia/Qt-ConfirmCloseDialog.git")
+Subtree("MiscWidgets",  "submodules/MiscWidgets",               "git@github.com:mbasaglia/Qt-MiscWidgets.git")
+Subtree("misclib",      "submodules/MiscWidgets/src/misclib/",  "git@github.com:mbasaglia/Cxx-MiscLib.git")
+
+
+if len(sys.argv) < 3 :
+    for name in subtrees :
+        print(name+": "+subtrees[name].path+" "+subtrees[name].url+" "+subtrees[name].branch)
+    exit(0)
+
+action = sys.argv[1]
+subtree_name = sys.argv[2].lower()
+if not subtree_name in subtrees :
+    print("Subtree "+subtree_name+" not found")
+    exit(1)
+
+subtree = subtrees[subtree_name]
+os.system("git subtree "+sys.argv[1]+" -P "+subtree.path+" "+subtree.url+" "+subtree.branch)
