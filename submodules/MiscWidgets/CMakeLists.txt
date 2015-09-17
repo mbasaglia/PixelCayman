@@ -55,6 +55,7 @@ set(HEADERS
 src/bool_icon_delegate.hpp
 src/enum_combo_delegate.hpp
 src/slider_delegate.hpp
+src/log_view.hpp
 )
 
 qt5_wrap_cpp(SOURCES ${HEADERS})

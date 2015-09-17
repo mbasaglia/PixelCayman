@@ -70,6 +70,7 @@ MainWindow::~MainWindow()
     p->saveSettings();
     p->dock_tool_options->setWidget(nullptr);
     Message::manager().setDialogParent(nullptr);
+    disconnect(p->log_view_connection);
     delete p;
 }
 
@@ -222,7 +223,7 @@ bool MainWindow::save(int tab, bool prompt)
     }
     else
     {
-        Message(Message::Dialog|Message::Error)
+        Message(Message::AllOutput|Message::Error)
             << tr("Error saving %1: %2").arg(doc->fileName()).arg(format->errorString());
     }
     return false;
@@ -250,7 +251,7 @@ int MainWindow::openTab(const QString& file_name, bool set_current,
         return p->addDocument(doc, set_current);
     }
 
-    Message(Message::Dialog|Message::Error)
+    Message(Message::AllOutput|Message::Error)
         << tr("Error opening %1: %2").arg(file_name).arg(format->errorString());
 
     return -1;

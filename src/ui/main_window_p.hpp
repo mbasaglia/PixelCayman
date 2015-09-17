@@ -43,6 +43,8 @@
 #include "view/graphics_widget.hpp"
 #include "layer_widget.hpp"
 #include "plugin/plugin.hpp"
+#include "message.hpp"
+#include "log_view.hpp"
 
 #include "ui_current_color.h"
 #include "ui_main_window.h"
@@ -148,6 +150,10 @@ public:
 
     QDockWidget* dock_tool_options;
 
+    QDockWidget* dock_log;
+    LogView*     log_view;
+    QMetaObject::Connection log_view_connection;
+
     QStringList recent_files;
 
     MainWindow* parent;
@@ -231,6 +237,21 @@ void MainWindow::Private::initDocks()
     // Tool Options
     dock_tool_options = createDock(nullptr, "preferences-other", "dock_tool_options");
 
+    // Log view
+    log_view = new LogView;
+    log_view->setStderrColor(Qt::darkRed);
+    log_view_connection = connect(&Message::manager(), &MessageManager::message,
+        [this](const Message& msg)
+        {
+            if ( !msg.hasBehaviour(Message::Stream) )
+                return;
+            if ( msg.hasBehaviour(Message::Error) || msg.hasBehaviour(Message::Message::Critical) )
+                log_view->logStderr(msg.text());
+            else
+                log_view->logStdout(msg.text());
+        });
+    dock_log = createDock(log_view, "utilities-terminal", "log_view");
+
     // Default Layout
     // left
     parent->addDockWidget(Qt::LeftDockWidgetArea, dock_undo_history);
@@ -245,12 +266,12 @@ void MainWindow::Private::initDocks()
     parent->tabifyDockWidget(dock_palette, dock_palette_editor);
     dock_palette->raise();
     parent->addDockWidget(Qt::RightDockWidgetArea, dock_current_color);
+    // bottom
+    parent->addDockWidget(Qt::BottomDockWidgetArea, dock_log);
+    dock_log->hide();
 
     // Common stuff
     translateDocks();
-
-    for ( auto* dock : parent->findChildren<QDockWidget*>() )
-        dock->setEnabled(false);
 }
 
 void MainWindow::Private::translateDocks()
@@ -262,6 +283,7 @@ void MainWindow::Private::translateDocks()
     dock_undo_history->setWindowTitle(tr("Action History"));
     dock_tool_options->setWindowTitle(tr("Tool Options"));
     dock_layers->setWindowTitle(tr("Layers"));
+    dock_log->setWindowTitle(tr("Log"));
 }
 
 void MainWindow::Private::initMenus()
@@ -431,6 +453,7 @@ void MainWindow::Private::setCurrentView(view::GraphicsWidget* widget)
     bool editors_enabled = widget != nullptr;
     for ( auto* dock : parent->findChildren<QDockWidget*>() )
         dock->setEnabled(editors_enabled);
+    dock_log->setEnabled(true);
     action_save->setEnabled(editors_enabled);
     action_save_as->setEnabled(editors_enabled);
     action_save_all->setEnabled(editors_enabled);

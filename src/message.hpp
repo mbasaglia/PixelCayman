@@ -105,11 +105,17 @@ public:
             return *this;
         }
 
-private:
     bool hasBehaviour(BehaviourEnum beh) const
     {
         return (behaviour & beh) == beh;
     }
+
+    QString text() const
+    {
+        return message;
+    }
+
+private:
 
     QString message;
     QTextStream stream;
