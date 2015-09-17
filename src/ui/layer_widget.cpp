@@ -23,9 +23,9 @@
 
 #include <QInputDialog>
 
-#include "style/bool_icon_delegate.hpp"
-#include "style/slider_delegate.hpp"
-#include "style/enum_combo_delegate.hpp"
+#include "bool_icon_delegate.hpp"
+#include "slider_delegate.hpp"
+#include "enum_combo_delegate.hpp"
 #include "misc/composition_mode.hpp"
 #include "document/visitor.hpp"
 #include "dialog_layer.hpp"

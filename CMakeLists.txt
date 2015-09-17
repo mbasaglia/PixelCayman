@@ -67,10 +67,11 @@ if(CMAKE_BUILD_TYPE STREQUAL "Debug")
 endif()
 
 add_subdirectory(src bin)
+add_subdirectory(data share/${EXECUTABLE_NAME})
 add_subdirectory(submodules/ColorWidgets)
 add_subdirectory(submodules/Qt-Extended-TabWidget)
 add_subdirectory(submodules/ConfirmCloseDialog)
-add_subdirectory(data share/${EXECUTABLE_NAME})
+add_subdirectory(submodules/MiscWidgets)
 
 # Doxygen target
 find_package(Doxygen)

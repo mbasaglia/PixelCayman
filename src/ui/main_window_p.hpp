@@ -39,7 +39,7 @@
 #include "settings.hpp"
 #include "style/dockwidget_style_icon.hpp"
 #include "tool/tool.hpp"
-#include "util.hpp"
+#include "misclib/util.hpp"
 #include "view/graphics_widget.hpp"
 #include "layer_widget.hpp"
 #include "plugin/plugin.hpp"

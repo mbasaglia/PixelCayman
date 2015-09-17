@@ -45,9 +45,6 @@ document/command/move_child_layers.hpp
 document/command/move_child_layers.cpp
 document/command/set_property.hpp
 style/dockwidget_style_icon.hpp
-style/bool_icon_delegate.hpp
-style/slider_delegate.hpp
-style/enum_combo_delegate.hpp
 style/itemview_style_rowdrop.hpp
 tool/tool.hpp
 tool/brush.hpp
@@ -82,7 +79,6 @@ plugin/library_plugin.cpp
 plugin/plugin_api.hpp
 plugin/plugin_api.cpp
 main.cpp
-util.hpp
 settings.hpp
 data.cpp
 data.hpp
@@ -127,6 +123,9 @@ target_link_libraries(${EXECUTABLE_NAME} ExtendedTabWidget)
 
 include_directories(../submodules/ConfirmCloseDialog/src)
 target_link_libraries(${EXECUTABLE_NAME} ConfirmClose)
+
+include_directories(../submodules/MiscWidgets/src)
+target_link_libraries(${EXECUTABLE_NAME} MiscWidgets)
 
 # Qt
 target_link_libraries(${EXECUTABLE_NAME} Qt5::Widgets)

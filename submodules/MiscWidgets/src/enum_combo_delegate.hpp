@@ -25,8 +25,7 @@
 #include <QComboBox>
 #include <QVector>
 #include <QPair>
-
-#include "util.hpp"
+#include "misclib/util.hpp"
 
 class EnumComboDelegate : public QStyledItemDelegate
 {

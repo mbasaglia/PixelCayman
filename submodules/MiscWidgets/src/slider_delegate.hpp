@@ -26,7 +26,7 @@
 #include <QStyle>
 #include <QMouseEvent>
 #include <QRect>
-#include "math.hpp"
+#include "misclib/math.hpp"
 
 /**
  * \brief Displays a slider for a real value

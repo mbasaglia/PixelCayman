@@ -18,8 +18,8 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-#ifndef PIXELCAYMAN_UTIL_HPP
-#define PIXELCAYMAN_UTIL_HPP
+#ifndef MISCLIB_UTIL_HPP
+#define MISCLIB_UTIL_HPP
 
 #include <utility>
 #include <tuple>
@@ -39,12 +39,17 @@ template<class ...Args, class C, class R>
  * \brief Determine the distance between a data member and its object
  */
 template <typename Class, typename Type>
-    std::size_t offsetOf(const Class* object, Type Class::* member)
+    std::size_t offset_of(const Class* object, Type Class::* member)
     {
         return reinterpret_cast<const char *>(&(object->*member)) -
                reinterpret_cast<const char *>(object);
     }
 
+/**
+ * \brief Template to retrieve information about a function signature
+ *
+ * Use as FunctionSignature<Ret (Args...)> or FunctionSignature<Pointer>
+ */
 template<class T>
     struct FunctionSignature;
 
@@ -57,12 +62,16 @@ template<class Ret, class...Args>
     };
 
 template<class Ret, class...Args>
-    struct FunctionSignature<Ret(*)(Args...)> : public FunctionSignature<Ret(Args...)>
+    struct FunctionSignature<Ret(*)(Args...)>
+        : public FunctionSignature<Ret(Args...)>
     {
     };
-    
+
+/**
+ * \brief Clean syntax to get a function pointer type
+ */
 template<class T>
     using FunctionPointer = typename FunctionSignature<T>::pointer_type;
 
 } // namespace util
-#endif // PIXELCAYMAN_UTIL_HPP
+#endif // MISCLIB_UTIL_HPP

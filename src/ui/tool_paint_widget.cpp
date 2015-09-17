@@ -21,7 +21,7 @@
  */
 
 #include "tool_paint_widget.hpp"
-#include "util.hpp"
+#include "misclib/util.hpp"
 #include <QStandardItemModel>
 
 namespace tool {

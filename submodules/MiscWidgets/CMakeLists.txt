@@ -15,7 +15,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 cmake_minimum_required(VERSION 2.6)
-set(LIBRARY_TARGET ColorWidgets-qt5)
+set(LIBRARY_TARGET MiscWidgets)
 set(PROJECT_VERSION "")
 project(${LIBRARY_TARGET} CXX)
 
@@ -49,54 +49,18 @@ endif()
 include_directories("${PROJECT_SOURCE_DIR}/include")
 
 set(SOURCES
-src/color_list_widget.cpp
-src/gradient_slider.cpp
-src/color_line_edit.cpp
-src/swatch.cpp
-src/bound_color_selector.cpp
-src/color_palette_widget.cpp
-src/color_palette_model.cpp
-src/color_2d_slider.cpp
-src/abstract_widget_list.cpp
-src/color_delegate.cpp
-src/color_widgets.qrc
-src/color_utils.cpp
-src/color_dialog.cpp
-src/color_palette.cpp
-src/color_selector.cpp
-src/color_preview.cpp
-src/alphaback.png
-src/color_utils.hpp
-src/hue_slider.cpp
-src/color_wheel.cpp
 )
 
 set(HEADERS
-include/color_palette_model.hpp
-include/color_palette_widget.hpp
-include/colorwidgets_global.hpp
-include/color_wheel.hpp
-include/color_line_edit.hpp
-include/swatch.hpp
-include/color_delegate.hpp
-include/color_palette.hpp
-include/hue_slider.hpp
-include/abstract_widget_list.hpp
-include/bound_color_selector.hpp
-include/color_dialog.hpp
-include/color_2d_slider.hpp
-include/color_selector.hpp
-include/color_list_widget.hpp
-include/color_preview.hpp
-include/gradient_slider.hpp
+src/bool_icon_delegate.hpp
+src/enum_combo_delegate.hpp
+src/slider_delegate.hpp
 )
 
 qt5_wrap_cpp(SOURCES ${HEADERS})
-qt5_wrap_ui(SOURCES src/color_dialog.ui src/color_palette_widget.ui)
-qt5_add_resources(SOURCES src/color_widgets.qrc)
 
 # Library
 add_library(${LIBRARY_TARGET} ${SOURCES})
 target_link_libraries(${LIBRARY_TARGET} Qt5::Widgets)
 
-add_subdirectory(gallery)
+# add_subdirectory(gallery)

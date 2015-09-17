@@ -23,7 +23,7 @@
 
 #include <QUndoCommand>
 #include "command.hpp"
-#include "util.hpp"
+#include "misclib/util.hpp"
 
 namespace document {
 namespace command {
@@ -33,7 +33,7 @@ class SetPropertyMergeId
 public:
     template<class Class, class Type>
         SetPropertyMergeId(Class* object, Type Class::*member)
-        : object(object), member(util::offsetOf(object, member) + 1)
+        : object(object), member(util::offset_of(object, member) + 1)
         {}
 
     SetPropertyMergeId() = default;
