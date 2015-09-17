@@ -45,6 +45,7 @@
 #include "plugin/plugin.hpp"
 #include "message.hpp"
 #include "log_view.hpp"
+#include "labeled_spinbox.hpp"
 
 #include "ui_current_color.h"
 #include "ui_main_window.h"
@@ -61,6 +62,8 @@ public:
     void initDocks();
     void translateDocks();
     void initMenus();
+    void initStatusBar();
+    void translateStatusBar();
     void loadSettings();
     void saveSettings();
     QAction* recentFileAction(const QString& file_name);
@@ -131,6 +134,8 @@ public:
 
     QUndoGroup undo_group;
 
+    MainWindow* parent;
+
     QDockWidget* dock_set_color;
     ColorEditor* color_editor;
 
@@ -154,9 +159,9 @@ public:
     LogView*     log_view;
     QMetaObject::Connection log_view_connection;
 
-    QStringList recent_files;
+    LabeledSpinBox* zoomer;
 
-    MainWindow* parent;
+    QStringList recent_files;
 
     /**
      * \brief UI layout version, used by saveState
@@ -322,6 +327,29 @@ void MainWindow::Private::initMenus()
     tools_group->setExclusive(true);
 }
 
+void MainWindow::Private::initStatusBar()
+{
+    zoomer = new LabeledSpinBox(parent);
+    zoomer->spinBox()->setMinimum(25);
+    zoomer->spinBox()->setMaximum(2400);
+    zoomer->spinBox()->setValue(100);
+    zoomer->spinBox()->setSingleStep(25);
+    connect(zoomer->spinBox(), util::overload<int>(&QSpinBox::valueChanged),
+    [this](int v){
+        if ( current_view )
+            current_view->setZoomFactor(v / 100.0);
+    });
+    parent->statusBar()->addPermanentWidget(zoomer);
+
+    translateStatusBar();
+}
+
+void MainWindow::Private::translateStatusBar()
+{
+    zoomer->label()->setText(tr("Zoom"));
+    zoomer->spinBox()->setSuffix(tr("%"));
+}
+
 void MainWindow::Private::loadSettings()
 {
     palette_model.addSearchPath("/usr/share/gimp/2.0/palettes/");
@@ -433,6 +461,8 @@ void MainWindow::Private::setCurrentView(view::GraphicsWidget* widget)
         disconnect(current_view, nullptr, layer_widget, nullptr);
     }
 
+    current_view = widget;
+
     if ( widget )
     {
         widget->setCurrentTool(current_tool);
@@ -444,6 +474,17 @@ void MainWindow::Private::setCurrentView(view::GraphicsWidget* widget)
                 widget, &view::GraphicsWidget::setActiveLayer);
         connect(widget, &view::GraphicsWidget::activeLayerChanged,
                 layer_widget, &LayerWidget::setActiveLayer);
+
+        auto set_zoom = [this, widget](qreal factor) {
+            if ( widget == current_view )
+            {
+                zoomer->spinBox()->blockSignals(true);
+                zoomer->spinBox()->setValue(qRound(factor*100));
+                zoomer->spinBox()->blockSignals(false);
+            }
+        };
+        connect(widget, &view::GraphicsWidget::zoomFactorChanged, set_zoom);
+        set_zoom(widget->zoomFactor());
     }
     else
     {
@@ -451,6 +492,9 @@ void MainWindow::Private::setCurrentView(view::GraphicsWidget* widget)
     }
 
     bool editors_enabled = widget != nullptr;
+    /// \todo Use a list of widgets that need to be enabled depending on whether
+    /// it has an active tab and push them on initialization
+    /// or emit a signal(bool) connected with setenabled
     for ( auto* dock : parent->findChildren<QDockWidget*>() )
         dock->setEnabled(editors_enabled);
     dock_log->setEnabled(true);
@@ -462,8 +506,7 @@ void MainWindow::Private::setCurrentView(view::GraphicsWidget* widget)
     action_print->setEnabled(editors_enabled);
     action_reload->setEnabled(editors_enabled && !widget->document()->fileName().isEmpty());
     tools_group->setEnabled(editors_enabled);
-
-    current_view = widget;
+    zoomer->setEnabled(editors_enabled);
 
     updateTitle();
 }
