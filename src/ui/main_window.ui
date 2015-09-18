@@ -429,6 +429,22 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>action_reload</sender>
+   <signal>triggered()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>documentReload()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>551</x>
+     <y>383</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <slot>documentNew()</slot>
@@ -438,5 +454,6 @@
   <slot>updateTitle()</slot>
   <slot>documentClose()</slot>
   <slot>documentCloseAll()</slot>
+  <slot>documentReload()</slot>
  </slots>
 </ui>

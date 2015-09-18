@@ -108,6 +108,22 @@ void Document::registerElement(DocumentElement* element, const QMetaObject& meta
     }
 }
 
+void Document::stealElement(DocumentElement* element)
+{
+    auto owner = element->parent();
+
+    if ( owner == this )
+        return;
+
+    if ( owner )
+    {
+        disconnect(element, nullptr, owner, nullptr);
+        element->setParent(nullptr);
+    }
+
+    registerElement(element);
+}
+
 const QUndoStack& Document::undoStack() const
 {
     return undo_stack;

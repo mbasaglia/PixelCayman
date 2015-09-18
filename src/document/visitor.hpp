@@ -169,7 +169,6 @@ private:
     QPainter::CompositionMode blend;
 };
 
-
 /**
  * \brief Searches for a layer by name
  */
@@ -209,7 +208,82 @@ private:
     Layer*  found_ = nullptr;
 };
 
-} // namespace visitor
+/**
+ * \brief Moves all the children from a document into a different one
+ */
+class Move : public Visitor
+{
+public:
+    explicit Move(Document* destination, const QString& undo_message)
+        : destination_(destination)
+    {
+        destination_->undoStack().beginMacro(undo_message);
+        auto layers = destination_->layers();
+        for ( auto layer : layers )
+            destination_->removeLayer(layer);
+    }
 
+    ~Move()
+    {
+        destination_->undoStack().endMacro();
+    }
+
+    Document* destination() const
+    {
+        return destination_;
+    }
+
+    bool enter(Document& document) override
+    {
+        destination_->setImageSize(document.imageSize());
+        destination_->setFileName(document.fileName());
+        destination_->metadata() = document.metadata();
+        /// \todo Copy format settings?
+        return true;
+    }
+
+    void leave(Document& document) override
+    {
+        /// \todo same with animation
+        auto layers = document.layers();
+        for ( auto layer : layers )
+        {
+            document.removeLayer(layer);
+            destination_->insertLayer(layer);
+        }
+    }
+
+    bool enter(Layer& layer) override
+    {
+        move(layer);
+        return true;
+    }
+
+    void visit(Image& image) override
+    {
+        move(image);
+    }
+
+    bool enter(Animation& animation) override
+    {
+        move(animation);
+        return true;
+    }
+
+    void visit(Frame& frame) override
+    {
+        move(frame);
+    }
+
+private:
+    void move(DocumentElement& element)
+    {
+        destination_->stealElement(&element);
+    }
+
+    Document* destination_;
+};
+
+} // namespace visitor
 } // namespace document
 #endif // PIXEL_CAYMAN_DOCUMENT_VISITOR_HPP

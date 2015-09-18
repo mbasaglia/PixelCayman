@@ -435,8 +435,15 @@ int MainWindow::Private::addDocument(document::Document* doc, bool set_current)
     undo_group.addStack(&doc->undoStack());
 
     int tab = main_tab->addTab(widget, documentName(doc));
-    connect(&doc->undoStack(), &QUndoStack::cleanChanged, [this, widget]{
-        main_tab->setTabIcon(main_tab->indexOf(widget), QIcon::fromTheme("document-save"));
+    connect(&doc->undoStack(), &QUndoStack::cleanChanged,
+    [this, widget](bool clean)
+    {
+        QIcon icon;
+        if ( !clean )
+            icon = QIcon::fromTheme("document-save");
+        main_tab->setTabIcon(main_tab->indexOf(widget), icon);
+        if ( widget == current_view )
+            updateTitle();
     });
 
     if ( set_current )
@@ -504,7 +511,6 @@ void MainWindow::Private::setCurrentView(view::GraphicsWidget* widget)
     action_close->setEnabled(editors_enabled);
     action_close_all->setEnabled(editors_enabled);
     action_print->setEnabled(editors_enabled);
-    action_reload->setEnabled(editors_enabled && !widget->document()->fileName().isEmpty());
     tools_group->setEnabled(editors_enabled);
     zoomer->setEnabled(editors_enabled);
 
@@ -515,17 +521,19 @@ void MainWindow::Private::updateTitle()
 {
     int tab = main_tab->currentIndex();
 
-    if ( tab == -1 )
+    if ( tab == -1 || !current_view )
     {
+        action_reload->setEnabled(false);
         parent->setWindowTitle(QString());
         return;
     }
 
-    view::GraphicsWidget* view_widget = widget(tab);
-    QString title = documentName(view_widget->document());
-    if ( !view_widget->document()->undoStack().isClean() )
+    QString title = documentName(current_view->document());
+    if ( !current_view->document()->undoStack().isClean() )
         title = tr("%1 *").arg(title);
     parent->setWindowTitle(title);
+
+    action_reload->setEnabled(current_view->document()->fileName().isEmpty());
 }
 
 #endif // PIXEL_CAYMAN_MAIN_WINDOW_PRIVATE_HPP

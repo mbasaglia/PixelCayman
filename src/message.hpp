@@ -88,8 +88,8 @@ public:
         AllOutput   = Stream|Dialog,///< Both Stream and Dialog
     };
 
-    explicit Message(int behaviour)
-        : stream(&message), behaviour(behaviour)
+    explicit Message(int behaviour, const QString& text = {})
+        : message(text), stream(&message), behaviour(behaviour)
     {}
 
     ~Message()

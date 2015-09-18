@@ -119,6 +119,13 @@ public:
     }
 
     /**
+     * \brief Registers an element belonging to a different document
+     * \note Only use if you don't you can keep the edit history consistent
+     *       and the owner document is destroyed soon after this call
+     */
+    void stealElement(DocumentElement* element);
+
+    /**
      * \brief Stack with the commands used to edit this document
      */
     const QUndoStack& undoStack() const;

@@ -74,6 +74,11 @@ public slots:
      */
     bool documentCloseAll();
 
+    /**
+     * \brief Re-opens the document from file
+     */
+    bool documentReload();
+
 protected:
     void changeEvent(QEvent* event) override;
     void closeEvent(QCloseEvent *event) override;

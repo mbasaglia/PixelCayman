@@ -215,13 +215,13 @@ bool MainWindow::save(int tab, bool prompt)
         doc->formatSettings().setPreferred(format);
         doc->setFileName(selected_file);
         p->main_tab->setTabText(tab, p->documentName(doc));
-        p->updateTitle();
     }
 
     if ( format->save(doc) )
     {
         doc->undoStack().setClean();
         p->pushRecentFile(doc->fileName());
+        p->updateTitle();
     }
     else
     {
@@ -367,4 +367,47 @@ void MainWindow::closeEvent(QCloseEvent *event)
     }
 
     QMainWindow::closeEvent(event);
+}
+
+bool MainWindow::documentReload()
+{
+    if ( !p->current_view )
+        return false;
+
+    auto document = p->current_view->document();
+
+    auto filename = document->fileName();
+    if ( filename.isEmpty() )
+        return false;
+
+    auto format = document->formatSettings().preferred();
+    if ( !format )
+    {
+        format = ::document::formats().formatFromFileName(filename, ::document::Formats::Action::Open);
+    }
+
+
+    if ( !format || !format->canOpen() )
+    {
+        Message(Message::AllOutput|Message::Error,
+            tr("Error opening file %1: %2")
+                .arg(filename).arg(tr("Format not supported")));
+        return false;
+    }
+
+    auto new_doc = format->open(filename);
+    if ( !new_doc )
+    {
+        Message(Message::AllOutput|Message::Error,
+            tr("Error opening file %1: %2")
+                .arg(filename).arg(format->errorString()));
+        return false;
+    }
+
+    ::document::visitor::Move move(document, tr("Reload from file"));
+    new_doc->apply(move);
+    delete new_doc;
+    document->undoStack().setClean();
+
+    return true;
 }
