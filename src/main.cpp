@@ -27,14 +27,11 @@
 #include "info.hpp"
 #include "settings.hpp"
 #include "data.hpp"
-#include "tool/registry.hpp"
+#include "message.hpp"
+
 #include "plugin/plugin.hpp"
 #include "plugin/library_plugin.hpp"
 #include "plugin/plugin_api.hpp"
-#include "document/io_bitmap.hpp"
-#include "document/io_xml.hpp"
-#include "message.hpp"
-
 void initPlugins()
 {
     // Register factories (plugin types)
@@ -70,10 +67,20 @@ void initPlugins()
     plugin::PluginRegistry::instance().load();
 }
 
+#include "document/io_bitmap.hpp"
+#include "document/io_xml.hpp"
 void initFormats()
 {
     document::formats().addFormat(new document::FormatXmlMela);
     document::formats().addFormat(new document::FormatBitmap);
+}
+
+#include "tool/registry.hpp"
+#include "tool/eraser.hpp"
+void initTools()
+{
+    tool::Registry::instance().register_tool<tool::Brush>();
+    tool::Registry::instance().register_tool<tool::Eraser>();
 }
 
 int main(int argc, char** argv)
@@ -93,9 +100,11 @@ int main(int argc, char** argv)
         QIcon::setThemeName("pixel-cayman");*/
 
         initFormats();
+        initTools();
         initPlugins();
 
         MainWindow window;
+        /// \todo Dynamic registration/unregistration facilities
         for ( const auto& tool : ::tool::Registry::instance().tools() )
             window.addTool(tool.get());
         window.show();

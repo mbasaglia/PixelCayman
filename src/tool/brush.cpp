@@ -32,9 +32,6 @@
 
 namespace tool {
 
-static Registry::StaticRegistrant<Brush> register_brush;
-static Registry::StaticRegistrant<Eraser> register_eraser;
-
 Brush::Widget* Brush::options_widget = nullptr;
 int Brush::options_widget_counter = 0;
 

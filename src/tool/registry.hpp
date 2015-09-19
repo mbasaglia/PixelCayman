@@ -33,19 +33,6 @@ namespace tool {
 class Registry
 {
 public:
-    /**
-     * \brief Simple class to register a tool from a translation unit
-     */
-    template<class T>
-    struct StaticRegistrant
-    {
-        template<class... Args>
-            StaticRegistrant(Args&&... arg)
-            {
-                instance().register_tool<T>(std::forward<Args>(arg)...);
-            }
-    };
-
     static Registry& instance()
     {
         static Registry singleton;
