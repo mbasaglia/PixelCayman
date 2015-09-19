@@ -21,8 +21,8 @@
 #ifndef PIXEL_CAYMAN_SETTINGS_HPP
 #define PIXEL_CAYMAN_SETTINGS_HPP
 
-#include <QSettings>
 #include <type_traits>
+#include <QSettings>
 
 int main(int argc, char** argv);
 
@@ -34,8 +34,9 @@ namespace settings {
  * \note It can only be explicitly instanciated in main() to give it the same
  * scope as the QApplication object
  */
-class Settings
+class Settings : public QObject
 {
+    Q_OBJECT
 public:
     static Settings& instance()
     {
@@ -73,6 +74,21 @@ public:
     {
         return settings_;
     }
+
+    /**
+     * \brief Removes all settings and triggers a reload
+     */
+    void clear()
+    {
+        settings_.clear();
+        emit cleared();
+    }
+
+signals:
+    /**
+     * \brief Emitted on clear()
+     */
+    void cleared();
 
 private:
     Settings()

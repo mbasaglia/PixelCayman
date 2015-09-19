@@ -78,6 +78,14 @@ public:
         {
             return settings::get(plugin::settingsKey(this, key), std::forward<T>(default_value));
         }
+
+protected:
+    /**
+     * \brief Overload if the plugin needs to react on settings being cleared
+     */
+    virtual void onSettingsCleared()
+    {
+    }
 };
 
 #define MACRO_TO_STRING_IMPL(x) #x

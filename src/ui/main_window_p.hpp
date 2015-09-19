@@ -64,6 +64,7 @@ public:
     void initMenus();
     void initStatusBar();
     void translateStatusBar();
+    void clearSettings();
     void loadSettings();
     void saveSettings();
     QAction* recentFileAction(const QString& file_name);
@@ -162,6 +163,9 @@ public:
     LabeledSpinBox* zoomer;
 
     QStringList recent_files;
+
+    QByteArray state;
+    QByteArray geometry;
 
     /**
      * \brief UI layout version, used by saveState
@@ -350,6 +354,15 @@ void MainWindow::Private::translateStatusBar()
     zoomer->spinBox()->setSuffix(tr("%"));
 }
 
+void MainWindow::Private::clearSettings()
+{
+    recent_files.clear();
+    menu_open_recent->clear();
+    menu_open_recent->addAction(action_no_recent_files);
+    parent->restoreGeometry(geometry);
+    parent->restoreState(state, ui_version);
+}
+
 void MainWindow::Private::loadSettings()
 {
     palette_model.addSearchPath("/usr/share/gimp/2.0/palettes/");
@@ -369,6 +382,8 @@ void MainWindow::Private::loadSettings()
     /// the window is open
     SETTINGS_GROUP("ui/mainwindow")
     {
+        geometry = parent->saveGeometry();
+        state = parent->saveState(ui_version);
         parent->restoreGeometry(settings::get<QByteArray>("geometry"));
         parent->restoreState(settings::get<QByteArray>("state"), ui_version);
     }

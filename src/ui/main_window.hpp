@@ -111,6 +111,9 @@ protected:
      */
     bool closeTabPrompt(int tab);
 
+private slots:
+    void clearSettings();
+
 private:
     class Private;
     Private* p;

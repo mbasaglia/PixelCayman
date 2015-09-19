@@ -411,3 +411,8 @@ bool MainWindow::documentReload()
 
     return true;
 }
+
+void MainWindow::clearSettings()
+{
+    p->clearSettings();
+}
