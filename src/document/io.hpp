@@ -113,7 +113,12 @@ public:
     Document* open(QIODevice* device)
     {
         clearError();
-        return onOpen(device);
+        if ( auto doc = onOpen(device) )
+        {
+            doc->formatSettings().setPreferred(this);
+            return doc;
+        }
+        return nullptr;
     }
 
     /**
