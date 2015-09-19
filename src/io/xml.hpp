@@ -142,8 +142,7 @@ private:
 
 
 /**
- * \brief Writes a .mela file
- * \todo Read files
+ * \brief Reads/writes .mela files
  */
 class FormatXmlMela : public AbstractFormat
 {
