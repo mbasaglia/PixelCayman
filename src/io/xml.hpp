@@ -27,40 +27,36 @@
 #include <QMimeType>
 #include <QDomDocument>
 
-#include "io.hpp"
-#include "builder.hpp"
+#include "formats.hpp"
+#include "document/builder.hpp"
 
-namespace document {
-
-namespace visitor {
+namespace io {
 
 /**
  * \brief Visitor that recursively writes XML on a IODevice
  */
-class SaverXml : public Visitor
+class SaverXml : public document::Visitor
 {
 public:
     explicit SaverXml(QIODevice* output);
     ~SaverXml();
 
-    bool enter(Document& document) override;
-    void leave(Document& document) override;
-    bool enter(Layer& layer) override;
-    void leave(Layer& layer) override;
-    void visit(Image& image) override;
-    bool enter(Animation& animation) override;
-    void leave(Animation& animation) override;
-    void visit(Frame& frame) override;
+    bool enter(document::Document& document) override;
+    void leave(document::Document& document) override;
+    bool enter(document::Layer& layer) override;
+    void leave(document::Layer& layer) override;
+    void visit(document::Image& image) override;
+    bool enter(document::Animation& animation) override;
+    void leave(document::Animation& animation) override;
+    void visit(document::Frame& frame) override;
 
 private:
-    void writeMetadata(const Metadata& data);
-    void writeId(const DocumentElement& element, const QString& attr = "id");
+    void writeMetadata(const document::Metadata& data);
+    void writeId(const document::DocumentElement& element, const QString& attr = "id");
     QXmlStreamWriter writer;
 
     QMimeType image_format;
 };
-
-} // namespace visitor
 
 class LoaderXml
 {
@@ -89,7 +85,7 @@ public:
         delete builder.currentDocument();
     }
 
-    Document* document()
+    document::Document* document()
     {
         if ( !document_ )
             root();
@@ -139,8 +135,8 @@ private:
     void id(const QDomElement& node);
 
     QDomDocument xml;
-    Builder builder;
-    Document* document_ = nullptr;
+    document::Builder builder;
+    document::Document* document_ = nullptr;
     QString file_name;
 };
 
@@ -158,18 +154,18 @@ public:
     bool canOpen() const override { return true; }
 
 protected:
-    bool onSave(Document* input, QIODevice* device) override
+    bool onSave(document::Document* input, QIODevice* device) override
     {
-        visitor::SaverXml xml(device);
+        SaverXml xml(device);
         input->apply(xml);
         return true;
     }
 
-    Document* onOpen(QIODevice* device) override
+    document::Document* onOpen(QIODevice* device) override
     {
         return LoaderXml(device).document();
     }
 };
 
-} // namespace document
+} // namespace io
 #endif // PIXEL_CAYMAN_DOCUMENT_IO_XML_HPP

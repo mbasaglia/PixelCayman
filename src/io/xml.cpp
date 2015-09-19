@@ -19,7 +19,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-#include "io_xml.hpp"
+#include "xml.hpp"
 
 #include <QMimeDatabase>
 #include <QImageWriter>
@@ -38,8 +38,7 @@ static QMimeType mimeType(const QString &name, const QString& fallback)
     return type;
 }
 
-namespace document {
-namespace visitor {
+namespace io {
 
 SaverXml::SaverXml(QIODevice* output)
     : writer(output)
@@ -53,7 +52,7 @@ SaverXml::~SaverXml()
     writer.writeEndDocument();
 }
 
-bool SaverXml::enter(Document& document)
+bool SaverXml::enter(document::Document& document)
 {
     QString format = formats().format("mela")->setting<QString>("image_format", &document);
     image_format = mimeType(format, "image/png");
@@ -80,12 +79,12 @@ bool SaverXml::enter(Document& document)
     return true;
 }
 
-void SaverXml::leave(Document& document)
+void SaverXml::leave(document::Document& document)
 {
     writer.writeEndElement();
 }
 
-bool SaverXml::enter(Layer& layer)
+bool SaverXml::enter(document::Layer& layer)
 {
     writer.writeStartElement("layer");
     writeId(layer);
@@ -98,12 +97,12 @@ bool SaverXml::enter(Layer& layer)
     return true;
 }
 
-void SaverXml::leave(Layer& layer)
+void SaverXml::leave(document::Layer& layer)
 {
     writer.writeEndElement();
 }
 
-void SaverXml::visit(Image& image)
+void SaverXml::visit(document::Image& image)
 {
     writer.writeStartElement("image");
     writeId(image);
@@ -132,7 +131,7 @@ void SaverXml::visit(Image& image)
     writer.writeEndElement();
 }
 
-bool SaverXml::enter(Animation& animation)
+bool SaverXml::enter(document::Animation& animation)
 {
     writer.writeStartElement("animation");
     writeId(animation);
@@ -142,12 +141,12 @@ bool SaverXml::enter(Animation& animation)
     return true;
 }
 
-void SaverXml::leave(Animation& animation)
+void SaverXml::leave(document::Animation& animation)
 {
     writer.writeEndElement();
 }
 
-void SaverXml::visit(Frame& frame)
+void SaverXml::visit(document::Frame& frame)
 {
     writer.writeStartElement("frame");
     writeId(frame);
@@ -155,7 +154,7 @@ void SaverXml::visit(Frame& frame)
     writer.writeEndElement();
 }
 
-void SaverXml::writeMetadata(const Metadata& data)
+void SaverXml::writeMetadata(const document::Metadata& data)
 {
     if ( data.empty() )
         return;
@@ -172,13 +171,11 @@ void SaverXml::writeMetadata(const Metadata& data)
     writer.writeEndElement();
 }
 
-void SaverXml::writeId(const DocumentElement& element, const QString& attr)
+void SaverXml::writeId(const document::DocumentElement& element, const QString& attr)
 {
     if ( !element.objectName().isEmpty() && !attr.isEmpty() )
         writer.writeAttribute(attr, element.objectName());
 }
-
-} // namespace visitor
 
 void LoaderXml::root()
 {
@@ -222,7 +219,7 @@ void LoaderXml::layers(const QDomElement& node)
 
 void LoaderXml::layer(const QDomElement& node)
 {
-    Layer* layer = builder.beginLayer();
+    document::Layer* layer = builder.beginLayer();
     id(node);
     layer->setName(node.attribute("name", QObject::tr("Layer")));
     layer->setOpacity(node.attribute("opacity", "1").toDouble());

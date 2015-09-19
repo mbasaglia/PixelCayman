@@ -23,14 +23,14 @@
 
 #include <QImageWriter>
 #include <QImageReader>
-#include "document/io_bitmap.hpp"
+#include "io/bitmap.hpp"
 
 namespace bitmapio {
 
 /**
  * \brief Base class for formats that only specify a single bitmap format
  */
-class SingleBitmapFormat : public document::FormatBitmap
+class SingleBitmapFormat : public io::FormatBitmap
 {
 public:
     QString id() const = 0;

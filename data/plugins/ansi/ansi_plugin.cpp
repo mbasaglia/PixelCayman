@@ -22,13 +22,13 @@
 #include <QTextStream>
 
 #include "plugin.hpp"
-#include "document/io_bitmap.hpp"
+#include "io/bitmap.hpp"
 #include "ansi.hpp"
 #include "color_parser.hpp"
 /**
  * \brief Handles ANSI-colored text files
  */
-class FormatAnsi : public document::FormatBitmap
+class FormatAnsi : public io::FormatBitmap
 {
 public:
     QString id() const override
@@ -80,13 +80,13 @@ protected:
 
     bool onLoad() override
     {
-        document::formats().addFormat(new FormatAnsi);
+        io::formats().addFormat(new FormatAnsi);
         return true;
     }
 
     void onUnload() override
     {
-        document::formats().deleteFormat(document::formats().format("ansi"));
+        io::formats().deleteFormat(io::formats().format("ansi"));
     }
 
     QString onName() override

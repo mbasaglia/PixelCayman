@@ -21,9 +21,9 @@
 #ifndef PIXEL_CAYMAN_IO_BITMAP_HPP
 #define PIXEL_CAYMAN_IO_BITMAP_HPP
 
-#include "io.hpp"
+#include "formats.hpp"
 
-namespace document {
+namespace io {
 
 /**
  * \brief Reads and writes bitmap images with the Qt image reader/writer
@@ -43,22 +43,22 @@ public:
 protected:
 
     bool onSave(document::Document* input, QIODevice* device) final;
-    Document* onOpen(QIODevice* device) final;
+    document::Document* onOpen(QIODevice* device) final;
 
     /**
      * \brief Format used by for the QImage generated from the document
      */
-    virtual QImage::Format imageFormat(const Document* input, const QIODevice* device) const;
+    virtual QImage::Format imageFormat(const document::Document* input, const QIODevice* device) const;
 
     /**
      * \brief The color used to fill the QImage generated from the document
      */
-    virtual QColor fillColor(const Document* input, const QIODevice* device) const;
+    virtual QColor fillColor(const document::Document* input, const QIODevice* device) const;
 
     /**
      * \brief Saves the image to the device
      */
-    virtual bool saveImage(const QImage& img, QIODevice* device, const Document* document);
+    virtual bool saveImage(const QImage& img, QIODevice* device, const document::Document* document);
 
     /**
      * \brief Opens an image from the device
@@ -68,7 +68,7 @@ protected:
     /**
      * \brief Called after a document has been created
      */
-    virtual void imageOpened(Document* document);
+    virtual void imageOpened(::document::Document* document);
 
     /**
      * \brief Image writer/reader format
@@ -76,5 +76,5 @@ protected:
     virtual QByteArray physicalFormat() const;
 };
 
-} // namespace document
+} // namespace io
 #endif // PIXEL_CAYMAN_IO_BITMAP_HPP

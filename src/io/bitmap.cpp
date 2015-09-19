@@ -20,14 +20,14 @@
  *
  */
 
-#include "io_bitmap.hpp"
+#include "bitmap.hpp"
 
 #include <QImageReader>
 #include <QImageWriter>
 
-namespace document {
+namespace io {
 
-bool FormatBitmap::onSave(Document* input, QIODevice* device)
+bool FormatBitmap::onSave(document::Document* input, QIODevice* device)
 {
     QImage image(input->imageSize(), imageFormat(input, device));
     image.fill(fillColor(input, device));
@@ -39,17 +39,17 @@ bool FormatBitmap::onSave(Document* input, QIODevice* device)
     return saveImage(image, device, input);
 }
 
-Document* FormatBitmap::onOpen(QIODevice* device)
+document::Document* FormatBitmap::onOpen(QIODevice* device)
 {
     QImage image = openImage(device);
     if ( image.isNull() )
         return nullptr;
-    auto doc = new Document(image, fileName(device));
+    auto doc = new document::Document(image, fileName(device));
     imageOpened(doc);
     return doc;
 }
 
-void FormatBitmap::imageOpened(Document* document)
+void FormatBitmap::imageOpened(document::Document* document)
 {
 
 }
@@ -92,7 +92,7 @@ QColor FormatBitmap::fillColor(const document::Document* input, const QIODevice*
     return Qt::transparent;
 }
 
-bool FormatBitmap::saveImage(const QImage& image, QIODevice* device, const Document* document)
+bool FormatBitmap::saveImage(const QImage& image, QIODevice* device, const document::Document* document)
 {
     QImageWriter writer(device, physicalFormat());
 
@@ -111,4 +111,4 @@ QImage FormatBitmap::openImage(QIODevice* device)
     return img;
 }
 
-} // namespace document
+} // namespace io

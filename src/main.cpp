@@ -67,12 +67,12 @@ void initPlugins()
     plugin::PluginRegistry::instance().load();
 }
 
-#include "document/io_bitmap.hpp"
-#include "document/io_xml.hpp"
+#include "io/bitmap.hpp"
+#include "io/xml.hpp"
 void initFormats()
 {
-    document::formats().addFormat(new document::FormatXmlMela);
-    document::formats().addFormat(new document::FormatBitmap);
+    io::formats().addFormat(new io::FormatXmlMela);
+    io::formats().addFormat(new io::FormatBitmap);
 }
 
 #include "tool/registry.hpp"

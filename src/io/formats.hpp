@@ -26,7 +26,7 @@
 #include "document/visitor.hpp"
 #include "misc/misc.hpp"
 
-namespace document {
+namespace io {
 
 /**
  * \brief A document file format
@@ -83,7 +83,7 @@ public:
      * \brief Save the document contents to the output device
      * \return \b true on success
      */
-    bool save(Document* input, QIODevice* device)
+    bool save(document::Document* input, QIODevice* device)
     {
         clearError();
         return onSave(input, device);
@@ -93,13 +93,13 @@ public:
      * \brief Save the document to a file with the given name
      * \return \b true on success
      */
-    bool save(Document* document, const QString& filename);
+    bool save(document::Document* document, const QString& filename);
 
     /**
      * \brief Save the document to the file stored in its filename
      * \return \b true on success
      */
-    bool save(Document* document);
+    bool save(document::Document* document);
 
     /**
      * \brief Whether the file format supports opening documents
@@ -110,7 +110,7 @@ public:
      * \brief Load the device contents in a new document
      * \return A new Document object, \b nullptr on error
      */
-    Document* open(QIODevice* device)
+    document::Document* open(QIODevice* device)
     {
         clearError();
         if ( auto doc = onOpen(device) )
@@ -125,7 +125,7 @@ public:
      * \brief Load the file contents in a new document
      * \return A new Document object, \b nullptr on error
      */
-    Document* open(const QString& filename);
+    document::Document* open(const QString& filename);
 
     /**
      * \brief Name filter string suitable for file dialogs
@@ -142,7 +142,7 @@ public:
      * \brief Get a single option from the document or the global settings
      */
     template<class T>
-        T setting(const QString& key, Document* document = nullptr, T&& default_value = T()) const
+        T setting(const QString& key, document::Document* document = nullptr, T&& default_value = T()) const
         {
             QVariant variant;
             if ( document )
@@ -197,13 +197,13 @@ protected:
      * \brief Save the document contents to the output device
      * \return \b true on success
      */
-    virtual bool onSave(Document* input, QIODevice* device)  { return false; }
+    virtual bool onSave(document::Document* input, QIODevice* device)  { return false; }
 
     /**
      * \brief Load the file contents in a new document
      * \return A new Document object, \b nullptr on error
      */
-    virtual Document* onOpen(QIODevice* device) { return nullptr; }
+    virtual document::Document* onOpen(QIODevice* device) { return nullptr; }
 
 private:
     QString error_string;
@@ -266,7 +266,7 @@ public:
      * \brief Save \p document with the format with the matching id
      */
     template<class... Args>
-        bool save(const QString& format_id, Document* document, Args&&... args)
+        bool save(const QString& format_id, document::Document* document, Args&&... args)
     {
         if ( auto fmt = format(format_id) )
             return fmt->save(document, std::forward<Args>(args)...);
@@ -277,7 +277,7 @@ public:
      * \brief Open a document with the format with the matching id
      */
     template<class... Args>
-        Document* open(const QString& format_id, Args&&... args)
+        document::Document* open(const QString& format_id, Args&&... args)
     {
         if ( auto fmt = format(format_id) )
             return fmt->open(std::forward<Args>(args)...);
@@ -309,5 +309,5 @@ inline Formats& formats()
     return Formats::instance();
 }
 
-} // namespace document
+} // namespace io
 #endif // PIXEl_CAYMAN_DOCUMENT_IO_HPP

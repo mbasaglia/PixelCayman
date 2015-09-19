@@ -52,7 +52,7 @@ protected:
     void onUnload() override
     {
         for ( auto fmt : formats )
-            document::formats().deleteFormat(fmt);
+            io::formats().deleteFormat(fmt);
         formats.clear();
     }
 
@@ -65,7 +65,7 @@ private:
     void addFormat(SingleBitmapFormat* fmt)
     {
         formats.push_back(fmt);
-        document::formats().addFormat(fmt);
+        io::formats().addFormat(fmt);
     }
 
     QList<SingleBitmapFormat*> formats;

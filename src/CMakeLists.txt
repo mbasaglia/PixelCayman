@@ -30,12 +30,6 @@ document/image.cpp
 document/layer.hpp
 document/layer.cpp
 document/visitor.hpp
-document/io.hpp
-document/io.cpp
-document/io_bitmap.hpp
-document/io_bitmap.cpp
-document/io_xml.hpp
-document/io_xml.cpp
 document/layer_container.hpp
 document/layer_container.cpp
 document/format_settings.hpp
@@ -44,6 +38,12 @@ document/command/change_image.cpp
 document/command/move_child_layers.hpp
 document/command/move_child_layers.cpp
 document/command/set_property.hpp
+io/formats.hpp
+io/formats.cpp
+io/bitmap.hpp
+io/bitmap.cpp
+io/xml.hpp
+io/xml.cpp
 style/dockwidget_style_icon.hpp
 style/itemview_style_rowdrop.hpp
 tool/tool.hpp

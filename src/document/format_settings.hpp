@@ -25,9 +25,12 @@
 #include <QString>
 #include <QVariant>
 
+namespace io {
+class AbstractFormat;
+} // namespace io
+
 namespace document {
 
-class AbstractFormat;
 
 /**
  * \brief Document format settings
@@ -38,7 +41,7 @@ public:
     /**
      * \brief Preferred format
      */
-    AbstractFormat* preferred() const
+    io::AbstractFormat* preferred() const
     {
         return preferred_;
     }
@@ -46,7 +49,7 @@ public:
     /**
      * \brief Change the preferred format
      */
-    void setPreferred(AbstractFormat* format)
+    void setPreferred(io::AbstractFormat* format)
     {
         preferred_ = format;
     }
@@ -54,7 +57,7 @@ public:
     /**
      * \brief All settings
      */
-    const QMap<const AbstractFormat*, QMap<QString, QVariant>>& settings() const
+    const QMap<const io::AbstractFormat*, QMap<QString, QVariant>>& settings() const
     {
         return settings_;
     }
@@ -62,7 +65,7 @@ public:
     /**
      * \brief Settings for a given format
      */
-    QMap<QString, QVariant>& settings(AbstractFormat* format)
+    QMap<QString, QVariant>& settings(io::AbstractFormat* format)
     {
         return settings_[format];
     }
@@ -70,7 +73,7 @@ public:
     /**
      * \brief Settings for a given format
      */
-    QMap<QString, QVariant> settings(AbstractFormat* format) const
+    QMap<QString, QVariant> settings(io::AbstractFormat* format) const
     {
         return settings_[format];
     }
@@ -78,7 +81,7 @@ public:
     /**
      * \brief Get a single option
      */
-    QVariant get(const AbstractFormat* format, const QString& key) const
+    QVariant get(const io::AbstractFormat* format, const QString& key) const
     {
         return settings_[format][key];
     }
@@ -87,7 +90,7 @@ public:
      * \brief Get a single option with an explicit type
      */
     template<class T>
-        T get(const AbstractFormat* format, const QString& key, const T& default_value = T()) const
+        T get(const io::AbstractFormat* format, const QString& key, const T& default_value = T()) const
         {
             QVariant variant = settings_[format][key];
             if ( !variant.canConvert<typename std::remove_reference<T>::type>() )
@@ -98,7 +101,7 @@ public:
     /**
      * \brief Set a single option
      */
-    void put(const AbstractFormat* format, const QString& key, const QVariant& value)
+    void put(const io::AbstractFormat* format, const QString& key, const QVariant& value)
     {
         settings_[format][key] = value;
     }
@@ -107,14 +110,14 @@ public:
      * \brief Set a single option with an explicit type
      */
     template<class T>
-        void put(const AbstractFormat* format, const QString& key, T&& value)
+        void put(const io::AbstractFormat* format, const QString& key, T&& value)
         {
             settings_[format][key] = QVariant::fromValue(std::forward<T>(value));
         }
 
 private:
-    AbstractFormat* preferred_ = nullptr;
-    QMap<const AbstractFormat*, QMap<QString, QVariant>> settings_;
+    io::AbstractFormat* preferred_ = nullptr;
+    QMap<const io::AbstractFormat*, QMap<QString, QVariant>> settings_;
 };
 
 } // namespace document

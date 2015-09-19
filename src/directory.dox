@@ -18,16 +18,28 @@ closely with it.
 Everything must be in the \c document namespace.
 */
 /**
-\dir src/misc
-\brief Miscellaneous utilities that don't belong anywhere else.
+\dir src/io
+\brief Classes to load or save documents
 
-Everything must be in the \c misc namespace.
+Everything must be in the \c io namespace.
 */
 /**
 \dir src/item
 \brief Qt Item Model/View implementations.
 
 All application-specific \c QAbstractItemModel specializations belong here.
+*/
+/**
+\dir src/misc
+\brief Miscellaneous utilities that don't belong anywhere else.
+
+Everything must be in the \c misc namespace.
+*/
+/**
+\dir src/plugin
+\brief Componenents of the plugin API
+
+Everything must be in the \c plugin namespace.
 */
 /**
 \dir src/style
@@ -54,12 +66,6 @@ All ui files and implementation of classes that use them shall go here.
 \brief View classes for the document model
 
 Everything must be in the \c view namespace.
-*/
-/**
-\dir src/plugin
-\brief Componenents of the plugin API
-
-Everything must be in the \c plugin namespace.
 */
 /**
 \dir data/plugins

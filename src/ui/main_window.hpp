@@ -23,7 +23,7 @@
 
 #include <QMainWindow>
 #include "tool/tool.hpp"
-#include "document/io.hpp"
+#include "io/formats.hpp"
 
 class MainWindow : public QMainWindow
 {
@@ -96,7 +96,7 @@ protected:
      * \return The index of the newly opened tab, -1 on failure
      */
     int openTab(const QString& file_name, bool set_current,
-                document::AbstractFormat* fomat = nullptr);
+                io::AbstractFormat* fomat = nullptr);
 
     /**
      * \brief Closes a tab

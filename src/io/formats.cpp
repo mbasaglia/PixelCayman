@@ -20,10 +20,10 @@
  *
  */
 
-#include "io.hpp"
+#include "formats.hpp"
 #include <QFileInfo>
 
-namespace document {
+namespace io {
 
 bool AbstractFormat::save(document::Document* document, const QString& filename)
 {
@@ -43,7 +43,7 @@ bool AbstractFormat::save(document::Document* document)
     return save(document, document->fileName());
 }
 
-Document* AbstractFormat::open(const QString& filename)
+document::Document* AbstractFormat::open(const QString& filename)
 {
     if ( filename.isEmpty() )
         return nullptr;
@@ -135,4 +135,4 @@ AbstractFormat* Formats::formatFromNameFilter(const QString& filter, Formats::Ac
     return nullptr;
 }
 
-} // namespace document
+} // namespace io

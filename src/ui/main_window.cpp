@@ -110,8 +110,8 @@ bool MainWindow::documentOpen()
             default_dir = QFileInfo(p->current_view->document()->fileName()).dir().path();
     }
 
-    auto action = document::Formats::Action::Open;
-    auto filters = document::formats().nameFilters(action);
+    auto action = io::Formats::Action::Open;
+    auto filters = io::formats().nameFilters(action);
     QFileDialog open_dialog(this, tr("Open Image"), default_dir);
     open_dialog.setFileMode(QFileDialog::ExistingFiles);
     open_dialog.setAcceptMode(QFileDialog::AcceptOpen);
@@ -122,8 +122,8 @@ bool MainWindow::documentOpen()
     if ( !open_dialog.exec() )
         return false;
 
-    document::AbstractFormat* format
-        = document::formats().formatFromNameFilter(open_dialog.selectedNameFilter(), action);
+    io::AbstractFormat* format
+        = io::formats().formatFromNameFilter(open_dialog.selectedNameFilter(), action);
 
     int tab = -1;
     for ( const QString& file_name : open_dialog.selectedFiles() )
@@ -166,11 +166,11 @@ bool MainWindow::save(int tab, bool prompt)
     if ( doc->fileName().isEmpty() )
         prompt = true;
 
-    auto action = document::Formats::Action::Save;
+    auto action = io::Formats::Action::Save;
 
-    document::AbstractFormat* format = doc->formatSettings().preferred();
+    io::AbstractFormat* format = doc->formatSettings().preferred();
     if ( !format )
-        format = document::formats().formatFromFileName(doc->fileName(), action);
+        format = io::formats().formatFromFileName(doc->fileName(), action);
 
     if ( prompt || !format )
     {
@@ -181,9 +181,9 @@ bool MainWindow::save(int tab, bool prompt)
         QFileDialog save_dialog(this, tr("Save Image"), doc->fileName());
         save_dialog.setFileMode(QFileDialog::AnyFile);
         save_dialog.setAcceptMode(QFileDialog::AcceptSave);
-        save_dialog.setNameFilters(document::formats().nameFilters(action));
+        save_dialog.setNameFilters(io::formats().nameFilters(action));
         if ( !format )
-            format = document::formats().format("mela");
+            format = io::formats().format("mela");
         if ( format )
             save_dialog.selectNameFilter(format->nameFilter(action));
 
@@ -196,10 +196,10 @@ bool MainWindow::save(int tab, bool prompt)
 
         QString selected_file = save_dialog.selectedFiles().front();
 
-        format = document::formats().formatFromNameFilter(save_dialog.selectedNameFilter(), action);
+        format = io::formats().formatFromNameFilter(save_dialog.selectedNameFilter(), action);
         if ( !format )
         {
-            format = document::formats().formatFromFileName(selected_file, action);
+            format = io::formats().formatFromFileName(selected_file, action);
             if ( !format )
             {
                 Message(Message::Dialog|Message::Error) << tr("Unknown format");
@@ -209,7 +209,7 @@ bool MainWindow::save(int tab, bool prompt)
         else if ( QFileInfo(selected_file).suffix().isEmpty() )
         {
             selected_file.append("."+
-                format->extensions(document::AbstractFormat::Action::Save).front());
+                format->extensions(io::AbstractFormat::Action::Save).front());
         }
 
         doc->formatSettings().setPreferred(format);
@@ -232,11 +232,11 @@ bool MainWindow::save(int tab, bool prompt)
 }
 
 int MainWindow::openTab(const QString& file_name, bool set_current,
-                        document::AbstractFormat* format)
+                        io::AbstractFormat* format)
 {
     if ( !format )
     {
-        format = document::formats().formatFromFileName(file_name,document::Formats::Action::Open);
+        format = io::formats().formatFromFileName(file_name,io::Formats::Action::Open);
         if ( !format )
         {
             Message(Message::Dialog|Message::Error)
@@ -383,7 +383,7 @@ bool MainWindow::documentReload()
     auto format = document->formatSettings().preferred();
     if ( !format )
     {
-        format = ::document::formats().formatFromFileName(filename, ::document::Formats::Action::Open);
+        format = io::formats().formatFromFileName(filename, io::Formats::Action::Open);
     }
 
 
