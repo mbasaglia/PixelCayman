@@ -59,14 +59,6 @@ const QImage& Image::image() const
     return image_;
 }
 
-void Image::paint(QPainter& painter, qreal opacity) const
-{
-    qreal old_op = painter.opacity();
-    painter.setOpacity(opacity);
-    painter.drawImage(0, 0, image_);
-    painter.setOpacity(old_op);
-}
-
 void Image::paint(QPainter& painter) const
 {
     painter.drawImage(0, 0, image_);

@@ -23,6 +23,8 @@
 
 #include "document.hpp"
 
+#include <QStack>
+
 namespace document {
 
 /**
@@ -134,39 +136,56 @@ class Paint : public FrameRenderer
 {
 public:
     Paint(Frame* frame, QPainter* painter, bool full_alpha = false)
-        : FrameRenderer(frame), painter(painter), full_alpha(full_alpha)
+        : FrameRenderer(frame),
+          painter(painter),
+          full_alpha(full_alpha)
     {}
 
     bool enter(Document& document) override
     {
         blend = painter->compositionMode();
+        alpha.push(painter->opacity());
         return true;
     }
 
     void leave(Document& document) override
     {
         painter->setCompositionMode(blend);
+        painter->setOpacity(alpha.pop());
     }
 
     bool enter(Layer& layer) override
     {
+        if ( !layer.visible() && !full_alpha )
+            return false;
+
+        if ( !full_alpha )
+        {
+            alpha.push(painter->opacity());
+            painter->setOpacity(painter->opacity()*layer.opacity());
+        }
+
         painter->setCompositionMode(layer.blendMode());
         return true;
+    }
+
+    void leave(Layer& layer) override
+    {
+        if ( !full_alpha )
+            painter->setOpacity(alpha.pop());
     }
 
 protected:
     void render(Image& image) override
     {
-        if ( full_alpha )
-            image.paint(*painter);
-        else if ( image.layer()->visible() )
-            image.paint(*painter, image.layer()->opacity());
+        image.paint(*painter);
     }
 
 private:
     QPainter* painter;
     bool full_alpha;
     QPainter::CompositionMode blend;
+    QStack<qreal> alpha;
 };
 
 /**

@@ -64,11 +64,6 @@ public:
     void endPainting();
 
     /**
-    * \brief Paints the image with the given opacity [0,1]
-    */
-    void paint(QPainter& painter, qreal opacity) const;
-
-    /**
     * \brief Paints the image
     */
     void paint(QPainter& painter) const;
