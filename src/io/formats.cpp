@@ -114,15 +114,32 @@ AbstractFormat* Formats::formatFromFileName(const QString& file, Formats::Action
 QStringList Formats::nameFilters(Formats::Action action, bool all_files) const
 {
     QStringList filters;
+    QStringList extensions;
 
     for ( auto* format : formats_ )
+    {
         if ( format->supportsAction(action) )
+        {
             filters << format->nameFilter(action);
+            if ( all_files )
+            {
+                for ( const auto& ext : format->extensions(action) )
+                    if ( !extensions.contains(ext) )
+                        extensions.push_back(ext);
+            }
+        }
+    }
 
     filters.sort();
     
     if ( all_files )
+    {
+        QString namefilters;
+        for ( const auto& ext : extensions )
+            namefilters += " *."+ext;
+        filters << QObject::tr("All Supported Files (%1)").arg(namefilters);
         filters << QObject::tr("All Files (*)");
+    }
 
     return filters;
 }

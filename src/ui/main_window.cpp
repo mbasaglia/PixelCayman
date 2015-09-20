@@ -116,8 +116,7 @@ bool MainWindow::documentOpen()
     open_dialog.setFileMode(QFileDialog::ExistingFiles);
     open_dialog.setAcceptMode(QFileDialog::AcceptOpen);
     open_dialog.setNameFilters(filters);
-    /// \todo A filter that shows only the supported files
-    open_dialog.selectNameFilter(filters.back());
+    open_dialog.selectNameFilter(filters[filters.size()-2]);
 
     if ( !open_dialog.exec() )
         return false;
@@ -181,11 +180,13 @@ bool MainWindow::save(int tab, bool prompt)
         QFileDialog save_dialog(this, tr("Save Image"), doc->fileName());
         save_dialog.setFileMode(QFileDialog::AnyFile);
         save_dialog.setAcceptMode(QFileDialog::AcceptSave);
-        save_dialog.setNameFilters(io::formats().nameFilters(action));
-        if ( !format )
-            format = io::formats().format("mela");
+        auto filters = io::formats().nameFilters(action);
+        save_dialog.setNameFilters(filters);
         if ( format )
             save_dialog.selectNameFilter(format->nameFilter(action));
+        else
+            save_dialog.selectNameFilter(filters[filters.size()-2]);
+
 
         if ( !save_dialog.exec() )
             return false;
