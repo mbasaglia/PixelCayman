@@ -220,7 +220,8 @@ bool MainWindow::save(int tab, bool prompt)
     if ( format->save(doc) )
     {
         doc->undoStack().setClean();
-        p->pushRecentFile(doc->fileName());
+        if ( format->canOpen() )
+            p->pushRecentFile(doc->fileName());
         p->updateTitle();
     }
     else
