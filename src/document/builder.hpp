@@ -111,7 +111,6 @@ public:
      */
     Layer* beginLayer()
     {
-        endLayer();
         layer = new Layer(document, QString(), layer);
         if ( !layer->parentLayer() )
             document->insertLayer(layer);
