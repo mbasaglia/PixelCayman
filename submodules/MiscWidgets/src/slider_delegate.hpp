@@ -86,7 +86,7 @@ public:
                 QRect rect = style->subElementRect(QStyle::SE_ProgressBarGroove,
                                                    &progress_option, option.widget);
 
-                qreal value = math::normalize(mouse_event->x(), rect.left(), rect.right());
+                qreal value = math::normalize<qreal>(mouse_event->x(), rect.left(), rect.right());
                 value = math::denormalize(value, min_, max_);
                 model->setData(index, qBound(min_, value, max_));
             }
