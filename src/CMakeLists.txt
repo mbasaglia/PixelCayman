@@ -61,6 +61,7 @@ ui/main_window_p.hpp
 ui/tool_paint_widget.hpp
 ui/tool_paint_widget.cpp
 ui/dialog_layer.hpp
+ui/menu.hpp
 view/graphics_item.hpp
 view/graphics_widget.hpp
 view/graphics_widget.cpp

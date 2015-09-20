@@ -46,6 +46,7 @@
 #include "message.hpp"
 #include "log_view.hpp"
 #include "labeled_spinbox.hpp"
+#include "menu.hpp"
 
 #include "ui_current_color.h"
 #include "ui_main_window.h"
@@ -322,6 +323,15 @@ void MainWindow::Private::initMenus()
     {
         menu_plugins->addAction(plugin->createAction(parent));
     }
+
+    // Dynamic menus
+    for ( auto* menu : Menu::instance().menus() )
+    {
+        menubar->insertMenu(menu_help->menuAction(), menu);
+    }
+    connect(&Menu::instance(), &Menu::addedMenu, [this](QMenu* menu){
+        menubar->insertMenu(menu_help->menuAction(), menu);
+    });
 
     // Help
     connect(action_about_qt, &QAction::triggered, &QApplication::aboutQt);
