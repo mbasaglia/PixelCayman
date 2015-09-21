@@ -52,13 +52,10 @@ bool ExternalTools::execute(const QString& id)
         return false;
 
     auto args = it->args;
-    /// \todo Allow for extra arguments to select the frame and
-    ///       other format-specific options
-    static QRegularExpression temparg(R"(\$\{temp\}\.(.+))");
     // Search arguments that need expansion
     for ( auto& arg : args )
     {
-        QRegularExpressionMatch match = temparg.match(arg);
+        QRegularExpressionMatch match = regex_temparg.match(arg);
         if ( match.hasMatch() )
         {
             if ( !plugin::api().currentDocument() )
@@ -78,6 +75,11 @@ bool ExternalTools::execute(const QString& id)
         }
     }
     return QProcess::startDetached(it->command, args);
+}
+
+bool ExternalTools::usesDocument(const ExternalTool& tool) const
+{
+    return tool.args.indexOf(regex_temparg) != -1;
 }
 
 } // namespace extools

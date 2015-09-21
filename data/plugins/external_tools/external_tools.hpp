@@ -43,9 +43,19 @@ struct ExternalTool
     QString     id;     ///< Unique ID
     QString     name;   ///< Name shown on the UI
     QString     command;///< Name of the command
-    QStringList args;   ///< Command arguments \todo tempfile
+    /**
+     * \brief Command arguments
+     *
+     * If an argument is in the form ${tempfile}.png
+     * it will create a temporary file for the current document and
+     * pass the name of that file instead of the argument
+     */
+    QStringList args;
 };
 
+/**
+ * \brief Class that manages external tools
+ */
 class ExternalTools : public QObject
 {
     Q_OBJECT
@@ -67,11 +77,27 @@ public:
         return tools_.values();
     }
 
+    /**
+     * \brief Register a tool
+     * \return \b false on failure (a tool with the same ID exists)
+     */
     bool addTool(const ExternalTool& tool);
 
+    /**
+     * \brief Remove a tool by id
+     */
     void removeTool(const QString& id);
 
+    /**
+     * \brief Execute the command from a tool
+     * \return \b true if the command has been started
+     */
     bool execute(const QString& id);
+
+    /**
+     * \brief Whether a tool needs to the current document to operate
+     */
+    bool usesDocument(const ExternalTool& tool) const;
 
 signals:
     void toolAdded(const ExternalTool& tool);
@@ -81,6 +107,9 @@ private:
     ExternalTools(){}
 
     QMap<QString, ExternalTool> tools_;
+    /// \todo Allow for extra arguments to select the frame and
+    ///       other format-specific options
+    QRegularExpression          regex_temparg{R"(\$\{temp\}\.(.+))"};
 };
 
 } // namespace extools
