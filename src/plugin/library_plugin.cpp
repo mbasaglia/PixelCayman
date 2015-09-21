@@ -39,6 +39,17 @@ Plugin* LibraryPluginFactory::create(const QString& fileName)
 {
     Library* lib = new Library(fileName);
     auto init = lib->resolve<Plugin*()>(init_function);
+
+    if ( lib->error() )
+    {
+        auto error = lib->errorString();
+        if ( !error.contains(fileName) )
+            error = tr("Error loading %1: %2").arg(fileName).arg(error);
+        emit registry().warning(error);
+        delete lib;
+        return nullptr;
+    }
+
     if ( !init )
     {
         delete lib;
@@ -47,10 +58,24 @@ Plugin* LibraryPluginFactory::create(const QString& fileName)
         return nullptr;
     }
 
-    auto plugin = init();
-    if ( plugin )
+    if ( auto plugin = init() )
+    {
         connect(plugin, &QObject::destroyed, lib, &QObject::deleteLater);
-    return plugin;
+        libraries[plugin] = lib;
+        connect(plugin, &QObject::destroyed, [plugin]{
+            libraries.remove(plugin);
+        });
+        return plugin;
+    }
+    else
+    {
+        delete lib;
+        emit registry().warning(tr("Could not create plugin from %2")
+            .arg(init_function).arg(fileName));
+        return nullptr;
+    }
 }
+
+QMap<const Plugin*, Library*> LibraryPluginFactory::libraries;
 
 } // namespace plugin

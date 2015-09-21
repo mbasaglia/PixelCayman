@@ -62,9 +62,13 @@ public:
 
     /**
      * \brief Set a path to be used to write data files
-     * \todo Directory for temporary files?
      */
     void setWriteDirectory(const QString& path);
+
+    /**
+     * \brief Directory for temporary files
+     */
+    QString tempDir();
 
 private:
     Data();

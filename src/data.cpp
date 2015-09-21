@@ -96,3 +96,11 @@ Data::Data()
     addDirectory(QCoreApplication::applicationDirPath()+"/../share/"+QCoreApplication::applicationName());
 }
 
+QString Data::tempDir()
+{
+    QString dir = QDir::tempPath()+"/"+QCoreApplication::applicationName()+"/";
+    if ( !QDir().exists(dir) )
+        QDir().mkdir(dir);
+    return dir;
+}
+

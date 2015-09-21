@@ -50,7 +50,7 @@ public:
 #endif
 
     static constexpr LoadHints DefaultHints =
-        LoadArchiveMemberHint | ResolveAllSymbolsHint | DeepBindHint;
+        LoadArchiveMemberHint | DeepBindHint;
 
 public:
 
@@ -101,8 +101,19 @@ public:
     bool canCreate(const QFileInfo& file) const override;
     Plugin* create(const QString& fileName) override;
 
+    static Library* pluginLibrary(const Plugin* plugin)
+    {
+        return libraries.value(plugin);
+    }
+
+    static Library* pluginLibrary(const QString& plugin_id)
+    {
+        return libraries.value(registry().plugin(plugin_id));
+    }
+
 private:
     QString init_function;
+    static QMap<const Plugin*, Library*> libraries;
 };
 
 } // namespace plugin

@@ -64,6 +64,12 @@ public:
          */
         int maximum_version = 0;
 
+        Dependency() = default;
+        
+        Dependency(const QString& id, int minimum_version = 0, int maximum_version = 0)
+            : id(id), minimum_version(minimum_version), maximum_version(maximum_version)
+        {}
+
         /**
          * \brief Whether a plugin matches this dependency
          */

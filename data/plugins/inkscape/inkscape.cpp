@@ -27,6 +27,8 @@
 
 #include "io/formats.hpp"
 #include "plugin.hpp"
+#include "external_tools/external_tools.hpp"
+#include "plugin/library_plugin.hpp"
 
 static QMimeType mime_type = QMimeDatabase().mimeTypeForName("image/png");
 /**
@@ -41,6 +43,7 @@ public:
         writer.setAutoFormatting(true);
         writer.writeStartDocument();
     }
+
     ~InkscapeSvgVisitor()
     {
         writer.writeEndDocument();
@@ -153,6 +156,11 @@ protected:
 class InkscapePlugin : public CaymanPlugin
 {
 protected:
+    QList<Dependency> onDependencies() override
+    {
+        return {{"external_tools"}};
+    }
+
     QString onId() override
     {
         return "inkscape";
@@ -160,12 +168,21 @@ protected:
 
     bool onLoad() override
     {
+        library = plugin::LibraryPluginFactory::pluginLibrary("external_tools");
+        if ( !library )
+            return false;
+        addTool = library->resolve<bool(const extools::ExternalTool&)>("addTool");
+        removeTool = library->resolve<void(const QString&)>("removeTool");
         io::formats().addFormat(new InkscapeSvg);
+        if ( addTool )
+            addTool( {"inkscape_plugin", QObject::tr("Inkscape"), "inkscape", {"${temp}.svg"}});
         return true;
     }
 
     void onUnload() override
     {
+        if ( removeTool )
+            removeTool("inkscape_plugin");
         io::formats().deleteFormat(format);
         format = nullptr;
     }
@@ -177,6 +194,9 @@ protected:
 
 private:
    InkscapeSvg* format = nullptr;
+   plugin::Library* library;
+   util::FunctionPointer<bool(const extools::ExternalTool&)> addTool;
+   util::FunctionPointer<void(const QString&)> removeTool;
 };
 
 INIT_PLUGIN(InkscapePlugin)

@@ -15,18 +15,6 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR})
-
-find_package(Qt5Widgets REQUIRED)
-set(CMAKE_AUTOMOC ON)
-set(CMAKE_INCLUDE_CURRENT_DIR ON)
-include_directories(${Qt5Widgets_INCLUDE_DIRS})
-include_directories("${CMAKE_CURRENT_SOURCE_DIR}/../../src")
-include_directories("${CMAKE_CURRENT_SOURCE_DIR}")
-include_directories("${CMAKE_CURRENT_SOURCE_DIR}/../../submodules/ColorWidgets/include")
-include_directories("${CMAKE_CURRENT_SOURCE_DIR}/../../submodules/MiscWidgets/src")
-
-add_subdirectory(ansi)
-add_subdirectory(bitmap_io)
-add_subdirectory(external_tools)
-add_subdirectory(inkscape)
+get_filename_component(PLUGIN_NAME ${CMAKE_CURRENT_SOURCE_DIR} NAME)
+set(SOURCES external_tools.hpp external_tools.cpp external_tools_plugin.hpp)
+add_library(${PLUGIN_NAME} MODULE ${SOURCES})

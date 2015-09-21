@@ -24,7 +24,11 @@
 #include "settings.hpp"
 #include "plugin.hpp"
 
+namespace document{ class Document; }
+
 namespace plugin {
+
+extern document::Document* current_document;
 
 /**
  * \brief Returns a string representing a settings key for the plugin

@@ -36,17 +36,17 @@
 #include "color_palette_widget.hpp"
 #include "color_selector.hpp"
 #include "item/layer_tree.hpp"
+#include "labeled_spinbox.hpp"
+#include "layer_widget.hpp"
+#include "log_view.hpp"
+#include "menu.hpp"
+#include "message.hpp"
+#include "misclib/util.hpp"
+#include "plugin/plugin_api.hpp"
 #include "settings.hpp"
 #include "style/dockwidget_style_icon.hpp"
 #include "tool/tool.hpp"
-#include "misclib/util.hpp"
 #include "view/graphics_widget.hpp"
-#include "layer_widget.hpp"
-#include "plugin/plugin.hpp"
-#include "message.hpp"
-#include "log_view.hpp"
-#include "labeled_spinbox.hpp"
-#include "menu.hpp"
 
 #include "ui_current_color.h"
 #include "ui_main_window.h"
@@ -489,6 +489,7 @@ void MainWindow::Private::setCurrentView(view::GraphicsWidget* widget)
         Private::unlinkColor(current_view, current_color_selector.color);
         disconnect(layer_widget, nullptr, current_view, nullptr);
         disconnect(current_view, nullptr, layer_widget, nullptr);
+        plugin::current_document = nullptr;
     }
 
     current_view = widget;
@@ -515,6 +516,7 @@ void MainWindow::Private::setCurrentView(view::GraphicsWidget* widget)
         };
         connect(widget, &view::GraphicsWidget::zoomFactorChanged, set_zoom);
         set_zoom(widget->zoomFactor());
+        plugin::current_document = widget->document();
     }
     else
     {
