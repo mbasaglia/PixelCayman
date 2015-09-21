@@ -175,7 +175,8 @@ protected:
         removeTool = library->resolve<void(const QString&)>("removeTool");
         io::formats().addFormat(new InkscapeSvg);
         if ( addTool )
-            addTool( {"inkscape_plugin", QObject::tr("Inkscape"), "inkscape", {"${temp}.svg"}});
+            addTool( {"inkscape_plugin", QObject::tr("Inkscape"),
+                "inkscape", {"${temp}.svg"}, "inkscape"});
         return true;
     }
 

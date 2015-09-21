@@ -51,6 +51,7 @@ struct ExternalTool
      * pass the name of that file instead of the argument
      */
     QStringList args;
+    QString     icon;   ///< Icon name for the menu action
 };
 
 /**

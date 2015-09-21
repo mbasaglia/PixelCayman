@@ -96,6 +96,13 @@ private:
         connect(action, &QAction::triggered, [id]{
             ExternalTools::instance().execute(id);
         });
+        /// \todo Have a unified system that can create an icon from:
+        /// * theme
+        /// * resource
+        /// * direct file (absolute or relative to the current directory)
+        /// * data file (relative to a readable data directory)
+        if ( !tool.icon.isEmpty() )
+            action->setIcon(QIcon::fromTheme(tool.icon));
 
         if ( ExternalTools::instance().usesDocument(tool) )
         {
