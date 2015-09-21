@@ -489,7 +489,7 @@ void MainWindow::Private::setCurrentView(view::GraphicsWidget* widget)
         Private::unlinkColor(current_view, current_color_selector.color);
         disconnect(layer_widget, nullptr, current_view, nullptr);
         disconnect(current_view, nullptr, layer_widget, nullptr);
-        plugin::current_document = nullptr;
+        plugin::api().setCurrentDocument(nullptr);
     }
 
     current_view = widget;
@@ -516,7 +516,7 @@ void MainWindow::Private::setCurrentView(view::GraphicsWidget* widget)
         };
         connect(widget, &view::GraphicsWidget::zoomFactorChanged, set_zoom);
         set_zoom(widget->zoomFactor());
-        plugin::current_document = widget->document();
+        plugin::api().setCurrentDocument(widget->document());
     }
     else
     {

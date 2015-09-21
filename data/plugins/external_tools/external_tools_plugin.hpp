@@ -96,6 +96,12 @@ private:
         connect(action, &QAction::triggered, [id]{
             ExternalTools::instance().execute(id);
         });
+
+        /// \todo do this only if the tool operates on the current document
+        action->setEnabled(plugin::api().currentDocument());
+        connect(&plugin::api(), &plugin::PluginApi::currentDocumentChanged,
+                action, &QAction::setEnabled);
+
         menu->addAction(action);
         return action;
     }

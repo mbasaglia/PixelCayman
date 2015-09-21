@@ -28,8 +28,6 @@ namespace document{ class Document; }
 
 namespace plugin {
 
-extern document::Document* current_document;
-
 /**
  * \brief Returns a string representing a settings key for the plugin
  */
@@ -58,12 +56,58 @@ template<class T>
     }
 
 /**
+ * \brief Class to make some information visible to plugins
+ */
+class PluginApi : public QObject
+{
+    Q_OBJECT
+    Q_PROPERTY(document::Document* currentDocument READ currentDocument WRITE setCurrentDocument NOTIFY currentDocumentChanged)
+
+public:
+    static PluginApi& instance()
+    {
+        static PluginApi singleton;
+        return singleton;
+    }
+
+    document::Document* currentDocument() const
+    {
+        return current_document;
+    }
+
+    void setCurrentDocument(document::Document* doc)
+    {
+        if ( doc != current_document )
+            emit currentDocumentChanged(current_document = doc);
+    }
+
+signals:
+    void currentDocumentChanged(document::Document* currentDocument);
+
+private:
+    PluginApi(){}
+    document::Document* current_document = nullptr;
+};
+
+inline PluginApi& api()
+{
+    return PluginApi::instance();
+}
+
+/**
  * \brief Class that structures the required functions of a library plugin
  */
 class CaymanPlugin : public plugin::Plugin
 {
     Q_OBJECT
+
 public:
+    CaymanPlugin()
+    {
+        connect(&settings::Settings::instance(), &settings::Settings::cleared,
+                this, &CaymanPlugin::onSettingsCleared);
+    }
+
     /**
      * \brief Writes a plugin setting
      */
@@ -83,7 +127,7 @@ public:
             return settings::get(plugin::settingsKey(this, key), std::forward<T>(default_value));
         }
 
-protected:
+protected slots:
     /**
      * \brief Overload if the plugin needs to react on settings being cleared
      */

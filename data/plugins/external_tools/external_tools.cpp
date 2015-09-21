@@ -61,7 +61,7 @@ bool ExternalTools::execute(const QString& id)
         QRegularExpressionMatch match = temparg.match(arg);
         if ( match.hasMatch() )
         {
-            if ( !plugin::current_document )
+            if ( !plugin::api().currentDocument() )
                 return false; // No document to open with the external tool
             // Create a temp file
             QTemporaryFile file(data().tempDir()+"tempXXXXXX."+match.captured(1));
@@ -73,7 +73,7 @@ bool ExternalTools::execute(const QString& id)
             auto format = io::formats().formatFromFileName(file.fileName(), io::Formats::Action::Save);
             if ( !format )
                 return false; // Could not find a format
-            if ( !format->save(plugin::current_document, &file) )
+            if ( !format->save(plugin::api().currentDocument(), &file) )
                 return false; // Error while saving
         }
     }

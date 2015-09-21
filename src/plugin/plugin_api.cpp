@@ -24,6 +24,5 @@
 
 namespace plugin {
 
-document::Document* current_document = nullptr;
 
 } // namespace plugin
