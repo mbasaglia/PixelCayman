@@ -30,6 +30,7 @@
 #include "cayman/data.hpp"
 #include "confirm_close_dialog.hpp"
 #include "cayman/message.hpp"
+#include "tool/registry.hpp"
 
 MainWindow::MainWindow(QWidget* parent)
     : QMainWindow(parent), p(new Private(this))
@@ -64,6 +65,11 @@ MainWindow::MainWindow(QWidget* parent)
     p->current_color_selector.color->setColor(Qt::black);
 
     cayman::Message::manager().setDialogParent(this);
+
+
+    /// \todo Dynamic registration/unregistration facilities
+    for ( const auto& tool : ::tool::Registry::instance().tools() )
+        addTool(tool.get());
 }
 
 MainWindow::~MainWindow()

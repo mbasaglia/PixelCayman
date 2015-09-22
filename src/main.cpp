@@ -23,7 +23,6 @@
 
 #include "ui/main_window.hpp"
 #include "cayman/message.hpp"
-#include "tool/registry.hpp"
 #include "cayman/application.hpp"
 
 int main(int argc, char** argv)
@@ -33,9 +32,6 @@ int main(int argc, char** argv)
     {
         app.initSubsystems();
         MainWindow window;
-        /// \todo Dynamic registration/unregistration facilities
-        for ( const auto& tool : ::tool::Registry::instance().tools() )
-            window.addTool(tool.get());
         window.show();
         return app.exec();
     }
