@@ -21,9 +21,9 @@
 #ifndef PIXEL_CAYMAN_MESSAGE_HPP
 #define PIXEL_CAYMAN_MESSAGE_HPP
 
-#include <QDebug>
-#include <QMessageBox>
-#include <QApplication>
+#include <QTextStream>
+
+namespace cayman {
 
 class Message;
 /**
@@ -124,5 +124,8 @@ private:
     friend class MessageManager;
 };
 
+} // namespace cayman
+
+using Msg = cayman::Message;
 
 #endif // PIXEL_CAYMAN_MESSAGE_HPP

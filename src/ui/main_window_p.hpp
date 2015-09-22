@@ -40,10 +40,10 @@
 #include "layer_widget.hpp"
 #include "log_view.hpp"
 #include "menu.hpp"
-#include "message.hpp"
+#include "cayman/message.hpp"
 #include "misclib/util.hpp"
 #include "plugin/plugin_api.hpp"
-#include "settings.hpp"
+#include "cayman/settings.hpp"
 #include "style/dockwidget_style_icon.hpp"
 #include "tool/tool.hpp"
 #include "view/graphics_widget.hpp"
@@ -250,12 +250,12 @@ void MainWindow::Private::initDocks()
     // Log view
     log_view = new LogView;
     log_view->setStderrColor(Qt::darkRed);
-    log_view_connection = connect(&Message::manager(), &MessageManager::message,
-        [this](const Message& msg)
+    log_view_connection = connect(&cayman::Message::manager(), &cayman::MessageManager::message,
+        [this](const Msg& msg)
         {
-            if ( !msg.hasBehaviour(Message::Stream) )
+            if ( !msg.hasBehaviour(Msg::Stream) )
                 return;
-            if ( msg.hasBehaviour(Message::Error) || msg.hasBehaviour(Message::Message::Critical) )
+            if ( msg.hasBehaviour(Msg::Error) || msg.hasBehaviour(Msg::Critical) )
                 log_view->logStderr(msg.text());
             else
                 log_view->logStdout(msg.text());
@@ -380,7 +380,7 @@ void MainWindow::Private::loadSettings()
     palette_model.addSearchPath("/usr/share/kde4/apps/calligra/palettes/");
     palette_model.load();
 
-    recent_files = settings::get("file/recent", QStringList{});
+    recent_files = cayman::settings::get("file/recent", QStringList{});
     if ( !recent_files.empty() )
     {
         menu_open_recent->removeAction(action_no_recent_files);
@@ -392,20 +392,20 @@ void MainWindow::Private::loadSettings()
     {
         geometry = parent->saveGeometry();
         state = parent->saveState(ui_version);
-        parent->restoreGeometry(settings::get<QByteArray>("geometry"));
-        parent->restoreState(settings::get<QByteArray>("state"), ui_version);
+        parent->restoreGeometry(cayman::settings::get<QByteArray>("geometry"));
+        parent->restoreState(cayman::settings::get<QByteArray>("state"), ui_version);
     }
 }
 
 
 void MainWindow::Private::saveSettings()
 {
-    settings::put("file/recent", recent_files);
+    cayman::settings::put("file/recent", recent_files);
 
     SETTINGS_GROUP("ui/mainwindow")
     {
-        settings::put("geometry", parent->saveGeometry());
-        settings::put("state", parent->saveState(ui_version));
+        cayman::settings::put("geometry", parent->saveGeometry());
+        cayman::settings::put("state", parent->saveState(ui_version));
     }
 }
 
@@ -438,7 +438,7 @@ void MainWindow::Private::pushRecentFile(const QString& name)
         before = menu_open_recent->actions().front();
     menu_open_recent->insertAction(before, recentFileAction(name));
 
-    int max = settings::get("file/recent_max", 16);
+    int max = cayman::settings::get("file/recent_max", 16);
     if ( recent_files.size() > max )
     {
         recent_files.erase(recent_files.begin()+max, recent_files.end());

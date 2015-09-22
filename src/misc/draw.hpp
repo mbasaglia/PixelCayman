@@ -23,6 +23,7 @@
 
 #include <QLine>
 
+namespace misc {
 namespace draw {
 
 /**
@@ -65,4 +66,5 @@ template<class Callback>
     }
 
 } // namespace draw
+} // namespace misc
 #endif // PIXEL_CAYMAN_DRAW_HPP

@@ -27,6 +27,8 @@
 #include <QCoreApplication>
 #include <QStandardPaths>
 
+namespace cayman {
+
 void Data::addDirectory(const QString& path)
 {
     QString canonical = QFileInfo(path).canonicalFilePath();
@@ -104,3 +106,4 @@ QString Data::tempDir()
     return dir;
 }
 
+} // namespace cayman

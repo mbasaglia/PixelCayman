@@ -18,12 +18,18 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-#ifndef PIXEL_CAYMAN_INFO_HPP
-#define PIXEL_CAYMAN_INFO_HPP
-
+#include <QUrl>
+#include "static_info.hpp"
+#include "application.hpp"
 /**
- * \brief Initializes the QApplication information
+ * \note On a different translation unit to avoid recompilation when some of
+ *       these strings change
  */
-void init_info();
-
-#endif // PIXEL_CAYMAN_INFO_HPP
+void cayman::Application::initInfo()
+{
+    setApplicationName(EXECUTABLE_NAME);
+    setApplicationDisplayName(NICE_NAME);
+    setApplicationVersion(PROJECT_VERSION);
+    setOrganizationName(EXECUTABLE_NAME);
+    setOrganizationDomain(QUrl(PROJECT_WEBSITE).host());
+}

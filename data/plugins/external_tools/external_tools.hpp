@@ -31,7 +31,6 @@
 
 #include "plugin/plugin_api.hpp"
 #include "io/formats.hpp"
-#include "data.hpp"
 
 namespace extools {
 

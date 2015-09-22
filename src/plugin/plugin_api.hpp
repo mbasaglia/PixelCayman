@@ -21,7 +21,7 @@
 #ifndef PIXEL_CAYMAN_PLUGIN_API_HPP
 #define PIXEL_CAYMAN_PLUGIN_API_HPP
 
-#include "settings.hpp"
+#include "cayman/settings.hpp"
 #include "plugin.hpp"
 
 namespace document{ class Document; }
@@ -42,7 +42,7 @@ inline QString settingsKey(Plugin* plugin, const QString& key )
 template<class T>
     void settingsPut(Plugin* plugin, const QString& key, T&& value)
     {
-        settings::put(settingsKey(plugin, key), std::forward<T>(value));
+        cayman::settings::put(settingsKey(plugin, key), std::forward<T>(value));
     }
 
 /**
@@ -52,7 +52,7 @@ template<class T>
     typename std::remove_reference<T>::type
         settingsGet(Plugin* plugin, const QString& key, T&& default_value = T())
     {
-        return settings::get(settingsKey(plugin, key), std::forward<T>(default_value));
+        return cayman::settings::get(settingsKey(plugin, key), std::forward<T>(default_value));
     }
 
 /**
@@ -104,7 +104,7 @@ class CaymanPlugin : public plugin::Plugin
 public:
     CaymanPlugin()
     {
-        connect(&settings::Settings::instance(), &settings::Settings::cleared,
+        connect(&cayman::settings::Settings::instance(), &cayman::settings::Settings::cleared,
                 this, &CaymanPlugin::onSettingsCleared);
     }
 
@@ -114,7 +114,7 @@ public:
     template<class T>
         void settingsPut(const QString& key, T&& value)
         {
-            settings::put(plugin::settingsKey(this, key), std::forward<T>(value));
+            cayman::settings::put(plugin::settingsKey(this, key), std::forward<T>(value));
         }
 
     /**
@@ -124,7 +124,7 @@ public:
         typename std::remove_reference<T>::type
             settingsGet(const QString& key, T&& default_value = T())
         {
-            return settings::get(plugin::settingsKey(this, key), std::forward<T>(default_value));
+            return cayman::settings::get(plugin::settingsKey(this, key), std::forward<T>(default_value));
         }
 
 protected slots:

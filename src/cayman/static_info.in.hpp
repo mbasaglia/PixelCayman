@@ -1,3 +1,4 @@
+#line 2 "${CMAKE_CURRENT_SOURCE_DIR}/cayman/static_info.in.hpp"
 /**
  * \file
  *
@@ -18,34 +19,13 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-#ifndef PIXEL_CAYMAN_APPLICATION_HPP
-#define PIXEL_CAYMAN_APPLICATION_HPP
+#ifndef PIXEL_CAYMAN_STATIC_INFO_HPP
+#define PIXEL_CAYMAN_STATIC_INFO_HPP
 
-#include <QApplication>
-#include "settings.hpp"
+#define EXECUTABLE_NAME "${EXECUTABLE_NAME}"
+#define NICE_NAME "${NICE_NAME}"
+#define PROJECT_VERSION "${PROJECT_VERSION}"
+#define EXECUTABLE_NAME "${EXECUTABLE_NAME}"
+#define PROJECT_WEBSITE "${PROJECT_WEBSITE}"
 
-namespace cayman {
-
-class Application : public QApplication
-{
-    Q_OBJECT
-
-public:
-    Application(int &argc, char **argv);
-    ~Application();
-
-    void initSubsystems();
-
-protected:
-    bool event(QEvent* event) override;
-
-private:
-    void initPlugins();
-    void initFormats();
-    void initTools();
-
-    settings::Settings* settings_;
-};
-
-} // namespace cayman
-#endif // PIXEL_CAYMAN_APPLICATION_HPP
+#endif // PIXEL_CAYMAN_STATIC_INFO_HPP

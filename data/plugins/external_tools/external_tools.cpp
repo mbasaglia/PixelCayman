@@ -22,6 +22,7 @@
 
 #include "external_tools.hpp"
 #include "external_tools_plugin.hpp"
+#include "cayman/data.hpp"
 
 namespace extools {
 
@@ -61,7 +62,7 @@ bool ExternalTools::execute(const QString& id)
             if ( !plugin::api().currentDocument() )
                 return false; // No document to open with the external tool
             // Create a temp file
-            QTemporaryFile file(data().tempDir()+"tempXXXXXX."+match.captured(1));
+            QTemporaryFile file(cayman::data().tempDir()+"tempXXXXXX."+match.captured(1));
             file.setAutoRemove(false);
             if ( !file.open() )
                 return false; // Could not open the temp file

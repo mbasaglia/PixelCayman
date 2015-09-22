@@ -23,7 +23,7 @@
 
 #include <QFile>
 #include <QCoreApplication>
-#include "settings.hpp"
+#include "cayman/settings.hpp"
 #include "document/visitor.hpp"
 #include "misc/misc.hpp"
 
@@ -150,7 +150,7 @@ public:
             if ( document )
                 variant = document->formatSettings().get(this, key);
             if ( !variant.canConvert<typename std::remove_reference<T>::type>() )
-                return settings::get("format/"+id()+"/"+key, std::forward<T>(default_value));
+                return cayman::settings::get("format/"+id()+"/"+key, std::forward<T>(default_value));
             return variant.value<T>();
         }
 

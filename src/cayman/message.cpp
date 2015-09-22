@@ -22,6 +22,12 @@
 
 #include "message.hpp"
 
+#include <QDebug>
+#include <QMessageBox>
+#include <QApplication>
+
+namespace cayman {
+
 void MessageManager::show(const Message& msg)
 {
     emit message(msg);
@@ -67,3 +73,5 @@ void MessageManager::showDialog(const Message& msg)
 
     QMessageBox(icon, title, msg.message, QMessageBox::Ok, dialog_parent).exec();
 }
+
+} // namespace cayman

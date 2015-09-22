@@ -27,9 +27,9 @@
 #include <QFileDialog>
 #include <QMessageBox>
 
-#include "data.hpp"
+#include "cayman/data.hpp"
 #include "confirm_close_dialog.hpp"
-#include "message.hpp"
+#include "cayman/message.hpp"
 
 MainWindow::MainWindow(QWidget* parent)
     : QMainWindow(parent), p(new Private(this))
@@ -41,10 +41,10 @@ MainWindow::MainWindow(QWidget* parent)
     QIcon icon = QIcon::fromTheme("pixel-cayman");
     if ( icon.isNull() )
     {
-        icon.addFile(::data().readable("icons/pixel-cayman/16x16/pixel-cayman-eye.png"));
-        icon.addFile(::data().readable("icons/pixel-cayman/22x22/pixel-cayman-eye.png"));
-        icon.addFile(::data().readable("icons/pixel-cayman/24x24/pixel-cayman-eye.png"));
-        //icon.addFile(::data().readable("icons/pixel-cayman/32x32/pixel-cayman-eye.png"));
+        icon.addFile(cayman::data().readable("icons/pixel-cayman/16x16/pixel-cayman-eye.png"));
+        icon.addFile(cayman::data().readable("icons/pixel-cayman/22x22/pixel-cayman-eye.png"));
+        icon.addFile(cayman::data().readable("icons/pixel-cayman/24x24/pixel-cayman-eye.png"));
+        //icon.addFile(cayman::data().readable("icons/pixel-cayman/32x32/pixel-cayman-eye.png"));
     }
     setWindowIcon(icon);
 
@@ -63,14 +63,14 @@ MainWindow::MainWindow(QWidget* parent)
 
     p->current_color_selector.color->setColor(Qt::black);
 
-    Message::manager().setDialogParent(this);
+    cayman::Message::manager().setDialogParent(this);
 }
 
 MainWindow::~MainWindow()
 {
     p->saveSettings();
     p->dock_tool_options->setWidget(nullptr);
-    Message::manager().setDialogParent(nullptr);
+    cayman::Message::manager().setDialogParent(nullptr);
     disconnect(p->log_view_connection);
     delete p;
 }
@@ -203,7 +203,7 @@ bool MainWindow::save(int tab, bool prompt)
             format = io::formats().formatFromFileName(selected_file, action);
             if ( !format )
             {
-                Message(Message::Dialog|Message::Error) << tr("Unknown format");
+                cayman::Message(Msg::Dialog|Msg::Error) << tr("Unknown format");
                 return false;
             }
         }
@@ -227,7 +227,7 @@ bool MainWindow::save(int tab, bool prompt)
     }
     else
     {
-        Message(Message::AllOutput|Message::Error)
+        cayman::Message(Msg::AllOutput|Msg::Error)
             << tr("Error saving %1: %2").arg(doc->fileName()).arg(format->errorString());
     }
     return false;
@@ -241,7 +241,7 @@ int MainWindow::openTab(const QString& file_name, bool set_current,
         format = io::formats().formatFromFileName(file_name,io::Formats::Action::Open);
         if ( !format )
         {
-            Message(Message::Dialog|Message::Error)
+            cayman::Message(Msg::Dialog|Msg::Error)
                 << tr("Unknown format for %1").arg(file_name);
             return -1;
         }
@@ -255,7 +255,7 @@ int MainWindow::openTab(const QString& file_name, bool set_current,
         return p->addDocument(doc, set_current);
     }
 
-    Message(Message::AllOutput|Message::Error)
+    cayman::Message(Msg::AllOutput|Msg::Error)
         << tr("Error opening %1: %2").arg(file_name).arg(format->errorString());
 
     return -1;
@@ -391,7 +391,7 @@ bool MainWindow::documentReload()
 
     if ( !format || !format->canOpen() )
     {
-        Message(Message::AllOutput|Message::Error,
+        cayman::Message(Msg::AllOutput|Msg::Error,
             tr("Error opening file %1: %2")
                 .arg(filename).arg(tr("Format not supported")));
         return false;
@@ -400,7 +400,7 @@ bool MainWindow::documentReload()
     auto new_doc = format->open(filename);
     if ( !new_doc )
     {
-        Message(Message::AllOutput|Message::Error,
+        cayman::Message(Msg::AllOutput|Msg::Error,
             tr("Error opening file %1: %2")
                 .arg(filename).arg(format->errorString()));
         return false;

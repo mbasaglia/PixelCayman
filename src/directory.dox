@@ -2,11 +2,13 @@
 \dir PixelCayman/src
 \brief Root directory for the PixelCayman-specific sources
 
-If possible, files should go in one of the subdirectories.
-Files that are not must either be low-level utilities that are tightly bound
-to the PixelCayman application or define a namespace which has the same name as
-the file and be the only files (header and a possible implementation) which
-contain definitions to that namespace).
+Files should go in one of the subdirectories.
+*/
+/**
+\dir src/cayman
+\brief Low-level utilities that are tightly bound to the PixelCayman application
+
+Everything must be in the \c cayman namespace.
 */
 /**
 \dir src/document

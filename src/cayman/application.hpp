@@ -18,15 +18,35 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-#include "info.hpp"
+#ifndef PIXEL_CAYMAN_APPLICATION_HPP
+#define PIXEL_CAYMAN_APPLICATION_HPP
+
 #include <QApplication>
-#include <QUrl>
-#include "static_info.hpp"
-void init_info()
+#include "settings.hpp"
+
+namespace cayman {
+
+class Application : public QApplication
 {
-    QApplication::setApplicationName(EXECUTABLE_NAME);
-    QApplication::setApplicationDisplayName(NICE_NAME);
-    QApplication::setApplicationVersion(PROJECT_VERSION);
-    QApplication::setOrganizationName(EXECUTABLE_NAME);
-    QApplication::setOrganizationDomain(QUrl(PROJECT_WEBSITE).host());
-}
+    Q_OBJECT
+
+public:
+    Application(int &argc, char **argv);
+    ~Application();
+
+    void initSubsystems();
+
+protected:
+    bool event(QEvent* event) override;
+
+private:
+    void initInfo();
+    void initPlugins();
+    void initFormats();
+    void initTools();
+
+    settings::Settings* settings_;
+};
+
+} // namespace cayman
+#endif // PIXEL_CAYMAN_APPLICATION_HPP

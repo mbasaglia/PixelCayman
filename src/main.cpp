@@ -22,9 +22,9 @@
 #include <exception>
 
 #include "ui/main_window.hpp"
-#include "message.hpp"
+#include "cayman/message.hpp"
 #include "tool/registry.hpp"
-#include "application.hpp"
+#include "cayman/application.hpp"
 
 int main(int argc, char** argv)
 {
@@ -41,11 +41,11 @@ int main(int argc, char** argv)
     }
     catch ( const std::exception& exc )
     {
-        Message(Message::AllOutput|Message::Critical) << "Exception: " << exc.what();
+        cayman::Message(Msg::AllOutput|Msg::Critical) << "Exception: " << exc.what();
     }
     catch ( ... )
     {
-        Message(Message::AllOutput|Message::Critical) << "Unknown Exception";
+        cayman::Message(Msg::AllOutput|Msg::Critical) << "Unknown Exception";
     }
 
     return 1;

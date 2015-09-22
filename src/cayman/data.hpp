@@ -23,6 +23,8 @@
 
 #include <QStringList>
 
+namespace cayman {
+
 /**
  * \brief Class managing data file paths
  */
@@ -89,5 +91,7 @@ inline Data& data()
     static Data singleton;
     return singleton;
 }
+
+} // namespace cayman
 
 #endif // PIXEl_CAYMAN_DATA_HPP

@@ -26,7 +26,6 @@
 
 namespace cayman {
 class Application;
-} // namespace cayman
 
 namespace settings {
 
@@ -157,6 +156,7 @@ template<class T>
  * \endcode
  */
 #define SETTINGS_GROUP(name) \
-    if ( ::settings::SettingsGroup _pixel_cayman_settings_group_ {name} )
+    if ( ::cayman::settings::SettingsGroup _pixel_cayman_settings_group_ {name} )
 
+} // namespace cayman
 #endif // PIXEL_CAYMAN_SETTINGS_HPP

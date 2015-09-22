@@ -23,7 +23,6 @@
 
 #include <QIcon>
 
-#include "info.hpp"
 #include "data.hpp"
 #include "io/bitmap.hpp"
 #include "io/xml.hpp"
@@ -39,7 +38,7 @@ namespace cayman {
 Application::Application(int& argc, char** argv)
     : QApplication(argc, argv)
 {
-    init_info();
+    initInfo();
     settings_ = new settings::Settings;
 }
 
@@ -118,8 +117,7 @@ void Application::initPlugins()
     plugin::PluginRegistry::instance().load();
 }
 
-} // namespace cayman
-
-
-
 settings::Settings* settings::Settings::singleton = nullptr;
+
+
+} // namespace cayman

@@ -24,8 +24,8 @@
 
 #include "eraser.hpp"
 #include "view/graphics_widget.hpp"
-#include "draw.hpp"
-#include "math.hpp"
+#include "misc/draw.hpp"
+#include "misc/math.hpp"
 #include "ui/tool_paint_widget.hpp"
 #include "registry.hpp"
 #include <QApplication>
@@ -188,7 +188,7 @@ void Brush::draw(view::GraphicsWidget* widget)
     painter.setCompositionMode(blend(widget));
     painter.setBrush(color(widget));
     painter.setPen(Qt::NoPen);
-    ::draw::line(line, [this, &painter](const QPoint& point){
+    misc::draw::line(line, [this, &painter](const QPoint& point){
         painter.drawPath(brush_path.translated(point));
     });
 }
