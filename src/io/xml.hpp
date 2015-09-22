@@ -37,6 +37,7 @@ namespace io {
  */
 class SaverXml : public document::Visitor
 {
+    Q_DECLARE_TR_FUNCTIONS(FormatXmlMela)
 public:
     explicit SaverXml(QIODevice* output);
     ~SaverXml();
@@ -60,6 +61,7 @@ private:
 
 class LoaderXml
 {
+    Q_DECLARE_TR_FUNCTIONS(FormatXmlMela)
     Q_DISABLE_COPY(LoaderXml)
 public:
     class XmlError : public std::runtime_error
@@ -75,7 +77,7 @@ public:
         int error_line = 0;
         int error_column = 0;
         bool ok = xml.setContent(device, &error_msg, &error_line, &error_column);
-        file_name = misc::fileName(device, QObject::tr("stream"));
+        file_name = misc::fileName(device, tr("stream"));
         if ( !ok )
             error(error_msg, error_line, error_column);
     }
@@ -95,13 +97,13 @@ public:
 private:
     void error(const QString& message, int line, int column)
     {
-        throw XmlError(QObject::tr("XML error %1:%2:%3: %4")
+        throw XmlError(tr("XML error %1:%2:%3: %4")
             .arg(file_name).arg(line).arg(column).arg(message));
     }
 
     void error(const QString& message)
     {
-        throw XmlError(QObject::tr("XML error %1: %4")
+        throw XmlError(tr("XML error %1: %4")
             .arg(file_name).arg(message));
     }
 
@@ -109,7 +111,7 @@ private:
     {
         auto element = node.firstChildElement(name);
         if ( element.isNull() )
-            error(QObject::tr("Expected <%1>").arg(name));
+            error(tr("Expected <%1>").arg(name));
         return element;
     }
 
@@ -146,9 +148,10 @@ private:
  */
 class FormatXmlMela : public AbstractFormat
 {
+    Q_DECLARE_TR_FUNCTIONS(FormatXmlMela)
 public:
     QString id() const override { return "mela"; }
-    QString name() const override { return QObject::tr("Cayman Files"); }
+    QString name() const override { return tr("Cayman Files"); }
     bool canSave() const override { return true; }
     bool canOpen() const override { return true; }
 

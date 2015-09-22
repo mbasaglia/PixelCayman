@@ -134,7 +134,7 @@ class InkscapeSvg : public io::AbstractFormat
 {
 public:
     QString id() const override { return "inkscape"; }
-    QString name() const override { return QObject::tr("Inkscape SVG"); }
+    QString name() const override { return tr("Inkscape SVG"); }
     bool canSave() const override { return true; }
     QStringList extensions(Action) const override
     {
@@ -174,8 +174,9 @@ protected:
         addTool = library->resolve<bool(const extools::ExternalTool&)>("addTool");
         removeTool = library->resolve<void(const QString&)>("removeTool");
         io::formats().addFormat(new InkscapeSvg);
+        /// \todo Re-translatable tool
         if ( addTool )
-            addTool( {"inkscape_plugin", QObject::tr("Inkscape"),
+            addTool( {"inkscape_plugin", tr("Inkscape"),
                 "inkscape", {"${temp}.svg"}, "inkscape"});
         return true;
     }

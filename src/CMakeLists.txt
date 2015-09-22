@@ -89,6 +89,8 @@ info.cpp
 info.hpp
 message.hpp
 message.cpp
+application.hpp
+application.cpp
 ${CMAKE_CURRENT_BINARY_DIR}/static_info.hpp
 )
 

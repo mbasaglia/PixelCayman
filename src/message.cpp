@@ -52,17 +52,17 @@ void MessageManager::showDialog(const Message& msg)
     if ( msg.hasBehaviour(Message::Critical) )
     {
         icon = QMessageBox::Critical;
-        title = QObject::tr("Fatal error");
+        title = tr("Fatal error");
     }
     else if ( msg.hasBehaviour(Message::Error) )
     {
         icon = QMessageBox::Warning;
-        title = QObject::tr("Warning");
+        title = tr("Warning");
     }
     else
     {
         icon = QMessageBox::Information;
-        title = QObject::tr("Information");
+        title = tr("Information");
     }
 
     QMessageBox(icon, title, msg.message, QMessageBox::Ok, dialog_parent).exec();

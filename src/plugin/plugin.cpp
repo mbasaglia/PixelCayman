@@ -29,7 +29,7 @@ namespace plugin {
 QAction* Plugin::createAction(QObject* parent)
 {
     /// \todo Re-translate
-    QAction *action = new QAction(this->name(), parent);
+    QAction *action = new QAction(name(), parent);
     action->setCheckable(true);
     action->setChecked(this->loaded_);
     action->setEnabled(this->dependencies_met_);
@@ -37,6 +37,9 @@ QAction* Plugin::createAction(QObject* parent)
     connect(this, &Plugin::dependenciesChecked, action, &QAction::setEnabled);
     connect(this, &QObject::destroyed, action, &QObject::deleteLater);
     connect(action, &QAction::triggered, this, &Plugin::setLoaded);
+    connect(this, &Plugin::retranslated, action, [this, action](){
+        action->setText(name());
+    });
     return action;
 }
 
@@ -177,6 +180,12 @@ void PluginRegistry::removePlugin(Plugin* plugin)
 {
     plugins_.remove(plugin->id());
     emit destroyed(plugin);
+}
+
+void PluginRegistry::retranslate()
+{
+    for ( auto plugin : plugins_ )
+        plugin->retranslate();
 }
 
 } // namespace plugin

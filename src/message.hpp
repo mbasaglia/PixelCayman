@@ -28,7 +28,6 @@
 class Message;
 /**
  * \brief Manages and shows messages
- * \todo Dock in mainwindow that shows the log
  */
 class MessageManager : public QObject
 {

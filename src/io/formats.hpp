@@ -22,6 +22,7 @@
 #define PIXEl_CAYMAN_DOCUMENT_IO_HPP
 
 #include <QFile>
+#include <QCoreApplication>
 #include "settings.hpp"
 #include "document/visitor.hpp"
 #include "misc/misc.hpp"
@@ -34,6 +35,7 @@ namespace io {
  */
 class AbstractFormat
 {
+    Q_DECLARE_TR_FUNCTIONS(AbstractFormat)
 public:
     /**
      * \brief Enum to distinguish some operations depending on whether
@@ -135,7 +137,7 @@ public:
         QString namefilters;
         for ( const auto& ext : extensions(action) )
             namefilters += " *."+ext;
-        return QObject::tr("%1 (%2)").arg(name()).arg(namefilters);
+        return tr("%1 (%2)").arg(name()).arg(namefilters);
     }
 
     /**
@@ -174,7 +176,7 @@ protected:
      */
     static QString fileName(const QIODevice* device)
     {
-        return misc::fileName(device, QObject::tr("Image"));
+        return misc::fileName(device, tr("Image"));
     }
 
     /**
@@ -214,6 +216,7 @@ private:
  */
 class Formats
 {
+    Q_DECLARE_TR_FUNCTIONS(Formats)
 public:
     using Action = AbstractFormat::Action;
 

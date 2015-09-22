@@ -182,7 +182,7 @@ QModelIndex LayerTree::addLayer(const QString& name, int row, const QModelIndex&
 
     Layer* new_layer = new Layer(document_, name);
 
-    /// \todo Should add a frame image for every frame (should use a visitor for that)
+    /// \todo Should add a frame image for every frame (use a visitor for that)
     new_layer->addFrameImage();
 
     auto cont = container(parent);

@@ -24,7 +24,9 @@
 #include <type_traits>
 #include <QSettings>
 
-int main(int argc, char** argv);
+namespace cayman {
+class Application;
+} // namespace cayman
 
 namespace settings {
 
@@ -98,7 +100,7 @@ private:
 
     ~Settings() {}
 
-    friend int ::main(int argc, char** argv);
+    friend class cayman::Application;
 
     QSettings settings_;
 

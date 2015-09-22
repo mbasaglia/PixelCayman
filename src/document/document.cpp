@@ -33,7 +33,7 @@ Document::Document(const QSize& size,
       image_size(size),
       file_name(file_name)
 {
-    Layer* layer = new Layer(this, QObject::tr("Layer"));
+    Layer* layer = new Layer(this, tr("Layer"));
     layer->addFrameImage();
     insertLayerRaw(layer, -1);
 }

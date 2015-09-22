@@ -103,6 +103,8 @@ public:
         {
             emit loaded(QPrivateSignal());
             emit loadedChanged(true, QPrivateSignal());
+            if ( translation_scheduled_ )
+                onRetranslate();
         }
 
         return loaded_;
@@ -206,11 +208,25 @@ public:
      */
     QAction* createAction(QObject* parent = nullptr);
 
+    /**
+     * \brief Causes the UI strings frin this plugin to be re-translated
+     */
+    void retranslate()
+    {
+        if ( loaded_ )
+            onRetranslate();
+        else
+            translation_scheduled_ = true;
+        name_.clear();
+        emit retranslated();
+    }
+
 signals:
     void loaded(QPrivateSignal);
     void unloaded(QPrivateSignal);
     void loadedChanged(bool loaded, QPrivateSignal);
     void dependenciesChecked(bool met);
+    void retranslated();
 
 protected:
     /**
@@ -246,6 +262,11 @@ protected:
      */
     virtual QList<Dependency> onDependencies() { return {}; }
 
+    /**
+     * \brief Causes the UI strings from this plugin to be re-translated
+     */
+    virtual void onRetranslate(){}
+
 private:
     QString id_;
     QString name_;
@@ -254,6 +275,7 @@ private:
     bool dependencies_loaded_ = false;
     QList<Dependency> dependencies_;
     bool dependencies_met_ = false;
+    bool translation_scheduled_ = false;
 };
 
 /**
@@ -367,6 +389,11 @@ public:
     {
         search_paths_.push_back(path);
     }
+
+    /**
+     * \brief Updates plugin translations
+     */
+    void retranslate();
 
 signals:
     /**

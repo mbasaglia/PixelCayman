@@ -221,7 +221,7 @@ void LoaderXml::layer(const QDomElement& node)
 {
     document::Layer* layer = builder.beginLayer();
     id(node);
-    layer->setName(node.attribute("name", QObject::tr("Layer")));
+    layer->setName(node.attribute("name", tr("Layer")));
     layer->setOpacity(node.attribute("opacity", "1").toDouble());
     layer->setVisible(node.attribute("visible", "1").toInt());
     layer->setLocked(node.attribute("locked", "0").toInt());

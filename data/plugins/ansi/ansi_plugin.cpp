@@ -38,7 +38,7 @@ public:
 
     QString name() const override
     {
-        return QObject::tr("Ansi text files");
+        return tr("Ansi text files");
     }
 
     QStringList extensions(Action action) const override

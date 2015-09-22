@@ -66,7 +66,7 @@ QString FormatBitmap::id() const
 
 QString FormatBitmap::name() const
 {
-    return QObject::tr("All Bitmap Images");
+    return tr("All Bitmap Images");
 }
 
 QStringList FormatBitmap::extensions(Action action) const

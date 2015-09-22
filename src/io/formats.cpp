@@ -137,8 +137,8 @@ QStringList Formats::nameFilters(Formats::Action action, bool all_files) const
         QString namefilters;
         for ( const auto& ext : extensions )
             namefilters += " *."+ext;
-        filters << QObject::tr("All Supported Files (%1)").arg(namefilters);
-        filters << QObject::tr("All Files (*)");
+        filters << tr("All Supported Files (%1)").arg(namefilters);
+        filters << tr("All Files (*)");
     }
 
     return filters;

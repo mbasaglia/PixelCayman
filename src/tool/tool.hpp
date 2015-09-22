@@ -24,6 +24,7 @@
 #include "document/visitor.hpp"
 #include "view/graphics_widget.hpp"
 #include <QMouseEvent>
+#include <QCoreApplication>
 
 namespace tool {
 
@@ -32,6 +33,7 @@ namespace tool {
  */
 class Tool
 {
+    Q_DECLARE_TR_FUNCTIONS(Tool)
 public:
     virtual ~Tool(){}
 

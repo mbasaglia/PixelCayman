@@ -63,7 +63,7 @@ public:
 
     QString name() const override
     {
-        return QObject::tr("Portable Network Graphics images");
+        return tr("Portable Network Graphics images");
     }
 };
 
@@ -77,7 +77,7 @@ public:
 
     QString name() const override
     {
-        return QObject::tr("Windows Bitmap images");
+        return tr("Windows Bitmap images");
     }
 };
 
@@ -91,7 +91,7 @@ public:
 
     QString name() const override
     {
-        return QObject::tr("Portable Pixmap images");
+        return tr("Portable Pixmap images");
     }
 
     QStringList extensions(Action action) const override
@@ -110,7 +110,7 @@ public:
 
     QString name() const override
     {
-        return QObject::tr("X BitMap images");
+        return tr("X BitMap images");
     }
 
     QStringList extensions(Action action) const override
@@ -129,7 +129,7 @@ public:
 
     QString name() const override
     {
-        return QObject::tr("X PixMap images");
+        return tr("X PixMap images");
     }
 };
 
@@ -142,7 +142,7 @@ public:
     }
     QString name() const override
     {
-        return QObject::tr("TarGA images");
+        return tr("TarGA images");
     }
     QStringList extensions(Action action) const override
     {
@@ -160,7 +160,7 @@ public:
 
     QString name() const override
     {
-        return QObject::tr("TIFF images");
+        return tr("TIFF images");
     }
 
     QStringList extensions(Action action) const override
@@ -179,7 +179,7 @@ public:
 
     QString name() const override
     {
-        return QObject::tr("Windows icons");
+        return tr("Windows icons");
     }
 
     QStringList extensions(Action action) const override
@@ -198,7 +198,7 @@ public:
 
     QString name() const override
     {
-        return QObject::tr("WebP images");
+        return tr("WebP images");
     }
 };
 
@@ -212,7 +212,7 @@ public:
 
     QString name() const override
     {
-        return QObject::tr("PostScript");
+        return tr("PostScript");
     }
 
     QStringList extensions(Action action) const override

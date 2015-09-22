@@ -60,12 +60,12 @@ QIcon Brush::icon() const
 
 QString Brush::name() const
 {
-    return QObject::tr("Brush");
+    return tr("Brush");
 }
 
 QString Brush::description() const
 {
-    return QObject::tr("Draw with the current color");
+    return tr("Draw with the current color");
 }
 
 bool Brush::initialize(view::GraphicsWidget* widget)
@@ -95,7 +95,7 @@ void Brush::mousePressEvent(const QMouseEvent* event, view::GraphicsWidget* widg
 
 void Brush::mouseMoveEvent(const QMouseEvent* event, view::GraphicsWidget* widget)
 {
-    /// \todo Allow lines click by click instead of only via draggin (?)
+    /// \todo Allow lines click by click instead of only via dragging (?)
     draw_line = (event->buttons() & Qt::LeftButton) &&
                 (event->modifiers() & Qt::ShiftModifier);
 
@@ -195,7 +195,7 @@ void Brush::draw(view::GraphicsWidget* widget)
 
 QString Brush::actionName(view::GraphicsWidget*) const
 {
-    return QObject::tr("Paint");
+    return tr("Paint");
 }
 
 void Brush::begin_draw(view::GraphicsWidget* widget)

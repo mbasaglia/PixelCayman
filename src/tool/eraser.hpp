@@ -37,12 +37,12 @@ public:
 
     QString name() const override
     {
-        return QObject::tr("Eraser");
+        return tr("Eraser");
     }
 
     QString description() const override
     {
-        return QObject::tr("Overwrite pixels with transparency");
+        return tr("Overwrite pixels with transparency");
     }
 
     QWidget* optionsWidget() override
@@ -65,7 +65,7 @@ protected:
 
     QString actionName(view::GraphicsWidget*) const override
     {
-        return QObject::tr("Erase");
+        return tr("Erase");
     }
 };
 

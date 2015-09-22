@@ -20,89 +20,18 @@
  *
  */
 #include <exception>
-#include <QApplication>
-#include <QIcon>
 
 #include "ui/main_window.hpp"
-#include "info.hpp"
-#include "settings.hpp"
-#include "data.hpp"
 #include "message.hpp"
-
-#include "plugin/plugin.hpp"
-#include "plugin/library_plugin.hpp"
-#include "plugin/plugin_api.hpp"
-void initPlugins()
-{
-    // Register factories (plugin types)
-    plugin::registry().addFactory(new plugin::LibraryPluginFactory(PLUGIN_INIT_FUNCTION_STRING));
-
-    // Connect warnings
-    QObject::connect(&plugin::registry(), &plugin::PluginRegistry::warning,
-        [](const QString& msg) { Message(Message::Error|Message::Stream) << msg; });
-
-    // Refresh the list of available paths every time the plugins are loaded
-    QObject::connect(&plugin::registry(), &plugin::PluginRegistry::beginLoad,
-        []{ plugin::registry().setSearchPaths(data().readableList("plugins")); }
-    );
-
-    // Load the plugins that are supposed to be enabled
-    QObject::connect(&plugin::registry(), &plugin::PluginRegistry::created,
-        [](plugin::Plugin* plugin){
-            if ( plugin->dependenciesMet() &&
-                    ::plugin::settingsGet(plugin, "loaded", true) )
-            {
-                plugin->load();
-            }
-
-        });
-
-    // Update settings each time a plugin is loaded or unloaded
-    QObject::connect(&plugin::registry(), &plugin::PluginRegistry::loadedChanged,
-        [](plugin::Plugin* plugin, bool loaded){
-            ::plugin::settingsPut(plugin, "loaded", loaded);
-    });
-
-    // Load all plugins
-    plugin::PluginRegistry::instance().load();
-}
-
-#include "io/bitmap.hpp"
-#include "io/xml.hpp"
-void initFormats()
-{
-    io::formats().addFormat(new io::FormatXmlMela);
-    io::formats().addFormat(new io::FormatBitmap);
-}
-
 #include "tool/registry.hpp"
-#include "tool/eraser.hpp"
-void initTools()
-{
-    tool::Registry::instance().register_tool<tool::Brush>();
-    tool::Registry::instance().register_tool<tool::Eraser>();
-}
+#include "application.hpp"
 
 int main(int argc, char** argv)
 {
-    QApplication app(argc, argv);
-    init_info();
-    settings::Settings settings_object;
-
+    cayman::Application app(argc, argv);
     try
     {
-        // Initialize Icon theme
-        // NOTE: this is broken in Qt 5.4.1
-        /*QIcon::setThemeSearchPaths(
-            QIcon::themeSearchPaths()
-            << data().readable("icons")
-        );
-        QIcon::setThemeName("pixel-cayman");*/
-
-        initFormats();
-        initTools();
-        initPlugins();
-
+        app.initSubsystems();
         MainWindow window;
         /// \todo Dynamic registration/unregistration facilities
         for ( const auto& tool : ::tool::Registry::instance().tools() )
@@ -121,5 +50,3 @@ int main(int argc, char** argv)
 
     return 1;
 }
-
-settings::Settings* settings::Settings::singleton = nullptr;
