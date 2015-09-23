@@ -72,8 +72,8 @@ void Application::initSubsystems()
 
 void Application::initFormats()
 {
-    io::formats().addFormat(new io::FormatXmlMela);
-    io::formats().addFormat(new io::FormatBitmap);
+    io::formats().addFormat<io::FormatXmlMela>();
+    io::formats().addFormat<io::FormatBitmap>();
 }
 
 void Application::initTools()

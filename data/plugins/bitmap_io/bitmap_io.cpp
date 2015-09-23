@@ -36,16 +36,16 @@ protected:
 
     bool onLoad() override
     {
-        addFormat(new FormatPng);
-        addFormat(new FormatTiff);
-        addFormat(new FormatBmp);
-        addFormat(new FormatTga);
-        addFormat(new FormatPpm);
-        addFormat(new FormatXpm);
-        addFormat(new FormatXbm);
-        addFormat(new FormatIco);
-        addFormat(new FormatWebp);
-        addFormat(new FormatEps);
+        addFormat<FormatPng>();
+        addFormat<FormatTiff>();
+        addFormat<FormatBmp>();
+        addFormat<FormatTga>();
+        addFormat<FormatPpm>();
+        addFormat<FormatXpm>();
+        addFormat<FormatXbm>();
+        addFormat<FormatIco>();
+        addFormat<FormatWebp>();
+        addFormat<FormatEps>();
         return true;
     }
 
@@ -62,10 +62,11 @@ protected:
     }
 
 private:
-    void addFormat(SingleBitmapFormat* fmt)
+    template<class Format>
+    void addFormat()
     {
-        formats.push_back(fmt);
-        io::formats().addFormat(fmt);
+        if ( auto fmt = io::formats().addFormat<Format>() )
+            formats.push_back(fmt);
     }
 
     QList<SingleBitmapFormat*> formats;

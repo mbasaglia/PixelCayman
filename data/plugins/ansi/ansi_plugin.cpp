@@ -80,7 +80,7 @@ protected:
 
     bool onLoad() override
     {
-        io::formats().addFormat(new FormatAnsi);
+        io::formats().addFormat<FormatAnsi>();
         return true;
     }
 

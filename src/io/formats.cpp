@@ -65,18 +65,6 @@ Formats::~Formats()
         delete format;
 }
 
-bool Formats::addFormat(AbstractFormat* format)
-{
-    for ( auto fmt : formats_ )
-        if ( fmt->id() == format->id() )
-        {
-            delete format;
-            return false;
-        }
-    formats_.push_back(format);
-    return true;
-}
-
 bool Formats::deleteFormat(AbstractFormat* format)
 {
     for ( auto it = formats_.begin(); it != formats_.end(); ++it )

@@ -173,7 +173,7 @@ protected:
             return false;
         addTool = library->resolve<bool(const extools::ExternalTool&)>("addTool");
         removeTool = library->resolve<void(const QString&)>("removeTool");
-        io::formats().addFormat(new InkscapeSvg);
+        io::formats().addFormat<InkscapeSvg>();
         /// \todo Re-translatable tool
         if ( addTool )
             addTool( {"inkscape_plugin", tr("Inkscape"),

@@ -231,15 +231,27 @@ public:
 
     /**
      * \brief Registers a format
+     * \tparam Format Class derived from AbstractFormat
+     * \tparam Args   Types of the constructor arguments (deduced by the call)
      *
-     * Takes ownership of \p format
+     * Creates an object of type \p Format and attempts to register it.
+     * It may fail if the created format has an id() that already exists.
      *
-     * \returns \b true on success
-     *
-     * \note If the function fails (because a format with the same id is found)
-     * \p format will be destroyed
+     * \returns The created format object on success, \b nullptr on failure
      */
-    bool addFormat(AbstractFormat* format);
+    template <class Format, class... Args>
+    Format* addFormat(Args&&... args)
+    {
+        auto format = new Format(std::forward<Args>(args)...);
+        for ( auto fmt : formats_ )
+            if ( fmt->id() == format->id() )
+            {
+                delete format;
+                return nullptr;;
+            }
+        formats_.push_back(format);
+        return format;
+    }
 
     /**
      * \brief Removes and deletes a format
