@@ -12,7 +12,7 @@ GPLv3+ see COPYING
 Getting the latest sources
 --------------------------
 
-A web frontend to the repository is available at
+A web front-end to the repository is available at
 https://github.com/mbasaglia/PixelCayman
 
 The git URL is https://github.com/mbasaglia/PixelCayman.git
@@ -36,7 +36,10 @@ Dependencies
 
 * CMake
 * Any C++11 compliant compiler
-* Qt 5
+* Qt 5.4
+
+On Ubuntu and similar compilation requires the following packages:
+    cmake build-essential qtbase5-dev
 
 Compiling
 ---------
@@ -45,7 +48,15 @@ This project uses the standard CMake build conventions:
 
     mkdir build && cd build && cmake .. && make
 
+Contributing
+------------
+
+Contributions of any kind are very welcome,
+see Contributing.md for some info and guidelines.
+
 Contacts
 --------
+
+IRC: #PixelCayman on FreeNode
 
 Mattia Basaglia <mattia.basaglia@gmail.com>
