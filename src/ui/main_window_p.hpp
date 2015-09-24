@@ -131,6 +131,9 @@ public:
     view::GraphicsWidget* current_view = nullptr;
     tool::Tool* current_tool = nullptr;
 
+    QList<QWidget*> document_widgets;
+    QActionGroup*   document_actions;
+
     QList<tool::Tool*> tools;
     QActionGroup* tools_group;
 
@@ -282,6 +285,15 @@ void MainWindow::Private::initDocks()
 
     // Common stuff
     translateDocks();
+    document_widgets.append({
+        dock_set_color,
+        dock_current_color,
+        dock_palette,
+        dock_palette_editor,
+        dock_undo_history,
+        dock_layers,
+        dock_tool_options,
+    });
 }
 
 void MainWindow::Private::translateDocks()
@@ -339,6 +351,16 @@ void MainWindow::Private::initMenus()
     // Tools
     tools_group = new QActionGroup(parent);
     tools_group->setExclusive(true);
+
+    // Misc
+    document_actions = new QActionGroup(parent);
+    document_actions->setExclusive(false);
+    document_actions->addAction(action_save);
+    document_actions->addAction(action_save_as);
+    document_actions->addAction(action_save_all);
+    document_actions->addAction(action_close);
+    document_actions->addAction(action_close_all);
+    document_actions->addAction(action_print);
 }
 
 void MainWindow::Private::initStatusBar()
@@ -356,6 +378,8 @@ void MainWindow::Private::initStatusBar()
     parent->statusBar()->addPermanentWidget(zoomer);
 
     translateStatusBar();
+
+    document_widgets.append(zoomer);
 }
 
 void MainWindow::Private::translateStatusBar()
@@ -524,20 +548,10 @@ void MainWindow::Private::setCurrentView(view::GraphicsWidget* widget)
     }
 
     bool editors_enabled = widget != nullptr;
-    /// \todo Use a list of widgets that need to be enabled depending on whether
-    /// it has an active tab and push them on initialization
-    /// or emit a signal(bool) connected with setenabled
-    for ( auto* dock : parent->findChildren<QDockWidget*>() )
-        dock->setEnabled(editors_enabled);
-    dock_log->setEnabled(true);
-    action_save->setEnabled(editors_enabled);
-    action_save_as->setEnabled(editors_enabled);
-    action_save_all->setEnabled(editors_enabled);
-    action_close->setEnabled(editors_enabled);
-    action_close_all->setEnabled(editors_enabled);
-    action_print->setEnabled(editors_enabled);
+    for ( auto* docwid : document_widgets )
+        docwid->setEnabled(editors_enabled);
+    document_actions->setEnabled(editors_enabled);
     tools_group->setEnabled(editors_enabled);
-    zoomer->setEnabled(editors_enabled);
 
     updateTitle();
 }
