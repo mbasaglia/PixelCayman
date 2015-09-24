@@ -1,7 +1,8 @@
 PixelCayman
 ===========
 
-Work in progress
+PixelCayman is an upcoming Open Source, customizable pixel art editor
+and animation tool.
 
 License
 -------
