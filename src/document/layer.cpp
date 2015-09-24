@@ -129,9 +129,9 @@ QList<Image*> Layer::frameImages()
     return frames_;
 }
 
-Image* Layer::addFrameImage()
+Image* Layer::addFrameImage(const QColor& background_color)
 {
-    Image* image = new Image(this, owner_->imageSize());
+    Image* image = new Image(this, owner_->imageSize(), background_color);
     frames_.push_back(image);
     return image;
 }

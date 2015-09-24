@@ -99,7 +99,7 @@ public:
      * \brief Creates a new frame for this layer
      * \returns The created image, the layer keeps its ownership
      */
-    Image* addFrameImage();
+    Image* addFrameImage(const QColor& background_color = Qt::transparent);
 
     Image* addFrameImage(const QImage& image);
 

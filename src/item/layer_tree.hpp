@@ -80,7 +80,9 @@ public:
     /**
      * \brief Add an empty layer with the given name as the row^th child of parent
      */
-    QModelIndex addLayer(const QString& name, int row, const QModelIndex& parent);
+    QModelIndex addLayer(const QString& name, int row,
+                         const QColor& background_color,
+                         const QModelIndex& parent);
 
     /**
      * \brief Layer corresponding to the given index

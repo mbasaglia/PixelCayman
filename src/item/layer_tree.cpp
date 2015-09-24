@@ -175,7 +175,10 @@ void LayerTree::setDocument(::document::Document* document)
     endResetModel();
 }
 
-QModelIndex LayerTree::addLayer(const QString& name, int row, const QModelIndex& parent)
+QModelIndex LayerTree::addLayer(const QString& name,
+                                int row,
+                                const QColor& background_color,
+                                const QModelIndex& parent)
 {
     if ( !document_ )
         return QModelIndex();
@@ -183,7 +186,7 @@ QModelIndex LayerTree::addLayer(const QString& name, int row, const QModelIndex&
     Layer* new_layer = new Layer(document_, name);
 
     /// \todo Should add a frame image for every frame (use a visitor for that)
-    new_layer->addFrameImage();
+    new_layer->addFrameImage(background_color);
 
     auto cont = container(parent);
     cont->insertLayer(new_layer, reverseInsertRowNumber(cont, row));

@@ -191,11 +191,10 @@ void LayerWidget::addLayer()
                 break;
         }
 
-        QModelIndex new_index = model.addLayer(dialog.name(), row, parent);
+        QModelIndex new_index = model.addLayer(dialog.name(), row, dialog.background(), parent);
         if ( new_index.isValid() )
         {
             tree_view->setCurrentIndex(new_index);
-            /// \todo set color
         }
     }
 }
