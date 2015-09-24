@@ -61,7 +61,28 @@ To export plugins manually, you must define a function called
 is suitable for being exported from a dynamic library and returns a
 pointer to a heap object of plugin::Plugin.
 
-\section plugin_hooks Available interfaces the plugins can tap into
-\todo Implement and write
+\subsection plugin_hooks Available interfaces the plugins can tap into
+\todo Implement and write more interfaces
+
+\subsubsection plugin_hooks_format Import/Export formats
+
+To define a new file format you must create a class inheriting io::AbstractFormat.
+If the format handles a single raster image, io::FormatBitmap provides some
+utilities for that.
+
+Once a format class is defined, it must be registered using
+io::Formats::addFormat in the plugin onLoad() function and
+unregistered using io::Formats::deleteFormat in the plugin onUnload().
+
+\subsubsection plugin_hooks_menus Plugin-specific menus
+
+To add a new menu to the main window, in onLoad() create a new QMenu and
+register it with Menu::addMenu using a unique id for the created menu.
+The menu shall then be removed in onUnload() using Menu::removeMenu.
+
+\subsubsection plugin_hooks_tools Editing tools
+\subsubsection plugin_hooks_settings Plugin settings
+\subsubsection plugin_hooks_scripts Scripting interfaces
+\subsubsection plugin_hooks_overlay Image overlays
 
 */

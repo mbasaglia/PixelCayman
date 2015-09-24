@@ -24,17 +24,31 @@
 #include <QMap>
 #include <QMenu>
 
+/**
+ * \brief Dynamic menu manager
+ */
 class Menu : public QObject
 {
     Q_OBJECT
 
 public:
+    /**
+     * \brief Singleton instance
+     */
     static Menu& instance()
     {
         static Menu singleton;
         return singleton;
     }
 
+    /**
+     * \brief Registers a menu by id
+     *
+     * Takes ownership of \p menu.
+     * Emits addedMenu() if successful.
+     *
+     * \return \b true on success
+     */
     bool addMenu(const QString& id, QMenu* menu)
     {
         if ( menus_.contains(id) )
@@ -48,6 +62,11 @@ public:
         return true;
     }
 
+    /**
+     * \brief Remove a menu by id
+     *
+     * Emits removedMenu() if successful.
+     */
     void removeMenu(const QString& id)
     {
         auto it = menus_.find(id);
@@ -59,16 +78,25 @@ public:
         }
     }
 
+    /**
+     * \brief Returns all menus
+     */
     QList<QMenu*> menus() const
     {
         return menus_.values();
     }
 
+    /**
+     * \brief Menu by id
+     */
     QMenu* menu(const QString& id) const
     {
         return menus_[id];
     }
 
+    /**
+     * \brief Whether there are no menus installed
+     */
     bool empty() const
     {
         return menus_.empty();
