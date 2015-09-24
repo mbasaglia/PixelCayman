@@ -81,6 +81,11 @@ register it with Menu::addMenu using a unique id for the created menu.
 The menu shall then be removed in onUnload() using Menu::removeMenu.
 
 \subsubsection plugin_hooks_tools Editing tools
+
+To create a new tool, override tool::Tool.
+Register it in onLoad() with tool::Registry::addTool and remove it with
+tool::Registry::removeTool
+
 \subsubsection plugin_hooks_settings Plugin settings
 \subsubsection plugin_hooks_scripts Scripting interfaces
 \subsubsection plugin_hooks_overlay Image overlays

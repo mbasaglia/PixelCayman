@@ -78,8 +78,8 @@ void Application::initFormats()
 
 void Application::initTools()
 {
-    tool::Registry::instance().register_tool<tool::Brush>();
-    tool::Registry::instance().register_tool<tool::Eraser>();
+    tool::Registry::instance().addTool<tool::Brush>("brush");
+    tool::Registry::instance().addTool<tool::Eraser>("eraser");
 }
 
 void Application::initPlugins()

@@ -21,8 +21,6 @@
 #ifndef PIXEL_CAYMAN_TOOL_REGISTRY_HPP
 #define PIXEL_CAYMAN_TOOL_REGISTRY_HPP
 
-#include <memory>
-#include <vector>
 #include "tool.hpp"
 
 namespace tool {
@@ -30,30 +28,89 @@ namespace tool {
 /**
  * \brief Keeps track of the registered tools
  */
-class Registry
+class Registry : public QObject
 {
+    Q_OBJECT
+
 public:
+    /**
+     * \brief Singleton instance
+     */
     static Registry& instance()
     {
         static Registry singleton;
         return singleton;
     }
 
-    template<class T, class... Args>
-        void register_tool(Args&&... arg)
+    /**
+     * \brief Registers a tool
+     * \tparam ToolType Class derived from tool::Tool
+     * \tparam Args     Types of the constructor arguments (deduced by the call)
+     * \param  id       Unique identifier for the tool
+     * \param  args     Contructor arguments
+     *
+     * Creates an object of type \p ToolType and attempts to register it.
+     * Emits toolAdded() on successful insertions.
+     *
+     * \returns The created format object on success, \b nullptr on failure
+     */
+    template<class ToolType, class... Args>
+        ToolType* addTool(const QString& id, Args&&... args)
         {
-            tools_.push_back(std::unique_ptr<T>(new T(std::forward<Args>(arg)...)));
+            if ( tools_.contains(id) )
+                return nullptr;
+
+            auto ptr = new ToolType(std::forward<Args>(args)...);
+            tools_[id] = ptr;
+            emit toolAdded(ptr);
+            return ptr;
         }
 
-    const std::vector<std::unique_ptr<Tool>>& tools() const
+    /**
+     * \brief Removes a tool by id
+     *
+     * Emits toolRemoved() on a successful removal
+     */
+    void removeTool(const QString& id)
     {
-        return tools_;
+        auto it = tools_.find(id);
+        if ( it != tools_.end() )
+        {
+            emit toolRemoved(*it);
+            delete *it;
+            tools_.erase(it);
+        }
     }
+
+    /**
+     * \brief Get a tool by id
+     */
+    Tool* tool(const QString& id) const
+    {
+        return tools_[id];
+    }
+
+    /**
+     * \brief All tools
+     */
+    QList<Tool*> tools() const
+    {
+        return tools_.values();
+    }
+
+signals:
+    void toolAdded(Tool* tool);
+    void toolRemoved(Tool* tool);
 
 private:
     Registry(){}
-    ~Registry(){}
-    std::vector<std::unique_ptr<Tool>> tools_;
+    ~Registry()
+    {
+        for ( auto tool : tools_ )
+            delete tool;
+    }
+
+    QMap<QString, Tool*> tools_;
 };
 
 } // namespace tool

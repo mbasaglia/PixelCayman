@@ -68,8 +68,8 @@ MainWindow::MainWindow(QWidget* parent)
 
 
     /// \todo Dynamic registration/unregistration facilities
-    for ( const auto& tool : ::tool::Registry::instance().tools() )
-        addTool(tool.get());
+    for ( auto tool : ::tool::Registry::instance().tools() )
+        addTool(tool);
 }
 
 MainWindow::~MainWindow()
