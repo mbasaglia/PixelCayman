@@ -68,3 +68,5 @@ target_link_libraries(${MISC_WIDGETS_LIBRARY} Qt5::Widgets)
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/src)
 
 # add_subdirectory(gallery)
+
+add_subdirectory(designer_plugin)
