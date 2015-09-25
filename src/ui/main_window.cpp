@@ -31,6 +31,7 @@
 #include "confirm_close_dialog.hpp"
 #include "cayman/message.hpp"
 #include "tool/registry.hpp"
+#include "dialog_document_create.hpp"
 
 MainWindow::MainWindow(QWidget* parent)
     : QMainWindow(parent), p(new Private(this))
@@ -102,7 +103,13 @@ void MainWindow::setActiveColor(const QColor& color)
 bool MainWindow::documentNew()
 {
     /// \todo Show dialog to get the size
-    document::Document* doc = new document::Document(QSize(32,32));
+    DialogDocumentCreate dlg(this);
+    if ( p->current_view )
+        dlg.setImageSize(p->current_view->document()->imageSize());
+    if ( !dlg.exec() )
+        return false;
+
+    document::Document* doc = new document::Document(dlg.imageSize(), {}, dlg.background());
     p->addDocument(doc, true);
     return true;
 }

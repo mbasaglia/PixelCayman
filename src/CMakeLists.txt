@@ -78,7 +78,6 @@ tool/registry.hpp
 tool/tool.hpp
 ui/color_editor.cpp
 ui/color_editor.hpp
-ui/dialog_layer.hpp
 ui/layer_widget.cpp
 ui/layer_widget.hpp
 ui/main_window.cpp
@@ -87,6 +86,8 @@ ui/main_window_p.hpp
 ui/menu.hpp
 ui/tool_paint_widget.cpp
 ui/tool_paint_widget.hpp
+ui/dialog_layer_create.hpp
+ui/dialog_document_create.hpp
 view/graphics_item.hpp
 view/graphics_widget.cpp
 view/graphics_widget.hpp
@@ -107,7 +108,8 @@ ui/current_color.ui
 ui/main_window.ui
 ui/layer_widget.ui
 ui/tool_paint_widget.ui
-ui/dialog_layer.ui
+ui/dialog_layer_create.ui
+ui/dialog_document_create.ui
 )
 qt5_wrap_ui(SOURCES ${UI_FILES})
 #endif()

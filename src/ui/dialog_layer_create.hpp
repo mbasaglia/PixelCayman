@@ -18,17 +18,17 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-#ifndef PIXEL_CAYMAN_DIALOG_LAYER_HPP
-#define PIXEL_CAYMAN_DIALOG_LAYER_HPP
+#ifndef PIXEL_CAYMAN_DIALOG_LAYER_CREATE_HPP
+#define PIXEL_CAYMAN_DIALOG_LAYER_CREATE_HPP
 
 #include <QDialog>
 #include <QEvent>
-#include "ui_dialog_layer.h"
+#include "ui_dialog_layer_create.h"
 
 /**
  * \brief Dialog to get the information needed to create a new layer
  */
-class DialogLayer : public QDialog, private Ui::DialogLayer
+class DialogLayerCreate : public QDialog, private Ui::DialogLayerCreate
 {
 public:
     enum Position
@@ -39,7 +39,7 @@ public:
         Top
     };
 
-    explicit DialogLayer(QWidget* parent = nullptr)
+    explicit DialogLayerCreate(QWidget* parent = nullptr)
         : QDialog(parent)
     {
         setupUi(this);
@@ -79,4 +79,4 @@ protected:
     }
 };
 
-#endif // PIXEL_CAYMAN_DIALOG_LAYER_HPP
+#endif // PIXEL_CAYMAN_DIALOG_LAYER_CREATE_HPP

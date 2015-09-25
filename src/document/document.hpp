@@ -43,6 +43,7 @@ public:
      */
     explicit Document(const QSize& size,
                       const QString& file_name = {},
+                      const QColor& background = Qt::transparent,
                       const Metadata& metadata = {});
 
     /**

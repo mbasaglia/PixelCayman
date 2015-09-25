@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>DialogLayer</class>
- <widget class="QDialog" name="DialogLayer">
+ <class>DialogLayerCreate</class>
+ <widget class="QDialog" name="DialogLayerCreate">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -124,7 +124,7 @@
   <connection>
    <sender>button_box</sender>
    <signal>accepted()</signal>
-   <receiver>DialogLayer</receiver>
+   <receiver>DialogLayerCreate</receiver>
    <slot>accept()</slot>
    <hints>
     <hint type="sourcelabel">
@@ -140,7 +140,7 @@
   <connection>
    <sender>button_box</sender>
    <signal>rejected()</signal>
-   <receiver>DialogLayer</receiver>
+   <receiver>DialogLayerCreate</receiver>
    <slot>reject()</slot>
    <hints>
     <hint type="sourcelabel">

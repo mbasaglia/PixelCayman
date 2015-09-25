@@ -28,13 +28,14 @@ namespace document {
 
 Document::Document(const QSize& size,
                    const QString& file_name,
+                   const QColor& background,
                    const Metadata& metadata)
     : LayerContainer(metadata),
       image_size(size),
       file_name(file_name)
 {
     Layer* layer = new Layer(this, tr("Layer"));
-    layer->addFrameImage();
+    layer->addFrameImage(background);
     insertLayerRaw(layer, -1);
 }
 

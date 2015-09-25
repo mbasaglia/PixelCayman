@@ -65,8 +65,8 @@ Namespaces shall have a lowercase name.
 
 Indentation is performed using 4 plain spaces.
 Braces go on a new line for most constructs (like classes, functions and
-control structures), possible exceptions are brace initializers and
-one-line lambda literals.
+control structures), possible exceptions are brace initializers,
+one-line lambda literals and namespaces.
 
 ### Object Orientation
 

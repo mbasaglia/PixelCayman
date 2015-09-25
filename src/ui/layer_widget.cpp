@@ -28,7 +28,7 @@
 #include "enum_combo_delegate.hpp"
 #include "misc/composition_mode.hpp"
 #include "document/visitor.hpp"
-#include "dialog_layer.hpp"
+#include "dialog_layer_create.hpp"
 
 LayerWidget::LayerWidget()
 {
@@ -163,7 +163,7 @@ void LayerWidget::addLayer()
         default_name = name_template.arg(i);
     }
 
-    DialogLayer dialog(this);
+    DialogLayerCreate dialog(this);
     dialog.setDefaultName(default_name);
 
     if ( dialog.exec() )
@@ -173,19 +173,19 @@ void LayerWidget::addLayer()
         int row = -1;
         switch ( dialog.position() )
         {
-            case DialogLayer::Above:
+            case DialogLayerCreate::Above:
                 parent = model.parent(index);
                 row = index.isValid() ? index.row() : 0;
                 break;
-            case DialogLayer::Below:
+            case DialogLayerCreate::Below:
                 parent = model.parent(index);
                 row = index.isValid() ? index.row()+1 : -1;
                 break;
-            case DialogLayer::Top:
+            case DialogLayerCreate::Top:
                 parent = QModelIndex();
                 row = 0;
                 break;
-            case DialogLayer::Child:
+            case DialogLayerCreate::Child:
                 parent = index;
                 row = 0;
                 break;
