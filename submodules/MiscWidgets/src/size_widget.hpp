@@ -183,7 +183,7 @@ public slots:
         spin_width->blockSignals(true);
         spin_height->blockSignals(true);
 
-        spin_width->setValue(val.height());
+        spin_width->setValue(val.width());
         spin_height->setValue(val.height());
 
         spin_width->blockSignals(false);
@@ -197,13 +197,13 @@ public slots:
 
     void setMinimum(const QSize& minimum)
     {
-        spin_width->setMinimum(minimum.height());
+        spin_width->setMinimum(minimum.width());
         spin_height->setMinimum(minimum.height());
     }
 
     void setMaximum(const QSize& maximum)
     {
-        spin_width->setMaximum(maximum.height());
+        spin_width->setMaximum(maximum.width());
         spin_height->setMaximum(maximum.height());
     }
 
