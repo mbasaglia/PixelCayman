@@ -87,6 +87,7 @@ public:
         : QWidget(parent)
     {
         auto gridLayout = new QGridLayout(this);
+        gridLayout->setContentsMargins(0, 0, 0, 0);
 
         spin_width = new QSpinBox(this);
         spin_width->setMinimum(1);
@@ -227,6 +228,7 @@ public slots:
     void setRatioText(const QString& ratioText)
     {
         button_ratio->setText(ratioText);
+        button_ratio->setToolTip(ratioText);
     }
 
     void setRatioFree(const QIcon& ratioFree)
