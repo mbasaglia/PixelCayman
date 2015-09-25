@@ -69,4 +69,7 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR}/src)
 
 # add_subdirectory(gallery)
 
-add_subdirectory(designer_plugin)
+find_package(Qt5Designer)
+if(Qt5Designer_FOUND)
+    add_subdirectory(designer_plugin)
+endif()
