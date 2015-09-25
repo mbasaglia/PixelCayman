@@ -15,9 +15,9 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 cmake_minimum_required(VERSION 2.6)
-set(LIBRARY_TARGET MiscWidgets)
+set(MISC_WIDGETS_LIBRARY MiscWidgets)
 set(PROJECT_VERSION "")
-project(${LIBRARY_TARGET} CXX)
+project(${MISC_WIDGETS_LIBRARY} CXX)
 
 # Qt
 find_package(Qt5Widgets REQUIRED)
@@ -57,12 +57,14 @@ src/enum_combo_delegate.hpp
 src/slider_delegate.hpp
 src/log_view.hpp
 src/labeled_spinbox.hpp
+src/size_widget.hpp
 )
 
 qt5_wrap_cpp(SOURCES ${HEADERS})
 
 # Library
-add_library(${LIBRARY_TARGET} ${SOURCES})
-target_link_libraries(${LIBRARY_TARGET} Qt5::Widgets)
+add_library(${MISC_WIDGETS_LIBRARY} ${SOURCES})
+target_link_libraries(${MISC_WIDGETS_LIBRARY} Qt5::Widgets)
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/src)
 
 # add_subdirectory(gallery)
