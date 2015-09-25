@@ -127,6 +127,7 @@ public:
         button_ratio = new QToolButton(this);
         button_ratio->setCheckable(true);
         button_ratio->setIcon(icon_free);
+        button_ratio->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Minimum);
         gridLayout->addWidget(button_ratio, 0, 1, 2, 1);
         connect(button_ratio, &QToolButton::toggled, this, &SizeWidget::setKeepRatio);
     }
@@ -213,9 +214,14 @@ public slots:
             return;
 
         if ( keepRatio )
+        {
             adjustRatio();
+        }
         else
+        {
+            ratio_ = 0;
             setKeepRatioImpl(false);
+        }
     }
 
     void setRatioText(const QString& ratioText)
