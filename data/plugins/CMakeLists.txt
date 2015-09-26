@@ -24,7 +24,7 @@ include_directories(${Qt5Widgets_INCLUDE_DIRS})
 include_directories("${CMAKE_CURRENT_SOURCE_DIR}/../../src")
 include_directories("${CMAKE_CURRENT_SOURCE_DIR}")
 include_directories("${CMAKE_CURRENT_SOURCE_DIR}/../../submodules/ColorWidgets/include")
-include_directories("${CMAKE_CURRENT_SOURCE_DIR}/../../submodules/MiscWidgets/src")
+include_directories("${CMAKE_CURRENT_SOURCE_DIR}/../../submodules/MiscWidgets/misclib/include")
 
 function(cayman_plugin name sources)
     add_library(${name} MODULE ${SOURCES})

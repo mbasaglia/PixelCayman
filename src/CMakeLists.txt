@@ -132,6 +132,7 @@ include_directories(../submodules/ConfirmCloseDialog/src)
 target_link_libraries(${EXECUTABLE_NAME} ConfirmClose)
 
 include_directories(../submodules/MiscWidgets/src)
+include_directories(../submodules/MiscWidgets/misclib/include)
 target_link_libraries(${EXECUTABLE_NAME} MiscWidgets)
 
 # Qt

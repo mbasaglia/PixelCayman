@@ -66,8 +66,10 @@ qt5_wrap_cpp(SOURCES ${HEADERS})
 add_library(${MISC_WIDGETS_LIBRARY} ${SOURCES})
 target_link_libraries(${MISC_WIDGETS_LIBRARY} Qt5::Widgets)
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/src)
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/misclib/include)
 
 # add_subdirectory(gallery)
+add_subdirectory(misclib)
 
 find_package(Qt5Designer)
 if(Qt5Designer_FOUND)
