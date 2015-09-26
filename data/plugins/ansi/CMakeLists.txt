@@ -17,4 +17,4 @@
 
 get_filename_component(PLUGIN_NAME ${CMAKE_CURRENT_SOURCE_DIR} NAME)
 set(SOURCES ansi_plugin.cpp ansi.hpp ansi.cpp color_parser.hpp)
-add_library(${PLUGIN_NAME} MODULE ${SOURCES})
+cayman_plugin(${PLUGIN_NAME} ${SOURCES})

@@ -17,4 +17,4 @@
 
 get_filename_component(PLUGIN_NAME ${CMAKE_CURRENT_SOURCE_DIR} NAME)
 set(SOURCES external_tools.hpp external_tools.cpp external_tools_plugin.hpp)
-add_library(${PLUGIN_NAME} MODULE ${SOURCES})
+cayman_plugin(${PLUGIN_NAME} ${SOURCES})

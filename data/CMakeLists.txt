@@ -14,17 +14,22 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
+set(DATA_INSTALL_PATH share/${EXECUTABLE_NAME})
 
 set(DATA_TARGETS "")
-
 macro(data_file file)
+    set(absolute_path ${CMAKE_CURRENT_SOURCE_DIR}/${file})
     get_filename_component(directory ${file} DIRECTORY)
     file(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/${directory})
     add_custom_command(OUTPUT ${file}
-        COMMAND ln -rfs -T ${CMAKE_CURRENT_SOURCE_DIR}/${file} ${file}
+        COMMAND ln -rfs -T ${absolute_path} ${file}
         DEPENDS ${file}
     )
-    install(FILES ${test} DESTINATION share/${EXECUTABLE_NAME})
+    if(IS_DIRECTORY ${absolute_path})
+        install(DIRECTORY ${absolute_path} DESTINATION ${DATA_INSTALL_PATH}/${directory})
+    else()
+        install(FILES ${absolute_path} DESTINATION ${DATA_INSTALL_PATH}/${directory})
+    endif()
     list(APPEND DATA_TARGETS ${file})
 endmacro()
 

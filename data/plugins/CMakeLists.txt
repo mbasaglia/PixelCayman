@@ -26,6 +26,13 @@ include_directories("${CMAKE_CURRENT_SOURCE_DIR}")
 include_directories("${CMAKE_CURRENT_SOURCE_DIR}/../../submodules/ColorWidgets/include")
 include_directories("${CMAKE_CURRENT_SOURCE_DIR}/../../submodules/MiscWidgets/src")
 
+function(cayman_plugin name sources)
+    add_library(${name} MODULE ${SOURCES})
+    # TODO: Install plugins in lib/ not share/
+    install(TARGETS ${name} DESTINATION ${DATA_INSTALL_PATH}/plugins)
+endfunction()
+
+
 add_subdirectory(ansi)
 add_subdirectory(bitmap_io)
 add_subdirectory(external_tools)

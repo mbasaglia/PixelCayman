@@ -21,9 +21,11 @@ set(NICE_NAME PixelCayman)
 project(${NICE_NAME} CXX)
 set(PROJECT_VERSION 0.0)
 string(TOLOWER ${NICE_NAME} EXECUTABLE_NAME)
-set(PROJECT_DESCRIPTION "PixelCayman is an Open Source, highly customizable pixel editor and animation tool")
+set(PROJECT_DESCRIPTION "Customizable pixel art editor and animation tool")
+set(PROJECT_LONG_DESCRIPTION "A graphics editor focused on pixel art and extensibility")
 set(MAINTAINER "Mattia Basaglia <mattia.basaglia@gmail.com>")
-set(PROJECT_WEBSITE "http://PixelCayman.org") # TODO: Actually make a website :-P
+set(PROJECT_WEBSITE "https://github.com/mbasaglia/PixelCayman")
+#set(PROJECT_WEBSITE "http://PixelCayman.org") # TODO: Actually make a website :-P
 set(PROJECT_VERSION_LONG ${PROJECT_VERSION})
 
 # C++11
@@ -106,3 +108,30 @@ if(DOXYGEN_FOUND)
         COMMENT "Showing Doxygen documentation"
     )
 endif(DOXYGEN_FOUND)
+
+# Package generation
+find_program(DPKG_PROGRAM dpkg)
+if(DPKG_PROGRAM)
+    execute_process(
+        COMMAND ${DPKG_PROGRAM} --print-architecture
+        OUTPUT_VARIABLE CPACK_DEBIAN_PACKAGE_ARCHITECTURE
+        OUTPUT_STRIP_TRAILING_WHITESPACE
+    )
+    set(CPACK_PACKAGE_FILE_NAME "${EXECUTABLE_NAME}_${PROJECT_VERSION_LONG}_${CPACK_DEBIAN_PACKAGE_ARCHITECTURE}")
+endif()
+
+include(InstallRequiredSystemLibraries)
+set(CPACK_RESOURCE_FILE_LICENSE ${CMAKE_SOURCE_DIR}/COPYING)
+set(CPACK_RESOURCE_FILE_README ${CMAKE_SOURCE_DIR}/README.md)
+set(CPACK_PACKAGE_ICON data/icons/pixel-cayman/32x32/pixel-cayman.png)
+#CPACK_CREATE_DESKTOP_LINKS
+set(CPACK_PACKAGE_CONTACT ${MAINTAINER})
+set(CPACK_PACKAGE_DESCRIPTION_SUMMARY ${PROJECT_DESCRIPTION})
+set(CPACK_PACKAGE_VERSION ${PROJECT_VERSION_LONG})
+
+set(CPACK_DEBIAN_PACKAGE_HOMEPAGE ${PROJECT_WEBSITE})
+set(CPACK_DEBIAN_PACKAGE_SECTION graphics)
+set(CPACK_DEBIAN_PACKAGE_SHLIBDEPS ON)
+set(CPACK_DEBIAN_PACKAGE_DESCRIPTION "${CPACK_PACKAGE_DESCRIPTION_SUMMARY}\n ${PROJECT_LONG_DESCRIPTION}")
+
+include(CPack)
