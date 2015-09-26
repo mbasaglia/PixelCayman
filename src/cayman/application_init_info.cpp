@@ -29,7 +29,7 @@ void cayman::Application::initInfo()
 {
     setApplicationName(EXECUTABLE_NAME);
     setApplicationDisplayName(NICE_NAME);
-    setApplicationVersion(PROJECT_VERSION);
+    setApplicationVersion(PROJECT_VERSION_LONG);
     setOrganizationName(EXECUTABLE_NAME);
     setOrganizationDomain(QUrl(PROJECT_WEBSITE).host());
 }

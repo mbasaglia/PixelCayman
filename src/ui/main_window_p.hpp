@@ -35,6 +35,7 @@
 #include "color_palette_model.hpp"
 #include "color_palette_widget.hpp"
 #include "color_selector.hpp"
+#include "dialog_about.hpp"
 #include "item/layer_tree.hpp"
 #include "labeled_spinbox.hpp"
 #include "layer_widget.hpp"
@@ -346,6 +347,9 @@ void MainWindow::Private::initMenus()
     });
 
     // Help
+    connect(action_about, &QAction::triggered, [this]{
+        DialogAbout(parent).exec();
+    });
     connect(action_about_qt, &QAction::triggered, &QApplication::aboutQt);
 
     // Tools

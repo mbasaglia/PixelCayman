@@ -29,6 +29,7 @@
 class DialogDocumentCreate : public QDialog, private Ui::DialogDocumentCreate
 {
     Q_OBJECT
+    
 public:
 
     explicit DialogDocumentCreate(QWidget* parent = nullptr)
@@ -63,9 +64,6 @@ protected:
 
         QWidget::changeEvent(event);
     }
-
-private:
-    Ui::DialogDocumentCreate* ui;
 };
 
 #endif // PIXEl_CAYMAN_DIALOG_DOCUMENT_CREATE_HPP

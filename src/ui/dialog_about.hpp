@@ -1,4 +1,3 @@
-#line 2 "${CMAKE_CURRENT_SOURCE_DIR}/cayman/static_info.in.hpp"
 /**
  * \file
  *
@@ -19,14 +18,22 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-#ifndef PIXEL_CAYMAN_STATIC_INFO_HPP
-#define PIXEL_CAYMAN_STATIC_INFO_HPP
 
-#define EXECUTABLE_NAME "${EXECUTABLE_NAME}"
-#define NICE_NAME "${NICE_NAME}"
-#define PROJECT_VERSION "${PROJECT_VERSION}"
-#define PROJECT_VERSION_LONG "${PROJECT_VERSION_LONG}"
-#define EXECUTABLE_NAME "${EXECUTABLE_NAME}"
-#define PROJECT_WEBSITE "${PROJECT_WEBSITE}"
+#ifndef PIXEL_CAYMAN_DIALOG_ABOUT_HPP
+#define PIXEL_CAYMAN_DIALOG_ABOUT_HPP
 
-#endif // PIXEL_CAYMAN_STATIC_INFO_HPP
+#include <QDialog>
+#include "ui_dialog_about.h"
+
+class DialogAbout : public QDialog, private Ui::DialogAbout
+{
+    Q_OBJECT
+
+public:
+    explicit DialogAbout(QWidget* parent = nullptr);
+
+protected:
+    void changeEvent(QEvent* event) override;
+};
+
+#endif // PIXEL_CAYMAN_DIALOG_ABOUT_HPP

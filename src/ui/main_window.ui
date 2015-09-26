@@ -93,7 +93,7 @@
     <property name="title">
      <string>&amp;Help</string>
     </property>
-    <addaction name="action_About"/>
+    <addaction name="action_about"/>
     <addaction name="action_about_qt"/>
    </widget>
    <widget class="QMenu" name="menu_view">
@@ -242,7 +242,7 @@
     <string>Ctrl+Shift+W</string>
    </property>
   </action>
-  <action name="action_About">
+  <action name="action_about">
    <property name="icon">
     <iconset theme="help-about"/>
    </property>
