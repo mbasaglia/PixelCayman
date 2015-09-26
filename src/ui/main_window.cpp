@@ -38,17 +38,7 @@ MainWindow::MainWindow(QWidget* parent)
 {
     p->setupUi(this);
 
-    /// \todo Add this stuff in a function in data to work around
-    /// the QIcon::fromTheme bug
-    QIcon icon = QIcon::fromTheme("pixel-cayman");
-    if ( icon.isNull() )
-    {
-        icon.addFile(cayman::data().readable("icons/pixel-cayman/16x16/pixel-cayman-eye.png"));
-        icon.addFile(cayman::data().readable("icons/pixel-cayman/22x22/pixel-cayman-eye.png"));
-        icon.addFile(cayman::data().readable("icons/pixel-cayman/24x24/pixel-cayman-eye.png"));
-        //icon.addFile(cayman::data().readable("icons/pixel-cayman/32x32/pixel-cayman-eye.png"));
-    }
-    setWindowIcon(icon);
+    setWindowIcon(cayman::data().caymanIcon("pixel-cayman-eye", 24));
 
     p->initDocks();
     p->initMenus();

@@ -31,7 +31,9 @@ DialogAbout::DialogAbout(QWidget* parent)
     : QDialog(parent)
 {
     setupUi(this);
-    
+
+    label_icon->setPixmap(cayman::data().caymanIcon("pixel-cayman").pixmap(64));
+    label_name->setText(qApp->applicationDisplayName());
     label_version->setText(qApp->applicationVersion());
 
     text_license->setHtml(tr(

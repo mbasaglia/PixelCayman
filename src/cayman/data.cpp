@@ -106,4 +106,34 @@ QString Data::tempDir()
     return dir;
 }
 
+QIcon Data::caymanIcon(const QString& name, int max_size)
+{
+    auto it = cached_icons.find(name);
+    if ( it != cached_icons.end() )
+        return *it;
+
+    QString parent_path = readable("icons/pixel-cayman");
+    if ( parent_path.isEmpty() )
+        return {};
+
+    QIcon icon;
+    QDir parent(parent_path);
+    for ( QString size_path : parent.entryList({"*x*"}, QDir::Dirs, QDir::Name) )
+    {
+        if ( max_size > 0 && size_path.split("x")[0].toInt() > max_size )
+            break;
+        if ( !parent.cd(size_path) )
+            continue;
+        if ( parent.exists(name+".svg") )
+            icon.addFile(parent.absoluteFilePath(name+".svg"));
+        else if ( parent.exists(name+".png") )
+            icon.addFile(parent.absoluteFilePath(name+".png"));
+        parent.cdUp();
+    }
+    if ( !icon.isNull() )
+        cached_icons[name] = icon;
+
+    return icon;
+}
+
 } // namespace cayman

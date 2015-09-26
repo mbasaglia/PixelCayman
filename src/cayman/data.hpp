@@ -22,6 +22,8 @@
 #define PIXEl_CAYMAN_DATA_HPP
 
 #include <QStringList>
+#include <QIcon>
+#include <QMap>
 
 namespace cayman {
 
@@ -72,6 +74,11 @@ public:
      */
     QString tempDir();
 
+    /**
+     * \brief Icon from the cayman theme
+     */
+    QIcon caymanIcon(const QString& name, int max_size = 0);
+
 private:
     Data();
     Data(const Data&) = delete;
@@ -80,6 +87,7 @@ private:
 
     QStringList read_dirs;
     QString     write_dir;
+    QMap<QString, QIcon> cached_icons;
 };
 
 /**
