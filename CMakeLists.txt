@@ -19,7 +19,7 @@ cmake_minimum_required(VERSION 2.6)
 cmake_policy(SET CMP0009 NEW)
 set(NICE_NAME PixelCayman)
 project(${NICE_NAME} CXX)
-set(PROJECT_VERSION 0.0)
+set(PROJECT_VERSION 0.1)
 string(TOLOWER ${NICE_NAME} EXECUTABLE_NAME)
 set(PROJECT_DESCRIPTION "Customizable pixel art editor and animation tool")
 set(PROJECT_LONG_DESCRIPTION "A graphics editor focused on pixel art and extensibility")
@@ -60,7 +60,6 @@ if(CMAKE_BUILD_TYPE STREQUAL "Debug")
 
     if(GIT_VERSION)
         set(PROJECT_VERSION_LONG "${PROJECT_VERSION}-git-${GIT_VERSION}")
-        set(Q3MAP_VERSION "${Q3MAP_VERSION}-git-${GIT_VERSION}")
         add_custom_target(version_git ALL
             COMMAND [ "`git rev-parse --short HEAD`" != "${GIT_VERSION}" ] && ${CMAKE_COMMAND} ${CMAKE_SOURCE_DIR}
             VERBATIM
