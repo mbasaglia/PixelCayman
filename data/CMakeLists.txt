@@ -37,4 +37,3 @@ data_file(icons/pixel-cayman)
 
 add_custom_target(data ALL DEPENDS ${DATA_TARGETS})
 
-add_subdirectory(plugins)

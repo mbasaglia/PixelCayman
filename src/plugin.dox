@@ -8,6 +8,8 @@ To create a new plugin, you need to add a subdirectory to data/plugins.
 
 To use the CMake build system, you need to add the subdirectory to
 data/plugins/CMakeLists.txt.
+To get a proper plugin compilation and installation it's advised to use
+the CMake function cayman_plugin(name sources).
 
 \subsection plugin_create_cmake CMakeLists.txt
 The CMakeLists.txt for the plugin itself should be pretty simple as
@@ -63,6 +65,11 @@ pointer to a heap object of plugin::Plugin.
 
 \subsection plugin_hooks Available interfaces the plugins can tap into
 \todo Implement and write more interfaces
+
+\subsubsection plugin_hooks_log Logging and messages
+
+Logging can be performed using cayman::Message, which can display messages
+on standard output, the log panel or in message dialogs.
 
 \subsubsection plugin_hooks_format Import/Export formats
 

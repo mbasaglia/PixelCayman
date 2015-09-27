@@ -69,6 +69,7 @@ endif()
 
 add_subdirectory(src bin)
 add_subdirectory(data share/${EXECUTABLE_NAME})
+add_subdirectory(plugins lib/${EXECUTABLE_NAME}/plugins)
 add_subdirectory(submodules/ColorWidgets)
 add_subdirectory(submodules/Qt-Extended-TabWidget)
 add_subdirectory(submodules/ConfirmCloseDialog)

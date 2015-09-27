@@ -16,20 +16,19 @@
 #
 
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR})
-
+set(PLUGIN_INSTALL_PATH lib/${EXECUTABLE_NAME}/plugins)
 find_package(Qt5Widgets REQUIRED)
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 include_directories(${Qt5Widgets_INCLUDE_DIRS})
-include_directories("${CMAKE_CURRENT_SOURCE_DIR}/../../src")
+include_directories("${CMAKE_CURRENT_SOURCE_DIR}/../src")
 include_directories("${CMAKE_CURRENT_SOURCE_DIR}")
-include_directories("${CMAKE_CURRENT_SOURCE_DIR}/../../submodules/ColorWidgets/include")
-include_directories("${CMAKE_CURRENT_SOURCE_DIR}/../../submodules/MiscWidgets/misclib/include")
+include_directories("${CMAKE_CURRENT_SOURCE_DIR}/../submodules/ColorWidgets/include")
+include_directories("${CMAKE_CURRENT_SOURCE_DIR}/../submodules/MiscWidgets/misclib/include")
 
 function(cayman_plugin name sources)
     add_library(${name} MODULE ${SOURCES})
-    # TODO: Install plugins in lib/ not share/
-    install(TARGETS ${name} DESTINATION ${DATA_INSTALL_PATH}/plugins)
+    install(TARGETS ${name} DESTINATION ${PLUGIN_INSTALL_PATH})
 endfunction()
 
 

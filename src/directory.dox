@@ -70,6 +70,6 @@ All ui files and implementation of classes that use them shall go here.
 Everything must be in the \c view namespace.
 */
 /**
-\dir data/plugins
+\dir plugins
 \brief Sources for the plugins
 */

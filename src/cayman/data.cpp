@@ -95,6 +95,7 @@ Data::Data()
     {
         addDirectory(path);
     }
+    addDirectory(QCoreApplication::applicationDirPath()+"/../lib/"+QCoreApplication::applicationName());
     addDirectory(QCoreApplication::applicationDirPath()+"/../share/"+QCoreApplication::applicationName());
 }
 
