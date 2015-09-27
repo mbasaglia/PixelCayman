@@ -75,6 +75,16 @@ add_subdirectory(submodules/Qt-Extended-TabWidget)
 add_subdirectory(submodules/ConfirmCloseDialog)
 add_subdirectory(submodules/MiscWidgets)
 
+
+file(GLOB_RECURSE ALL_SOURCES
+    "src/*.cpp"
+    "src/*.hpp"
+    "data/plugins/*.cpp"
+    "data/plugins/*.hpp"
+    "submodules/*/src/*.cpp"
+    "submodules/*/src/*.hpp"
+    "submodules/*/include/*.hpp"
+)
 # Doxygen target
 find_package(Doxygen)
 if(DOXYGEN_FOUND)
@@ -84,14 +94,8 @@ if(DOXYGEN_FOUND)
     file(GLOB_RECURSE DOXYGEN_INPUT_FILES
         "*.dox"
         "src/*.dox"
-        "src/*.cpp"
-        "src/*.hpp"
-        "data/plugins/*.cpp"
-        "data/plugins/*.hpp"
-        "submodules/*/src/*.cpp"
-        "submodules/*/src/*.hpp"
-        "submodules/*/include/*.hpp"
     )
+    set(DOXYGEN_INPUT_FILES ${DOXYGEN_INPUT_FILES} ${ALL_SOURCES})
     foreach(source ${DOXYGEN_INPUT_FILES})
         set(DOXYGEN_INPUT "${DOXYGEN_INPUT} \"${source}\"")
     endforeach()
@@ -108,6 +112,26 @@ if(DOXYGEN_FOUND)
         COMMENT "Showing Doxygen documentation"
     )
 endif(DOXYGEN_FOUND)
+
+# Translation
+find_package(Qt5LinguistTools)
+if(Qt5LinguistTools_FOUND)
+    set(TRANSLATIONS translations/it_IT.ts)
+    foreach(TRANSLATION ${TRANSLATIONS})
+        set(TS_FILE "${CMAKE_CURRENT_SOURCE_DIR}/${TRANSLATION}")
+        set_source_files_properties(${TS_FILE} PROPERTIES OUTPUT_LOCATION "${CMAKE_BINARY_DIR}/data/translations")
+    endforeach()
+    file(GLOB_RECURSE UI_FILES
+        "src/*.ui"
+        "data/*.ui"
+        "plugins/*.ui"
+        "submodules/*.ui"
+    )
+    set(TRANSLATABLE ${ALL_SOURCES} ${UI_FILES})
+    qt5_create_translation(QM_FILES ${TRANSLATIONS} ${TRANSLATABLE})
+    add_custom_target(translations DEPENDS ${QM_FILES})
+    # TODO: check installation
+endif()
 
 # Package generation
 find_program(DPKG_PROGRAM dpkg)

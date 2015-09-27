@@ -70,8 +70,8 @@ Plugin* LibraryPluginFactory::create(const QString& fileName)
     else
     {
         delete lib;
-        emit registry().warning(tr("Could not create plugin from %2")
-            .arg(init_function).arg(fileName));
+        emit registry().warning(tr("Could not create plugin from %1")
+            .arg(fileName));
         return nullptr;
     }
 }
