@@ -165,7 +165,8 @@
           <bool>true</bool>
          </property>
          <property name="plainText">
-          <string>Mattia &quot;Melanosuchus&quot; Basaglia (Maintainer)</string>
+          <string>Mattia &quot;Melanosuchus&quot; Basaglia (Maintainer)
+Floris &quot;Flory&quot; Vladut (Artwork, Public Relations)</string>
          </property>
          <property name="textInteractionFlags">
           <set>Qt::TextSelectableByKeyboard|Qt::TextSelectableByMouse</set>
