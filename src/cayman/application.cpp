@@ -31,6 +31,7 @@
 #include "plugin/plugin_api.hpp"
 #include "plugin/plugin.hpp"
 #include "tool/eraser.hpp"
+#include "tool/flood_fill.hpp"
 #include "tool/registry.hpp"
 
 namespace cayman {
@@ -80,6 +81,7 @@ void Application::initTools()
 {
     tool::Registry::instance().addTool<tool::Brush>("brush");
     tool::Registry::instance().addTool<tool::Eraser>("eraser");
+    tool::Registry::instance().addTool<tool::FloodFill>("flood_fill");
 }
 
 void Application::initPlugins()

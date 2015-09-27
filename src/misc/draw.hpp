@@ -22,6 +22,8 @@
 #define PIXEL_CAYMAN_DRAW_HPP
 
 #include <QLine>
+#include <QImage>
+#include <QRegion>
 
 namespace misc {
 namespace draw {
@@ -63,6 +65,39 @@ template<class Callback>
         }
 
         func(point);
+    }
+
+namespace detail {
+/**
+ * \brief Select the pixels in \p img near \p pt matching \p pred into \p output
+ */
+template<class Predicate>
+    void floodFill(const QImage& img, const QPoint& pt, const Predicate& pred,
+                   QRegion& output, std::vector<char>& map)
+    {
+        auto map_index = pt.y()*img.width()+pt.x();
+        if ( !img.rect().contains(pt) || !pred(img.pixel(pt)) || map[map_index] )
+            return;
+        map[map_index] = true;
+        output |= QRect(pt, QSize{1,1});
+        floodFill(img, {pt.x()+1, pt.y()}, pred, output, map);
+        floodFill(img, {pt.x()-1, pt.y()}, pred, output, map);
+        floodFill(img, {pt.x(), pt.y()+1}, pred, output, map);
+        floodFill(img, {pt.x(), pt.y()-1}, pred, output, map);
+    }
+
+} // namespace detail
+
+/**
+ * \brief Select the pixels in \p img near \p pt matching \p pred into \p output
+ */
+template<class Predicate>
+    QRegion floodFill(const QImage& img, const QPoint& pt, const Predicate& pred)
+    {
+        QRegion region;
+        std::vector<char> map(img.width()*img.height());
+        detail::floodFill(img, pt, pred, region, map);
+        return region;
     }
 
 } // namespace draw

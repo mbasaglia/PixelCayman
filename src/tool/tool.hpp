@@ -107,6 +107,19 @@ public:
      * \brief Cursor to be displayed
      */
     virtual QCursor cursor(const view::GraphicsWidget* widget) const = 0;
+
+protected:
+    document::Image* activeImage(view::GraphicsWidget* widget) const
+    {
+        if ( !widget )
+            return nullptr;
+
+        if ( !widget->activeLayer() || widget->activeLayer()->locked() )
+            return nullptr;
+
+        /// \todo Select the active frame
+        return widget->activeLayer()->frameImage(nullptr);
+    }
 };
 
 } // namespace tool

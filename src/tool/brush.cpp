@@ -75,7 +75,7 @@ bool Brush::initialize(view::GraphicsWidget* widget)
 
 void Brush::finalize(view::GraphicsWidget* widget)
 {
-    end_draw(widget);
+    endDraw(widget);
 }
 
 void Brush::mousePressEvent(const QMouseEvent* event, view::GraphicsWidget* widget)
@@ -88,7 +88,7 @@ void Brush::mousePressEvent(const QMouseEvent* event, view::GraphicsWidget* widg
 
     if ( event->button() == Qt::LeftButton )
     {
-        begin_draw(widget);
+        beginDraw(widget);
         draw(widget);
     }
 }
@@ -127,7 +127,7 @@ void Brush::mouseReleaseEvent(const QMouseEvent* event, view::GraphicsWidget* wi
     if ( event->button() == Qt::LeftButton )
     {
         draw(widget);
-        end_draw(widget);
+        endDraw(widget);
     }
 
     line.setP1(line.p2());
@@ -198,30 +198,17 @@ QString Brush::actionName(view::GraphicsWidget*) const
     return tr("Paint");
 }
 
-void Brush::begin_draw(view::GraphicsWidget* widget)
+void Brush::beginDraw(view::GraphicsWidget* widget)
 {
     if ( document::Image* image = activeImage(widget) )
         image->beginPainting(actionName(widget));
 }
 
-void Brush::end_draw(view::GraphicsWidget* widget)
+void Brush::endDraw(view::GraphicsWidget* widget)
 {
     if ( document::Image* image = activeImage(widget) )
         image->endPainting();
 }
-
-document::Image* Brush::activeImage(view::GraphicsWidget* widget)
-{
-    if ( !widget )
-        return nullptr;
-
-    if ( !widget->activeLayer() || widget->activeLayer()->locked() )
-        return nullptr;
-
-    /// \todo Select the active frame
-    return widget->activeLayer()->frameImage(nullptr);
-}
-
 
 void Brush::drawForegroundImpl(QPainter* painter)
 {

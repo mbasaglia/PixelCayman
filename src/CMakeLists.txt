@@ -74,6 +74,8 @@ style/itemview_style_rowdrop.hpp
 tool/brush.cpp
 tool/brush.hpp
 tool/eraser.hpp
+tool/flood_fill.hpp
+tool/flood_fill.cpp
 tool/registry.hpp
 tool/tool.hpp
 ui/color_editor.cpp

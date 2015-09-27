@@ -18,8 +18,8 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-#ifndef PIXEL_CAYMAN_TOOL_PAINT_HPP
-#define PIXEL_CAYMAN_TOOL_PAINT_HPP
+#ifndef PIXEL_CAYMAN_TOOL_FLOOD_FILL_HPP
+#define PIXEL_CAYMAN_TOOL_FLOOD_FILL_HPP
 
 #include "tool.hpp"
 #include "document/image.hpp"
@@ -29,11 +29,11 @@
 
 namespace tool {
 
-class Brush : public Tool
+class FloodFill : public Tool
 {
 public:
-    Brush();
-    ~Brush();
+    FloodFill();
+    ~FloodFill();
 
     QIcon icon() const override;
     QString name() const override;
@@ -47,43 +47,9 @@ public:
     QWidget* optionsWidget() override;
     QCursor cursor(const view::GraphicsWidget* widget) const override;
 
-protected:
-    void draw(view::GraphicsWidget* widget);
-    void beginDraw(view::GraphicsWidget* widget);
-    void endDraw(view::GraphicsWidget* widget);
-
-    /**
-     * \brief Set the brush to use a p-norm ball with the given diameter
-     */
-    void ballBrush(int diameter, qreal p_norm);
-
-    void rectangleBrush(const QSize& size);
-
-    /**
-     * \brief The color to be used by the tool
-     */
-    virtual QColor color(view::GraphicsWidget* widget) const;
-
-    /**
-     * \brief The color to be used by the tool
-     */
-    virtual QPainter::CompositionMode blend(view::GraphicsWidget* widget) const;
-
-    /**
-     * \brief Name of the action performed by the tool (Shown in the undo command)
-     */
-    virtual QString actionName(view::GraphicsWidget* widget) const;
+private:
 
     class Widget;
-
-private:
-    void drawForegroundImpl(QPainter* painter);
-
-    QLine  line;
-    bool   draw_line = false;
-
-    QImage       brush_mask;
-    QPainterPath brush_path;
 
     /**
      * \brief Reference conter for \c options_widget.
@@ -97,10 +63,10 @@ private:
      * \brief Option widget, shared across all instances and derived classes
      *
      * Will be initialized on the first call to optionsWidget() and
-     * destructed when the last Brush is destroyed
+     * destructed when the last FloodFill is destroyed
      */
     static Widget* options_widget;
 };
 
 } // namespace tool
-#endif // PIXEL_CAYMAN_TOOL_PAINT_HPP
+#endif // PIXEL_CAYMAN_TOOL_FLOOD_FILL_HPP
