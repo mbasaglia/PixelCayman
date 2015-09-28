@@ -18,8 +18,8 @@
     <normaloff/>
    </iconset>
   </property>
-  <layout class="QVBoxLayout" name="verticalLayout">
-   <item>
+  <layout class="QGridLayout" name="gridLayout_2">
+   <item row="0" column="0">
     <layout class="QHBoxLayout" name="horizontalLayout">
      <item>
       <widget class="QListWidget" name="listWidget">
@@ -75,14 +75,6 @@
        </item>
        <item>
         <property name="text">
-         <string>Language</string>
-        </property>
-        <property name="icon">
-         <iconset theme="preferences-desktop-locale"/>
-        </property>
-       </item>
-       <item>
-        <property name="text">
          <string>Toolbars</string>
         </property>
         <property name="icon">
@@ -113,63 +105,38 @@
         <number>0</number>
        </property>
        <widget class="QWidget" name="page_general">
-        <layout class="QVBoxLayout" name="verticalLayout_2">
-         <item>
-          <widget class="QGroupBox" name="groupBox">
-           <property name="title">
-            <string>Recent Files</string>
+        <layout class="QGridLayout" name="gridLayout">
+         <item row="0" column="0">
+          <widget class="QLabel" name="label">
+           <property name="text">
+            <string>Recent files</string>
            </property>
-           <layout class="QGridLayout" name="gridLayout">
-            <item row="0" column="0">
-             <widget class="QLabel" name="label">
-              <property name="text">
-               <string>Maximum number of entries</string>
-              </property>
-             </widget>
-            </item>
-            <item row="0" column="1">
-             <widget class="QSpinBox" name="spin_recent_files">
-              <property name="maximum">
-               <number>64</number>
-              </property>
-             </widget>
-            </item>
-            <item row="1" column="0" colspan="2">
-             <widget class="QPushButton" name="button_recent_files">
-              <property name="text">
-               <string>Clear recent file list</string>
-              </property>
-              <property name="icon">
-               <iconset theme="edit-clear-history"/>
-              </property>
-             </widget>
-            </item>
-           </layout>
           </widget>
          </item>
-         <item>
-          <widget class="QGroupBox" name="groupBox_2">
-           <property name="title">
-            <string>Global</string>
+         <item row="2" column="0" colspan="3">
+          <widget class="QCheckBox" name="check_warn_unsaved">
+           <property name="enabled">
+            <bool>false</bool>
            </property>
-           <layout class="QVBoxLayout" name="verticalLayout_3">
-            <item>
-             <widget class="QPushButton" name="button_clear_all">
-              <property name="text">
-               <string>Clear all settings</string>
-              </property>
-              <property name="icon">
-               <iconset theme="edit-clear"/>
-              </property>
-              <property name="checkable">
-               <bool>false</bool>
-              </property>
-             </widget>
-            </item>
-           </layout>
+           <property name="text">
+            <string>Warn when closing usaved files</string>
+           </property>
+           <property name="checked">
+            <bool>true</bool>
+           </property>
           </widget>
          </item>
-         <item>
+         <item row="0" column="2">
+          <widget class="QPushButton" name="button_recent_files">
+           <property name="text">
+            <string>Clear</string>
+           </property>
+           <property name="icon">
+            <iconset theme="edit-clear-history"/>
+           </property>
+          </widget>
+         </item>
+         <item row="5" column="0">
           <spacer name="verticalSpacer">
            <property name="orientation">
             <enum>Qt::Vertical</enum>
@@ -177,10 +144,75 @@
            <property name="sizeHint" stdset="0">
             <size>
              <width>20</width>
-             <height>278</height>
+             <height>0</height>
             </size>
            </property>
           </spacer>
+         </item>
+         <item row="1" column="0">
+          <widget class="QLabel" name="label_3">
+           <property name="text">
+            <string>Language</string>
+           </property>
+          </widget>
+         </item>
+         <item row="0" column="1">
+          <widget class="QSpinBox" name="spin_recent_files">
+           <property name="maximum">
+            <number>64</number>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="1" colspan="2">
+          <widget class="QComboBox" name="combo_language"/>
+         </item>
+         <item row="3" column="0" colspan="3">
+          <widget class="QPushButton" name="button_clear_all">
+           <property name="text">
+            <string>Clear all settings</string>
+           </property>
+           <property name="icon">
+            <iconset theme="edit-clear"/>
+           </property>
+           <property name="checkable">
+            <bool>false</bool>
+           </property>
+          </widget>
+         </item>
+         <item row="4" column="0" colspan="3">
+          <widget class="QGroupBox" name="groupBox_2">
+           <property name="title">
+            <string>Save between sessions</string>
+           </property>
+           <layout class="QVBoxLayout" name="verticalLayout_3">
+            <item>
+             <widget class="QCheckBox" name="check_save_toolbars">
+              <property name="enabled">
+               <bool>false</bool>
+              </property>
+              <property name="text">
+               <string>Toolbars</string>
+              </property>
+              <property name="checked">
+               <bool>true</bool>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QCheckBox" name="check_save_window">
+              <property name="enabled">
+               <bool>false</bool>
+              </property>
+              <property name="text">
+               <string>Main window position</string>
+              </property>
+              <property name="checked">
+               <bool>true</bool>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </widget>
          </item>
         </layout>
        </widget>
@@ -203,7 +235,7 @@
          <item row="1" column="0">
           <widget class="QLabel" name="label_2">
            <property name="enabled">
-            <bool>false</bool>
+            <bool>true</bool>
            </property>
            <property name="text">
             <string>Stylesheet</string>
@@ -225,14 +257,14 @@
            <item>
             <widget class="QLineEdit" name="text_ui_stylesheet">
              <property name="enabled">
-              <bool>false</bool>
+              <bool>true</bool>
              </property>
             </widget>
            </item>
            <item>
             <widget class="QPushButton" name="button_ui_stylesheet">
              <property name="enabled">
-              <bool>false</bool>
+              <bool>true</bool>
              </property>
              <property name="text">
               <string>Open...</string>
@@ -298,21 +330,44 @@
          </item>
         </layout>
        </widget>
-       <widget class="QWidget" name="page_language">
-        <layout class="QVBoxLayout" name="verticalLayout_5">
-         <item>
-          <widget class="QListView" name="view_languages"/>
+       <widget class="QWidget" name="page_toolbars">
+        <layout class="QGridLayout" name="gridLayout_3">
+         <item row="0" column="0">
+          <widget class="QLabel" name="label_4">
+           <property name="text">
+            <string>Toolbar icon size</string>
+           </property>
+          </widget>
+         </item>
+         <item row="0" column="1">
+          <widget class="QComboBox" name="combo_tb_icon_size"/>
+         </item>
+         <item row="1" column="0">
+          <widget class="QLabel" name="label_5">
+           <property name="text">
+            <string>Toolbar button style</string>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="1">
+          <widget class="QComboBox" name="combo_tb_button_style"/>
+         </item>
+         <item row="2" column="0" colspan="2">
+          <widget class="QGroupBox" name="groupBox">
+           <property name="title">
+            <string>Toolbar Buttons</string>
+           </property>
+          </widget>
          </item>
         </layout>
        </widget>
-       <widget class="QWidget" name="page_toolbars"/>
        <widget class="QWidget" name="page_shortcuts"/>
        <widget class="QWidget" name="page_formats"/>
       </widget>
      </item>
     </layout>
    </item>
-   <item>
+   <item row="1" column="0">
     <widget class="QDialogButtonBox" name="buttonBox">
      <property name="standardButtons">
       <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>

@@ -174,6 +174,7 @@ public:
 
     QByteArray state;
     QByteArray geometry;
+    QSize      toolbar_icon_size;
 
     /**
      * \brief UI layout version, used by saveState
@@ -415,6 +416,7 @@ void MainWindow::Private::clearSettings(bool window_state)
         parent->restoreGeometry(geometry);
         parent->restoreState(state, ui_version);
     }
+    parent->setIconSize(toolbar_icon_size);
 }
 
 void MainWindow::Private::loadSettings(bool window_state)
@@ -448,6 +450,18 @@ void MainWindow::Private::loadSettings(bool window_state)
             parent->restoreGeometry(cayman::settings::get("geometry", geometry));
             parent->restoreState(cayman::settings::get("state", state), ui_version);
         }
+    }
+
+    /// \todo view actions to toggle toolbars (QToolBar::toggleViewAction())
+    SETTINGS_GROUP("ui/toolbars")
+    {
+        parent->setToolButtonStyle((Qt::ToolButtonStyle)
+            cayman::settings::get<int>("button_style", Qt::ToolButtonIconOnly));
+
+        if ( toolbar_icon_size.isEmpty() )
+            toolbar_icon_size = parent->iconSize();
+        int size = cayman::settings::get("icon_size", toolbar_icon_size.width());
+        parent->setIconSize({size, size});
     }
 }
 

@@ -54,6 +54,21 @@ public:
             qApp->setStyleSheetFile(stylesheet);
         }
 
+            // Toolbars
+        SETTINGS_GROUP("ui/toolbars")
+        {
+            if ( combo_tb_icon_size->currentIndex() == -1 )
+                cayman::settings::Settings::instance().remove("icon_size");
+            else
+                cayman::settings::put("icon_size", combo_tb_icon_size->currentData().toInt());
+
+            if ( combo_tb_button_style->currentIndex() == -1 )
+                cayman::settings::Settings::instance().remove("button_style");
+            else
+                cayman::settings::put("button_style",
+                    combo_tb_button_style->currentData().toInt());
+        }
+
     }
 
 
@@ -90,14 +105,32 @@ DialogSettings::DialogSettings(QWidget* parent)
         if ( !file.isEmpty() )
             p->text_ui_stylesheet->setText(file);
     });
-    p->text_ui_stylesheet->setText(cayman::settings::get("ui/stylesheet", QString()));
+    p->text_ui_stylesheet->setText(cayman::settings::get<QString>("ui/stylesheet"));
 
+    // Toolbars
+    SETTINGS_GROUP("ui/toolbars")
+    {
+        p->combo_tb_icon_size->addItem(tr("Small (16x16)"), 16);
+        p->combo_tb_icon_size->addItem(tr("Medium (22x22)"), 22);
+        p->combo_tb_icon_size->addItem(tr("Large (48x48)"), 48);
+        p->combo_tb_icon_size->addItem(tr("Huge (64x64)"), 64);
+        p->combo_tb_icon_size->setCurrentIndex(p->combo_tb_icon_size->findData(
+            cayman::settings::get<int>("icon_size")));
+
+        p->combo_tb_button_style->addItem(tr("Icon Only"), Qt::ToolButtonIconOnly);
+        p->combo_tb_button_style->addItem(tr("Text Only"), Qt::ToolButtonTextOnly);
+        p->combo_tb_button_style->addItem(tr("Text Beside Icon"), Qt::ToolButtonTextBesideIcon);
+        p->combo_tb_button_style->addItem(tr("Text Under Icon"), Qt::ToolButtonTextUnderIcon);
+        p->combo_tb_button_style->addItem(tr("Follow System Style"), Qt::ToolButtonFollowStyle);
+        p->combo_tb_button_style->setCurrentIndex(p->combo_tb_button_style->findData(
+            cayman::settings::get<int>("button_style")));
+        /// \todo Toolbar editor
+    }
 
     /// \todo Hooks for plugin settings
     /// \todo Tool settings
     /// \todo Plugin repo
     /// \todo Language
-    /// \todo Toolbars
     /// \todo Shortcuts
     /// \todo File format options
 }
