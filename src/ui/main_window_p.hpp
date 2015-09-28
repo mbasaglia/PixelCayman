@@ -344,10 +344,10 @@ void MainWindow::Private::initMenus()
     // Dynamic menus
     for ( auto* menu : Menu::instance().menus() )
     {
-        menubar->insertMenu(menu_help->menuAction(), menu);
+        menubar->insertMenu(menu_settings->menuAction(), menu);
     }
     connect(&Menu::instance(), &Menu::addedMenu, [this](QMenu* menu){
-        menubar->insertMenu(menu_help->menuAction(), menu);
+        menubar->insertMenu(menu_settings->menuAction(), menu);
     });
 
     // Help
