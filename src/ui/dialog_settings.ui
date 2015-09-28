@@ -1,0 +1,375 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>DialogSettings</class>
+ <widget class="QDialog" name="DialogSettings">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>623</width>
+    <height>538</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Settings</string>
+  </property>
+  <property name="windowIcon">
+   <iconset theme="preferences-system">
+    <normaloff/>
+   </iconset>
+  </property>
+  <layout class="QVBoxLayout" name="verticalLayout">
+   <item>
+    <layout class="QHBoxLayout" name="horizontalLayout">
+     <item>
+      <widget class="QListWidget" name="listWidget">
+       <property name="minimumSize">
+        <size>
+         <width>58</width>
+         <height>0</height>
+        </size>
+       </property>
+       <property name="maximumSize">
+        <size>
+         <width>144</width>
+         <height>16777215</height>
+        </size>
+       </property>
+       <property name="iconSize">
+        <size>
+         <width>48</width>
+         <height>48</height>
+        </size>
+       </property>
+       <item>
+        <property name="text">
+         <string>General</string>
+        </property>
+        <property name="icon">
+         <iconset theme="preferences-system"/>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>Tools</string>
+        </property>
+        <property name="icon">
+         <iconset theme="preferences-other"/>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>Interface</string>
+        </property>
+        <property name="icon">
+         <iconset theme="preferences-desktop-theme"/>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>Plugins</string>
+        </property>
+        <property name="icon">
+         <iconset theme="preferences-plugin"/>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>Language</string>
+        </property>
+        <property name="icon">
+         <iconset theme="preferences-desktop-locale"/>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>Toolbars</string>
+        </property>
+        <property name="icon">
+         <iconset theme="configure-toolbars"/>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>Shortcuts</string>
+        </property>
+        <property name="icon">
+         <iconset theme="configure-shortcuts"/>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>File Formats</string>
+        </property>
+        <property name="icon">
+         <iconset theme="preferences-desktop-filetype-association"/>
+        </property>
+       </item>
+      </widget>
+     </item>
+     <item>
+      <widget class="QStackedWidget" name="stackedWidget">
+       <property name="currentIndex">
+        <number>0</number>
+       </property>
+       <widget class="QWidget" name="page_general">
+        <layout class="QVBoxLayout" name="verticalLayout_2">
+         <item>
+          <widget class="QGroupBox" name="groupBox">
+           <property name="title">
+            <string>Recent Files</string>
+           </property>
+           <layout class="QGridLayout" name="gridLayout">
+            <item row="0" column="0">
+             <widget class="QLabel" name="label">
+              <property name="text">
+               <string>Maximum number of entries</string>
+              </property>
+             </widget>
+            </item>
+            <item row="0" column="1">
+             <widget class="QSpinBox" name="spin_recent_files">
+              <property name="maximum">
+               <number>64</number>
+              </property>
+             </widget>
+            </item>
+            <item row="1" column="0" colspan="2">
+             <widget class="QPushButton" name="button_recent_files">
+              <property name="text">
+               <string>Clear recent file list</string>
+              </property>
+              <property name="icon">
+               <iconset theme="edit-clear-history"/>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </widget>
+         </item>
+         <item>
+          <widget class="QGroupBox" name="groupBox_2">
+           <property name="title">
+            <string>Global</string>
+           </property>
+           <layout class="QVBoxLayout" name="verticalLayout_3">
+            <item>
+             <widget class="QPushButton" name="button_clear_all">
+              <property name="text">
+               <string>Clear all settings</string>
+              </property>
+              <property name="icon">
+               <iconset theme="edit-clear"/>
+              </property>
+              <property name="checkable">
+               <bool>false</bool>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </widget>
+         </item>
+         <item>
+          <spacer name="verticalSpacer">
+           <property name="orientation">
+            <enum>Qt::Vertical</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>20</width>
+             <height>278</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+        </layout>
+       </widget>
+       <widget class="QWidget" name="page_tools"/>
+       <widget class="QWidget" name="page_interface">
+        <layout class="QFormLayout" name="formLayout">
+         <item row="2" column="1">
+          <spacer name="verticalSpacer_2">
+           <property name="orientation">
+            <enum>Qt::Vertical</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>365</width>
+             <height>399</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+         <item row="1" column="0">
+          <widget class="QLabel" name="label_2">
+           <property name="enabled">
+            <bool>false</bool>
+           </property>
+           <property name="text">
+            <string>Stylesheet</string>
+           </property>
+          </widget>
+         </item>
+         <item row="0" column="0" colspan="2">
+          <widget class="QPushButton" name="button_ui_reset">
+           <property name="text">
+            <string>Reset main window layout</string>
+           </property>
+           <property name="icon">
+            <iconset theme="edit-clear"/>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="1">
+          <layout class="QHBoxLayout" name="horizontalLayout_2">
+           <item>
+            <widget class="QLineEdit" name="text_ui_stylesheet">
+             <property name="enabled">
+              <bool>false</bool>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QPushButton" name="button_ui_stylesheet">
+             <property name="enabled">
+              <bool>false</bool>
+             </property>
+             <property name="text">
+              <string>Open...</string>
+             </property>
+             <property name="icon">
+              <iconset theme="document-open">
+               <normaloff/>
+              </iconset>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </item>
+        </layout>
+       </widget>
+       <widget class="QWidget" name="page_plugins">
+        <layout class="QVBoxLayout" name="verticalLayout_4">
+         <item>
+          <widget class="QListView" name="view_plugins"/>
+         </item>
+         <item>
+          <layout class="QHBoxLayout" name="horizontalLayout_3">
+           <item>
+            <widget class="QPushButton" name="button_plugins_download">
+             <property name="enabled">
+              <bool>false</bool>
+             </property>
+             <property name="text">
+              <string>Browse Repository...</string>
+             </property>
+             <property name="icon">
+              <iconset theme="repository"/>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QPushButton" name="button_plugins_install">
+             <property name="enabled">
+              <bool>false</bool>
+             </property>
+             <property name="text">
+              <string>Install From File...</string>
+             </property>
+             <property name="icon">
+              <iconset theme="document-open"/>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <spacer name="horizontalSpacer">
+             <property name="orientation">
+              <enum>Qt::Horizontal</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>40</width>
+               <height>20</height>
+              </size>
+             </property>
+            </spacer>
+           </item>
+          </layout>
+         </item>
+        </layout>
+       </widget>
+       <widget class="QWidget" name="page_language">
+        <layout class="QVBoxLayout" name="verticalLayout_5">
+         <item>
+          <widget class="QListView" name="view_languages"/>
+         </item>
+        </layout>
+       </widget>
+       <widget class="QWidget" name="page_toolbars"/>
+       <widget class="QWidget" name="page_shortcuts"/>
+       <widget class="QWidget" name="page_formats"/>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item>
+    <widget class="QDialogButtonBox" name="buttonBox">
+     <property name="standardButtons">
+      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
+     </property>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <resources/>
+ <connections>
+  <connection>
+   <sender>listWidget</sender>
+   <signal>currentRowChanged(int)</signal>
+   <receiver>stackedWidget</receiver>
+   <slot>setCurrentIndex(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>105</x>
+     <y>115</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>236</x>
+     <y>134</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>buttonBox</sender>
+   <signal>accepted()</signal>
+   <receiver>DialogSettings</receiver>
+   <slot>accept()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>718</x>
+     <y>528</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>716</x>
+     <y>604</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>buttonBox</sender>
+   <signal>rejected()</signal>
+   <receiver>DialogSettings</receiver>
+   <slot>reject()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>803</x>
+     <y>516</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>800</x>
+     <y>576</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+</ui>

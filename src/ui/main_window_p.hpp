@@ -48,6 +48,7 @@
 #include "style/dockwidget_style_icon.hpp"
 #include "tool/tool.hpp"
 #include "view/graphics_widget.hpp"
+#include "dialog_settings.hpp"
 
 #include "ui_current_color.h"
 #include "ui_main_window.h"
@@ -66,8 +67,9 @@ public:
     void initMenus();
     void initStatusBar();
     void translateStatusBar();
-    void clearSettings();
-    void loadSettings();
+    void clearSettings(bool window_state = true);
+    void loadSettings(bool window_state = true);
+    void reloadSettings();
     void saveSettings();
     QAction* recentFileAction(const QString& file_name);
 
@@ -168,6 +170,7 @@ public:
     LabeledSpinBox* zoomer;
 
     QStringList recent_files;
+    int         recent_files_max = 0;
 
     QByteArray state;
     QByteArray geometry;
@@ -356,6 +359,15 @@ void MainWindow::Private::initMenus()
     tools_group = new QActionGroup(parent);
     tools_group->setExclusive(true);
 
+    // Settings
+    connect(action_preferences, &QAction::triggered, [this]{
+        saveSettings();
+        if ( DialogSettings(parent).exec() )
+        {
+            reloadSettings();
+        }
+    });
+
     // Misc
     document_actions = new QActionGroup(parent);
     document_actions->setExclusive(false);
@@ -392,39 +404,71 @@ void MainWindow::Private::translateStatusBar()
     zoomer->spinBox()->setSuffix(tr("%"));
 }
 
-void MainWindow::Private::clearSettings()
+void MainWindow::Private::clearSettings(bool window_state)
 {
+    recent_files_max = 0;
     recent_files.clear();
     menu_open_recent->clear();
     menu_open_recent->addAction(action_no_recent_files);
-    parent->restoreGeometry(geometry);
-    parent->restoreState(state, ui_version);
+    if ( window_state )
+    {
+        parent->restoreGeometry(geometry);
+        parent->restoreState(state, ui_version);
+    }
 }
 
-void MainWindow::Private::loadSettings()
+void MainWindow::Private::loadSettings(bool window_state)
 {
     palette_model.addSearchPath("/usr/share/gimp/2.0/palettes/");
     palette_model.addSearchPath("/usr/share/inkscape/palettes/");
     palette_model.addSearchPath("/usr/share/kde4/apps/calligra/palettes/");
     palette_model.load();
 
+    recent_files_max = cayman::settings::get("file/recent_max", 16);
     recent_files = cayman::settings::get("file/recent", QStringList{});
     if ( !recent_files.empty() )
     {
+        if ( recent_files.size() > recent_files_max )
+            recent_files.erase(recent_files.begin()+recent_files_max, recent_files.end());
         menu_open_recent->removeAction(action_no_recent_files);
         for ( const QString& file : recent_files )
             menu_open_recent->addAction(recentFileAction(file));
     }
 
-    SETTINGS_GROUP("ui/mainwindow")
+    if ( window_state )
     {
-        geometry = parent->saveGeometry();
-        state = parent->saveState(ui_version);
-        parent->restoreGeometry(cayman::settings::get<QByteArray>("geometry"));
-        parent->restoreState(cayman::settings::get<QByteArray>("state"), ui_version);
+        SETTINGS_GROUP("ui/mainwindow")
+        {
+            if ( geometry.isEmpty() )
+            {
+                geometry = parent->saveGeometry();
+                state = parent->saveState(ui_version);
+            }
+
+            parent->restoreGeometry(cayman::settings::get("geometry", geometry));
+            parent->restoreState(cayman::settings::get("state", state), ui_version);
+        }
     }
 }
 
+void MainWindow::Private::reloadSettings()
+{
+    clearSettings(false);
+    loadSettings(false);
+
+    SETTINGS_GROUP("ui/mainwindow")
+    {
+        auto curr_geometry = parent->saveGeometry();
+        auto new_geometry = cayman::settings::get("geometry", geometry);
+        if ( curr_geometry != new_geometry )
+            parent->restoreGeometry(new_geometry);
+
+        auto curr_state = parent->saveState(ui_version);
+        auto new_state = cayman::settings::get("state", state);
+        if ( curr_state != new_state )
+            parent->restoreState(new_state, ui_version);
+    }
+}
 
 void MainWindow::Private::saveSettings()
 {
@@ -466,12 +510,11 @@ void MainWindow::Private::pushRecentFile(const QString& name)
         before = menu_open_recent->actions().front();
     menu_open_recent->insertAction(before, recentFileAction(name));
 
-    int max = cayman::settings::get("file/recent_max", 16);
-    if ( recent_files.size() > max )
+    if ( recent_files.size() > recent_files_max )
     {
-        recent_files.erase(recent_files.begin()+max, recent_files.end());
+        recent_files.erase(recent_files.begin()+recent_files_max, recent_files.end());
         auto actions = menu_open_recent->actions();
-        for ( auto it = actions.begin()+max; it != actions.end(); ++it )
+        for ( auto it = actions.begin()+recent_files_max; it != actions.end(); ++it )
         {
             menu_open_recent->removeAction(*it);
             delete *it;

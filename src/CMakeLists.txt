@@ -92,6 +92,8 @@ ui/dialog_layer_create.hpp
 ui/dialog_document_create.hpp
 ui/dialog_about.hpp
 ui/dialog_about.cpp
+ui/dialog_settings.hpp
+ui/dialog_settings.cpp
 view/graphics_item.hpp
 view/graphics_widget.cpp
 view/graphics_widget.hpp
@@ -115,6 +117,7 @@ ui/tool_paint_widget.ui
 ui/dialog_layer_create.ui
 ui/dialog_document_create.ui
 ui/dialog_about.ui
+ui/dialog_settings.ui
 )
 qt5_wrap_ui(SOURCES ${UI_FILES})
 #endif()

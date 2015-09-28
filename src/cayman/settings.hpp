@@ -85,6 +85,14 @@ public:
         emit cleared();
     }
 
+    /**
+     * \brief Removes a key and all of its children
+     */
+    void remove(const QString& key)
+    {
+        settings_.remove(key);
+    }
+
 signals:
     /**
      * \brief Emitted on clear()
