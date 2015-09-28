@@ -41,11 +41,28 @@ Application::Application(int& argc, char** argv)
 {
     initInfo();
     settings_ = new settings::Settings;
+    QString stylesheet = settings_->get("ui/stylesheet", QString());
+    if ( !stylesheet.isEmpty() )
+        setStyleSheetFile(stylesheet);
 }
 
 Application::~Application()
 {
     delete settings_;
+}
+
+void Application::setStyleSheetFile(const QString& filename)
+{
+    if ( !filename.isEmpty() )
+    {
+        QFile qss(filename);
+        if ( qss.open(QFile::ReadOnly|QFile::Text) )
+            setStyleSheet(QString::fromUtf8(qss.readAll()));
+    }
+    else
+    {
+        setStyleSheet(QString());
+    }
 }
 
 bool Application::event(QEvent* event)

@@ -36,6 +36,8 @@ public:
 
     void initSubsystems();
 
+    void setStyleSheetFile(const QString& filename);
+
 protected:
     bool event(QEvent* event) override;
 
@@ -48,5 +50,11 @@ private:
     settings::Settings* settings_;
 };
 
+
 } // namespace cayman
 #endif // PIXEL_CAYMAN_APPLICATION_HPP
+
+#ifdef qApp
+#   undef qApp
+#endif
+#define qApp (static_cast<cayman::Application*>(QCoreApplication::instance()))

@@ -24,7 +24,7 @@
 #include <QEvent>
 #include <QFileDialog>
 #include "ui_dialog_settings.h"
-#include "cayman/settings.hpp"
+#include "cayman/application.hpp"
 
 class DialogSettings::Private : public Ui::DialogSettings
 {
@@ -44,10 +44,15 @@ public:
 
         // Ui
         if ( clear_ui )
-        {
             cayman::settings::Settings::instance().remove("ui/mainwindow");
+
+        QString stylesheet = cayman::settings::get("ui/stylesheet", QString());
+        if ( text_ui_stylesheet->text() != stylesheet )
+        {
+            stylesheet = text_ui_stylesheet->text();
+            cayman::settings::put("ui/stylesheet", stylesheet);
+            qApp->setStyleSheetFile(stylesheet);
         }
-        /// \todo Stylesheet
 
     }
 
@@ -85,6 +90,7 @@ DialogSettings::DialogSettings(QWidget* parent)
         if ( !file.isEmpty() )
             p->text_ui_stylesheet->setText(file);
     });
+    p->text_ui_stylesheet->setText(cayman::settings::get("ui/stylesheet", QString()));
 
 
     /// \todo Hooks for plugin settings
