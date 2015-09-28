@@ -116,7 +116,11 @@ endif(DOXYGEN_FOUND)
 # Translation
 find_package(Qt5LinguistTools)
 if(Qt5LinguistTools_FOUND)
-    set(TRANSLATIONS translations/it_IT.ts)
+    set(TRANSLATIONS
+        translations/it_IT.ts
+        translations/de_DE.ts
+        translations/fr_FR.ts
+    )
     foreach(TRANSLATION ${TRANSLATIONS})
         set(TS_FILE "${CMAKE_CURRENT_SOURCE_DIR}/${TRANSLATION}")
         set_source_files_properties(${TS_FILE} PROPERTIES
