@@ -41,6 +41,7 @@ public:
         cayman::settings::put("file/recent_max", spin_recent_files->value());
         if ( clear_recent )
             cayman::settings::put("file/recent", QStringList{});
+        cayman::settings::put("file/confirm_close", check_warn_unsaved->isChecked());
 
         // Ui
         if ( clear_ui )
@@ -91,6 +92,7 @@ DialogSettings::DialogSettings(QWidget* parent)
     connect(p->button_clear_all, &QPushButton::clicked, [this]{
         p->clear_recent = true;
     });
+    p->check_warn_unsaved->setChecked(cayman::settings::get<bool>("file/confirm_close"));
 
     // Ui
     connect(p->button_ui_reset, &QPushButton::clicked, [this]{

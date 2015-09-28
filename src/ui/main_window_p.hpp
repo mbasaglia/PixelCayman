@@ -144,6 +144,8 @@ public:
 
     MainWindow* parent;
 
+    bool confirm_close = true;
+
     QDockWidget* dock_set_color;
     ColorEditor* color_editor;
 
@@ -417,6 +419,7 @@ void MainWindow::Private::clearSettings(bool window_state)
         parent->restoreState(state, ui_version);
     }
     parent->setIconSize(toolbar_icon_size);
+    confirm_close = true;
 }
 
 void MainWindow::Private::loadSettings(bool window_state)
@@ -428,6 +431,8 @@ void MainWindow::Private::loadSettings(bool window_state)
 
     recent_files_max = cayman::settings::get("file/recent_max", 16);
     recent_files = cayman::settings::get("file/recent", QStringList{});
+    confirm_close = cayman::settings::get("file/confirm_close", confirm_close);
+
     if ( !recent_files.empty() )
     {
         if ( recent_files.size() > recent_files_max )

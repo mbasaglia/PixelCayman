@@ -305,7 +305,7 @@ bool MainWindow::closeTab(int tab, bool prompt)
 
 bool MainWindow::closeTabPrompt(int tab)
 {
-    return closeTab(tab, true);
+    return closeTab(tab, p->confirm_close);
 }
 
 void MainWindow::addTool(::tool::Tool* tool)
@@ -335,13 +335,16 @@ bool MainWindow::documentCloseAll()
         ConfirmCloseDialog dlg(this);
 
         bool has_dirty_documents = false;
-        for ( int i = 0; i < p->main_tab->count(); i++ )
+        if ( p->confirm_close )
         {
-            auto widget = p->widget(i);
-            if ( !widget->document()->undoStack().isClean() )
+            for ( int i = 0; i < p->main_tab->count(); i++ )
             {
-                dlg.addFile(i, p->documentName(widget->document()));
-                has_dirty_documents = true;
+                auto widget = p->widget(i);
+                if ( !widget->document()->undoStack().isClean() )
+                {
+                    dlg.addFile(i, p->documentName(widget->document()));
+                    has_dirty_documents = true;
+                }
             }
         }
 

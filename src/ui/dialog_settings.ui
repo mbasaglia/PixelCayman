@@ -115,9 +115,6 @@
          </item>
          <item row="2" column="0" colspan="3">
           <widget class="QCheckBox" name="check_warn_unsaved">
-           <property name="enabled">
-            <bool>false</bool>
-           </property>
            <property name="text">
             <string>Warn when closing usaved files</string>
            </property>
