@@ -37,6 +37,29 @@ public:
 
     void setStyleSheetFile(const QString& filename);
 
+    /**
+     * \brief Localized language name from the locale code
+     */
+    QString languageName(const QString& code) const;
+
+    /**
+     * \brief Set translation language
+     */
+    bool setLanguage(const QString& code);
+
+    /**
+     * \brief List of available language codes
+     */
+    QStringList availableLanguages() const
+    {
+        return translators.keys();
+    }
+
+    QString currentLanguage() const
+    {
+        return current_language;
+    }
+
 protected:
     bool event(QEvent* event) override;
 
@@ -45,8 +68,12 @@ private:
     void initPlugins();
     void initFormats();
     void initTools();
+    void initLanguages();
 
     settings::Settings* settings_;
+    QMap<QString, QTranslator*> translators; ///< Maps language code -> translator
+    QString current_language;
+    QString default_language = "en_US";
 };
 
 

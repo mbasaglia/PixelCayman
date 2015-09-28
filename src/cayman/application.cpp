@@ -22,6 +22,8 @@
 #include "application.hpp"
 
 #include <QIcon>
+#include <QLocale>
+#include <QTranslator>
 
 #include "data.hpp"
 #include "io/bitmap.hpp"
@@ -86,6 +88,7 @@ void Application::initSubsystems()
     initFormats();
     initTools();
     initPlugins();
+    initLanguages();
 }
 
 void Application::initFormats()
@@ -134,6 +137,78 @@ void Application::initPlugins()
 
     // Load all plugins
     plugin::PluginRegistry::instance().load();
+}
+
+QString Application::languageName(const QString& code) const
+{
+    QLocale lang_loc = QLocale(code);
+    QString name = lang_loc.nativeLanguageName();
+    if ( !name.isEmpty() )
+        name[0] = name[0].toUpper();
+    return name;
+}
+
+void Application::initLanguages()
+{
+    current_language = default_language;
+    translators[default_language] = nullptr;
+
+    static QRegularExpression lang_code("^.*([a-z]{2}(?:_[A-Z]{2}))\\.qm$");
+    for ( const auto& qm : data().readableWildcard("translations", "*.qm") )
+    {
+        auto match = lang_code.match(qm);
+        if ( !match.hasMatch() )
+            continue;
+
+        QString code = match.captured(1);
+        QString language = languageName(code);
+        if ( language.isEmpty() )
+            language = code;
+
+        QTranslator* trans = new QTranslator(this);
+        if ( !trans->load(qm) )
+        {
+            Message(Msg::Stream|Msg::Error) <<
+            /*: %1 is the file name,
+             *  %2 is the human-readable language code
+             *  %3 is the ISO language code
+             */
+            tr("Error on loading translation file %1 for language %2 (%3)")
+                .arg(qm).arg(language).arg(code);
+            delete trans;
+        }
+        else
+        {
+            translators[code] = trans;
+        }
+    }
+
+    setLanguage(settings_->get("language", default_language));
+}
+
+bool Application::setLanguage(const QString& code)
+{
+    if ( code == current_language )
+        return true;
+
+    auto it = translators.find(code);
+    if ( it == translators.end() )
+    {
+        Message(Msg::Stream|Msg::Error)
+            << tr("Translation for %1 is not available").arg(code);
+        return false;
+    }
+
+    if ( !it.value() || installTranslator(it.value()) )
+    {
+        removeTranslator(translators[current_language]);
+        current_language = it.key();
+        return true;
+    }
+
+    Message(Msg::Stream|Msg::Error)
+        << tr("Error while switching to language %1").arg(code);
+    return false;
 }
 
 settings::Settings* settings::Settings::singleton = nullptr;

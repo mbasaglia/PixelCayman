@@ -24,12 +24,12 @@
     <message>
         <location filename="../submodules/ColorWidgets/src/abstract_widget_list.cpp" line="118"/>
         <source>Move Up</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Sposta su</translation>
     </message>
     <message>
         <location filename="../submodules/ColorWidgets/src/abstract_widget_list.cpp" line="119"/>
         <source>Move Down</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Sposta giù</translation>
     </message>
     <message>
         <location filename="../submodules/ColorWidgets/src/abstract_widget_list.cpp" line="120"/>
@@ -348,6 +348,180 @@ Floris &quot;Flory&quot; Vladut (Artwork, Public Relations)</source>
     </message>
 </context>
 <context>
+    <name>DialogSettings</name>
+    <message>
+        <location filename="../src/ui/dialog_settings.ui" line="14"/>
+        <source>Settings</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/dialog_settings.ui" line="46"/>
+        <source>General</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/dialog_settings.ui" line="54"/>
+        <source>Tools</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/dialog_settings.ui" line="62"/>
+        <source>Interface</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/dialog_settings.ui" line="70"/>
+        <source>Plugins</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/dialog_settings.ui" line="78"/>
+        <location filename="../src/ui/dialog_settings.ui" line="191"/>
+        <source>Toolbars</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/dialog_settings.ui" line="86"/>
+        <source>Shortcuts</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/dialog_settings.ui" line="94"/>
+        <source>File Formats</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/dialog_settings.ui" line="112"/>
+        <source>Recent files</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/dialog_settings.ui" line="119"/>
+        <source>Warn when closing usaved files</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/dialog_settings.ui" line="129"/>
+        <source>Clear</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/dialog_settings.ui" line="152"/>
+        <source>Language</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/dialog_settings.ui" line="169"/>
+        <source>Clear all settings</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/dialog_settings.ui" line="182"/>
+        <source>Save between sessions</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/dialog_settings.ui" line="204"/>
+        <source>Main window position</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/dialog_settings.ui" line="238"/>
+        <source>Stylesheet</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/dialog_settings.ui" line="245"/>
+        <source>Reset main window layout</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/dialog_settings.ui" line="267"/>
+        <source>Open...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/dialog_settings.ui" line="293"/>
+        <source>Browse Repository...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/dialog_settings.ui" line="306"/>
+        <source>Install From File...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/dialog_settings.ui" line="335"/>
+        <source>Toolbar icon size</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/dialog_settings.ui" line="345"/>
+        <source>Toolbar button style</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/dialog_settings.ui" line="355"/>
+        <source>Toolbar Buttons</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/dialog_settings.cpp" line="107"/>
+        <source>Open Stylesheet</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/dialog_settings.cpp" line="108"/>
+        <source>Qt StyleSheets (*.qss);;All Files (*)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/dialog_settings.cpp" line="117"/>
+        <source>Small (16x16)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/dialog_settings.cpp" line="118"/>
+        <source>Medium (22x22)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/dialog_settings.cpp" line="119"/>
+        <source>Large (48x48)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/dialog_settings.cpp" line="120"/>
+        <source>Huge (64x64)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/dialog_settings.cpp" line="124"/>
+        <source>Icon Only</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/dialog_settings.cpp" line="125"/>
+        <source>Text Only</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/dialog_settings.cpp" line="126"/>
+        <source>Text Beside Icon</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/dialog_settings.cpp" line="127"/>
+        <source>Text Under Icon</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/dialog_settings.cpp" line="128"/>
+        <source>Follow System Style</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>FormatXmlMela</name>
     <message>
         <location filename="../src/io/xml.hpp" line="80"/>
@@ -589,62 +763,62 @@ Floris &quot;Flory&quot; Vladut (Artwork, Public Relations)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/main_window_p.hpp" line="122"/>
+        <location filename="../src/ui/main_window_p.hpp" line="124"/>
         <source>New Image</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/main_window_p.hpp" line="302"/>
+        <location filename="../src/ui/main_window_p.hpp" line="308"/>
         <source>Select Color</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Seleziona colore</translation>
     </message>
     <message>
-        <location filename="../src/ui/main_window_p.hpp" line="303"/>
+        <location filename="../src/ui/main_window_p.hpp" line="309"/>
         <source>Palette</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/main_window_p.hpp" line="304"/>
+        <location filename="../src/ui/main_window_p.hpp" line="310"/>
         <source>Edit Palette</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/main_window_p.hpp" line="305"/>
+        <location filename="../src/ui/main_window_p.hpp" line="311"/>
         <source>Current Color</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/main_window_p.hpp" line="306"/>
+        <location filename="../src/ui/main_window_p.hpp" line="312"/>
         <source>Action History</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/main_window_p.hpp" line="307"/>
+        <location filename="../src/ui/main_window_p.hpp" line="313"/>
         <source>Tool Options</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/main_window_p.hpp" line="308"/>
+        <location filename="../src/ui/main_window_p.hpp" line="314"/>
         <source>Layers</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/main_window_p.hpp" line="309"/>
+        <location filename="../src/ui/main_window_p.hpp" line="315"/>
         <source>Log</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/main_window_p.hpp" line="391"/>
+        <location filename="../src/ui/main_window_p.hpp" line="406"/>
         <source>Zoom</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/main_window_p.hpp" line="392"/>
+        <location filename="../src/ui/main_window_p.hpp" line="407"/>
         <source>%</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/main_window_p.hpp" line="576"/>
+        <location filename="../src/ui/main_window_p.hpp" line="638"/>
         <source>%1 *</source>
         <translation type="unfinished"></translation>
     </message>
@@ -690,18 +864,18 @@ Doyou want to save the changes</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/main_window.cpp" line="398"/>
-        <location filename="../src/ui/main_window.cpp" line="407"/>
+        <location filename="../src/ui/main_window.cpp" line="401"/>
+        <location filename="../src/ui/main_window.cpp" line="410"/>
         <source>Error opening file %1: %2</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/main_window.cpp" line="399"/>
+        <location filename="../src/ui/main_window.cpp" line="402"/>
         <source>Format not supported</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/main_window.cpp" line="412"/>
+        <location filename="../src/ui/main_window.cpp" line="415"/>
         <source>Reload from file</source>
         <translation type="unfinished"></translation>
     </message>
@@ -769,6 +943,24 @@ Doyou want to save the changes</source>
         <location filename="../src/ui/tool_paint_widget.ui" line="236"/>
         <source>p-norm factor</source>
         <translation>Coefficiente della p-norma</translation>
+    </message>
+</context>
+<context>
+    <name>cayman::Application</name>
+    <message>
+        <location filename="../src/cayman/application.cpp" line="175"/>
+        <source>Error on loading translation file %1 for language %2 (%3)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/cayman/application.cpp" line="197"/>
+        <source>Translation for %1 is not available</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/cayman/application.cpp" line="209"/>
+        <source>Error while switching to language %1</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -916,7 +1108,7 @@ Doyou want to save the changes</source>
     </message>
     <message>
         <location filename="../src/plugin/library_plugin.cpp" line="73"/>
-        <source>Could not create plugin from %2</source>
+        <source>Could not create plugin from %1</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

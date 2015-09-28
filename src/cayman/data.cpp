@@ -74,7 +74,25 @@ QStringList Data::readableList(const QString& file) const
     }
 
     return paths;
+}
 
+QStringList Data::readableWildcard(const QString& directory, const QString& pattern) const
+{
+    QMap<QString, QString> paths;
+
+    for ( QDir dir : readableList(directory) )
+    {
+        dir.setNameFilters({pattern});
+        dir.setFilter(QDir::Readable|QDir::AllEntries|QDir::NoDotAndDotDot);
+        for ( const QFileInfo& entry : dir.entryInfoList() )
+        {
+            auto it = paths.find(entry.fileName());
+            if ( it == paths.end() )
+                paths[entry.fileName()] = entry.canonicalFilePath();
+        }
+    }
+
+    return paths.values();
 }
 
 QString Data::writable(const QString& file) const

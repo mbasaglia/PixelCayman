@@ -42,6 +42,9 @@ public:
         if ( clear_recent )
             cayman::settings::put("file/recent", QStringList{});
         cayman::settings::put("file/confirm_close", check_warn_unsaved->isChecked());
+        QString lang = combo_language->currentData().toString();
+        cayman::settings::put("language", lang);
+        qApp->setLanguage(lang);
 
         // Ui
         if ( clear_ui )
@@ -93,6 +96,11 @@ DialogSettings::DialogSettings(QWidget* parent)
         p->clear_recent = true;
     });
     p->check_warn_unsaved->setChecked(cayman::settings::get<bool>("file/confirm_close"));
+    for ( const auto& lang : qApp->availableLanguages() )
+        p->combo_language->addItem(qApp->languageName(lang), lang);
+    p->combo_language->setCurrentIndex(
+        p->combo_language->findData(qApp->currentLanguage())
+    );
 
     // Ui
     connect(p->button_ui_reset, &QPushButton::clicked, [this]{

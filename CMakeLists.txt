@@ -119,7 +119,9 @@ if(Qt5LinguistTools_FOUND)
     set(TRANSLATIONS translations/it_IT.ts)
     foreach(TRANSLATION ${TRANSLATIONS})
         set(TS_FILE "${CMAKE_CURRENT_SOURCE_DIR}/${TRANSLATION}")
-        set_source_files_properties(${TS_FILE} PROPERTIES OUTPUT_LOCATION "${CMAKE_BINARY_DIR}/data/translations")
+        set_source_files_properties(${TS_FILE} PROPERTIES
+            OUTPUT_LOCATION
+            "${CMAKE_BINARY_DIR}/share/${EXECUTABLE_NAME}/translations")
     endforeach()
     file(GLOB_RECURSE UI_FILES
         "src/*.ui"

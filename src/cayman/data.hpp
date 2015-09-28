@@ -44,6 +44,13 @@ public:
     QStringList readableList(const QString& file) const;
 
     /**
+     * \brief Returns the list of existing files matching the given name
+     * \param directory Directory name to look into
+     * \param pattern   Wildcard pattern for files in \p directory
+     */
+    QStringList readableWildcard(const QString& directory, const QString& pattern) const;
+
+    /**
      * \brief Returns the path to a readable data file
      * \return A path to an existing file matching \p file,
      * an empty string if such file doesn't exists
