@@ -19,22 +19,22 @@
     <message>
         <location filename="../submodules/ColorWidgets/src/abstract_widget_list.cpp" line="67"/>
         <source>Add New</source>
-        <translation type="unfinished"></translation>
+        <translation>Aggiungi nuovo</translation>
     </message>
     <message>
         <location filename="../submodules/ColorWidgets/src/abstract_widget_list.cpp" line="118"/>
         <source>Move Up</source>
-        <translation type="unfinished">Sposta su</translation>
+        <translation>Sposta su</translation>
     </message>
     <message>
         <location filename="../submodules/ColorWidgets/src/abstract_widget_list.cpp" line="119"/>
         <source>Move Down</source>
-        <translation type="unfinished">Sposta giù</translation>
+        <translation>Sposta giù</translation>
     </message>
     <message>
         <location filename="../submodules/ColorWidgets/src/abstract_widget_list.cpp" line="120"/>
         <source>Remove</source>
-        <translation type="unfinished"></translation>
+        <translation>Rimuovi</translation>
     </message>
 </context>
 <context>
@@ -93,59 +93,54 @@
 <context>
     <name>ColorEditor</name>
     <message>
-        <location filename="../src/ui/color_editor.ui" line="14"/>
-        <source>TabWidget</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/ui/color_editor.ui" line="24"/>
+        <location filename="../src/ui/color_editor.ui" line="21"/>
         <source>Wheel</source>
         <translation>Ruota</translation>
     </message>
     <message>
-        <location filename="../src/ui/color_editor.ui" line="42"/>
-        <location filename="../src/ui/color_editor.ui" line="135"/>
-        <location filename="../src/ui/color_editor.ui" line="226"/>
+        <location filename="../src/ui/color_editor.ui" line="39"/>
+        <location filename="../src/ui/color_editor.ui" line="132"/>
+        <location filename="../src/ui/color_editor.ui" line="223"/>
         <source>A:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/color_editor.ui" line="66"/>
+        <location filename="../src/ui/color_editor.ui" line="63"/>
         <source>RGB</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/color_editor.ui" line="72"/>
+        <location filename="../src/ui/color_editor.ui" line="69"/>
         <source>R:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/color_editor.ui" line="93"/>
+        <location filename="../src/ui/color_editor.ui" line="90"/>
         <source>G:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/color_editor.ui" line="114"/>
+        <location filename="../src/ui/color_editor.ui" line="111"/>
         <source>B:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/color_editor.ui" line="157"/>
+        <location filename="../src/ui/color_editor.ui" line="154"/>
         <source>HSV</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/color_editor.ui" line="163"/>
+        <location filename="../src/ui/color_editor.ui" line="160"/>
         <source>H:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/color_editor.ui" line="184"/>
+        <location filename="../src/ui/color_editor.ui" line="181"/>
         <source>S:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/color_editor.ui" line="205"/>
+        <location filename="../src/ui/color_editor.ui" line="202"/>
         <source>V:</source>
         <translation type="unfinished"></translation>
     </message>
@@ -210,7 +205,8 @@
         <location filename="../submodules/ColorWidgets/src/color_palette_widget.cpp" line="235"/>
         <source>Failed to load the palette file
 %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Errore durante il caricamento del file tavolozza
+%1</translation>
     </message>
 </context>
 <context>
@@ -257,12 +253,12 @@
     <message>
         <location filename="../src/ui/dialog_about.ui" line="95"/>
         <source>PixelCayman is a customizable pixel art editor.</source>
-        <translation type="unfinished"></translation>
+        <translation>PixelCayman è un editor di pixel art.</translation>
     </message>
     <message>
         <location filename="../src/ui/dialog_about.ui" line="106"/>
         <source>License</source>
-        <translation type="unfinished"></translation>
+        <translation>Licenza</translation>
     </message>
     <message>
         <location filename="../src/ui/dialog_about.ui" line="144"/>
@@ -281,7 +277,7 @@ Floris &quot;Flory&quot; Vladut (Artwork, Public Relations)</source>
     <message>
         <location filename="../src/ui/dialog_document_create.ui" line="32"/>
         <source>&amp;Lock Ratio</source>
-        <translation type="unfinished"></translation>
+        <translation>B&amp;locca rapporto</translation>
     </message>
     <message>
         <location filename="../src/ui/dialog_document_create.ui" line="35"/>
@@ -352,173 +348,178 @@ Floris &quot;Flory&quot; Vladut (Artwork, Public Relations)</source>
     <message>
         <location filename="../src/ui/dialog_settings.ui" line="14"/>
         <source>Settings</source>
-        <translation type="unfinished"></translation>
+        <translation>Impostazioni</translation>
     </message>
     <message>
         <location filename="../src/ui/dialog_settings.ui" line="46"/>
         <source>General</source>
-        <translation type="unfinished"></translation>
+        <translation>Generali</translation>
     </message>
     <message>
         <location filename="../src/ui/dialog_settings.ui" line="54"/>
         <source>Tools</source>
-        <translation type="unfinished"></translation>
+        <translation>Strumenti</translation>
     </message>
     <message>
         <location filename="../src/ui/dialog_settings.ui" line="62"/>
         <source>Interface</source>
-        <translation type="unfinished"></translation>
+        <translation>Interfaccia</translation>
     </message>
     <message>
         <location filename="../src/ui/dialog_settings.ui" line="70"/>
         <source>Plugins</source>
-        <translation type="unfinished"></translation>
+        <translation>Estensioni</translation>
     </message>
     <message>
         <location filename="../src/ui/dialog_settings.ui" line="78"/>
         <location filename="../src/ui/dialog_settings.ui" line="191"/>
         <source>Toolbars</source>
-        <translation type="unfinished"></translation>
+        <translation>Barre degli strumenti</translation>
     </message>
     <message>
         <location filename="../src/ui/dialog_settings.ui" line="86"/>
         <source>Shortcuts</source>
-        <translation type="unfinished"></translation>
+        <translation>Tasti rapidi</translation>
     </message>
     <message>
         <location filename="../src/ui/dialog_settings.ui" line="94"/>
         <source>File Formats</source>
-        <translation type="unfinished"></translation>
+        <translation>Formato file</translation>
     </message>
     <message>
         <location filename="../src/ui/dialog_settings.ui" line="112"/>
         <source>Recent files</source>
-        <translation type="unfinished"></translation>
+        <translation>File recenti</translation>
     </message>
     <message>
         <location filename="../src/ui/dialog_settings.ui" line="119"/>
         <source>Warn when closing usaved files</source>
-        <translation type="unfinished"></translation>
+        <translation>Avverti quando si stanno chiudendo file non salvati</translation>
     </message>
     <message>
         <location filename="../src/ui/dialog_settings.ui" line="129"/>
         <source>Clear</source>
-        <translation type="unfinished"></translation>
+        <translation>Elimina</translation>
     </message>
     <message>
         <location filename="../src/ui/dialog_settings.ui" line="152"/>
         <source>Language</source>
-        <translation type="unfinished"></translation>
+        <translation>Lingua</translation>
     </message>
     <message>
         <location filename="../src/ui/dialog_settings.ui" line="169"/>
         <source>Clear all settings</source>
-        <translation type="unfinished"></translation>
+        <translation>Cancella tutte le impostazioni</translation>
     </message>
     <message>
         <location filename="../src/ui/dialog_settings.ui" line="182"/>
         <source>Save between sessions</source>
-        <translation type="unfinished"></translation>
+        <translation>Salva tra le sessioni</translation>
     </message>
     <message>
         <location filename="../src/ui/dialog_settings.ui" line="204"/>
+        <source>Main window layout</source>
+        <translation>Layout della finestra principale</translation>
+    </message>
+    <message>
         <source>Main window position</source>
-        <translation type="unfinished"></translation>
+        <translation type="vanished">Posizione della finestra principale</translation>
     </message>
     <message>
         <location filename="../src/ui/dialog_settings.ui" line="238"/>
         <source>Stylesheet</source>
-        <translation type="unfinished"></translation>
+        <translation>Foglio di stile</translation>
     </message>
     <message>
         <location filename="../src/ui/dialog_settings.ui" line="245"/>
         <source>Reset main window layout</source>
-        <translation type="unfinished"></translation>
+        <translation>Resetta il layout della finestra principale</translation>
     </message>
     <message>
         <location filename="../src/ui/dialog_settings.ui" line="267"/>
         <source>Open...</source>
-        <translation type="unfinished"></translation>
+        <translation>Apri...</translation>
     </message>
     <message>
         <location filename="../src/ui/dialog_settings.ui" line="293"/>
         <source>Browse Repository...</source>
-        <translation type="unfinished"></translation>
+        <translatorcomment>repository?</translatorcomment>
+        <translation>Naviga il repository...</translation>
     </message>
     <message>
         <location filename="../src/ui/dialog_settings.ui" line="306"/>
         <source>Install From File...</source>
-        <translation type="unfinished"></translation>
+        <translation>Installa da file...</translation>
     </message>
     <message>
         <location filename="../src/ui/dialog_settings.ui" line="335"/>
         <source>Toolbar icon size</source>
-        <translation type="unfinished"></translation>
+        <translation>Dimensioni icone</translation>
     </message>
     <message>
         <location filename="../src/ui/dialog_settings.ui" line="345"/>
         <source>Toolbar button style</source>
-        <translation type="unfinished"></translation>
+        <translation>Stile pulsante</translation>
     </message>
     <message>
         <location filename="../src/ui/dialog_settings.ui" line="355"/>
         <source>Toolbar Buttons</source>
-        <translation type="unfinished"></translation>
+        <translation>Pulsanti</translation>
     </message>
     <message>
-        <location filename="../src/ui/dialog_settings.cpp" line="107"/>
+        <location filename="../src/ui/dialog_settings.cpp" line="113"/>
         <source>Open Stylesheet</source>
-        <translation type="unfinished"></translation>
+        <translation>Apri foglio di stile</translation>
     </message>
     <message>
-        <location filename="../src/ui/dialog_settings.cpp" line="108"/>
+        <location filename="../src/ui/dialog_settings.cpp" line="114"/>
         <source>Qt StyleSheets (*.qss);;All Files (*)</source>
-        <translation type="unfinished"></translation>
+        <translation>Fogli di style Qt (*.qss);;Tutti i file (*)</translation>
     </message>
     <message>
-        <location filename="../src/ui/dialog_settings.cpp" line="117"/>
+        <location filename="../src/ui/dialog_settings.cpp" line="123"/>
         <source>Small (16x16)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/ui/dialog_settings.cpp" line="118"/>
-        <source>Medium (22x22)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/ui/dialog_settings.cpp" line="119"/>
-        <source>Large (48x48)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/ui/dialog_settings.cpp" line="120"/>
-        <source>Huge (64x64)</source>
-        <translation type="unfinished"></translation>
+        <translation>Piccole (16x16)</translation>
     </message>
     <message>
         <location filename="../src/ui/dialog_settings.cpp" line="124"/>
-        <source>Icon Only</source>
-        <translation type="unfinished"></translation>
+        <source>Medium (22x22)</source>
+        <translation>Media (22x22)</translation>
     </message>
     <message>
         <location filename="../src/ui/dialog_settings.cpp" line="125"/>
-        <source>Text Only</source>
-        <translation type="unfinished"></translation>
+        <source>Large (48x48)</source>
+        <translation>Grande (48x48)</translation>
     </message>
     <message>
         <location filename="../src/ui/dialog_settings.cpp" line="126"/>
+        <source>Huge (64x64)</source>
+        <translation>Gigante (64x64)</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/dialog_settings.cpp" line="130"/>
+        <source>Icon Only</source>
+        <translation>Solo icona</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/dialog_settings.cpp" line="131"/>
+        <source>Text Only</source>
+        <translation>Solo testo</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/dialog_settings.cpp" line="132"/>
         <source>Text Beside Icon</source>
-        <translation type="unfinished"></translation>
+        <translation>Testo in parte all&apos;icone</translation>
     </message>
     <message>
-        <location filename="../src/ui/dialog_settings.cpp" line="127"/>
+        <location filename="../src/ui/dialog_settings.cpp" line="133"/>
         <source>Text Under Icon</source>
-        <translation type="unfinished"></translation>
+        <translation>Testo sotto l&apos;icona</translation>
     </message>
     <message>
-        <location filename="../src/ui/dialog_settings.cpp" line="128"/>
+        <location filename="../src/ui/dialog_settings.cpp" line="134"/>
         <source>Follow System Style</source>
-        <translation type="unfinished"></translation>
+        <translation>Segui lo stile di sistema</translation>
     </message>
 </context>
 <context>
@@ -531,17 +532,17 @@ Floris &quot;Flory&quot; Vladut (Artwork, Public Relations)</source>
     <message>
         <location filename="../src/io/xml.hpp" line="100"/>
         <source>XML error %1:%2:%3: %4</source>
-        <translation type="unfinished"></translation>
+        <translation>Errore XML %1:%2:%3: %4</translation>
     </message>
     <message>
         <location filename="../src/io/xml.hpp" line="106"/>
-        <source>XML error %1: %4</source>
-        <translation type="unfinished"></translation>
+        <source>XML error %1: %2</source>
+        <translation>Errore XML %1:%2</translation>
     </message>
     <message>
         <location filename="../src/io/xml.hpp" line="114"/>
         <source>Expected &lt;%1&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>Manca &lt;%1&gt;</translation>
     </message>
     <message>
         <location filename="../src/io/xml.hpp" line="154"/>
@@ -570,47 +571,43 @@ Floris &quot;Flory&quot; Vladut (Artwork, Public Relations)</source>
 <context>
     <name>LayerWidget</name>
     <message>
-        <location filename="../src/ui/layer_widget.ui" line="14"/>
-        <source>Form</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/ui/layer_widget.ui" line="56"/>
+        <location filename="../src/ui/layer_widget.ui" line="53"/>
         <source>New Layer</source>
         <translation>Nuovo livello</translation>
     </message>
     <message>
-        <location filename="../src/ui/layer_widget.ui" line="68"/>
+        <location filename="../src/ui/layer_widget.ui" line="63"/>
         <source>Remove Layer</source>
         <translation>Rimuovi livello</translation>
     </message>
     <message>
-        <location filename="../src/ui/layer_widget.ui" line="93"/>
+        <location filename="../src/ui/layer_widget.ui" line="86"/>
         <source>Move to Top</source>
         <translation>Sposta in cima</translation>
     </message>
     <message>
-        <location filename="../src/ui/layer_widget.ui" line="105"/>
+        <location filename="../src/ui/layer_widget.ui" line="96"/>
         <source>Move Up</source>
         <translation>Sposta su</translation>
     </message>
     <message>
-        <location filename="../src/ui/layer_widget.ui" line="117"/>
+        <location filename="../src/ui/layer_widget.ui" line="106"/>
         <source>Move Down</source>
         <translation>Sposta giù</translation>
     </message>
     <message>
-        <location filename="../src/ui/layer_widget.ui" line="129"/>
+        <location filename="../src/ui/layer_widget.ui" line="116"/>
         <source>Move to Bottom</source>
         <translation>Sposta in fondo</translation>
     </message>
     <message>
-        <location filename="../src/ui/layer_widget.cpp" line="64"/>
+        <location filename="../src/ui/layer_widget.cpp" line="65"/>
         <source>Custom</source>
-        <translation type="unfinished"></translation>
+        <extracomment>Custom/unrecognized layer blend mode name</extracomment>
+        <translation>Altro</translation>
     </message>
     <message>
-        <location filename="../src/ui/layer_widget.cpp" line="156"/>
+        <location filename="../src/ui/layer_widget.cpp" line="157"/>
         <source>Layer%1</source>
         <translation>Livello%1</translation>
     </message>
@@ -618,266 +615,253 @@ Floris &quot;Flory&quot; Vladut (Artwork, Public Relations)</source>
 <context>
     <name>MainWindow</name>
     <message>
-        <location filename="../src/ui/main_window.ui" line="14"/>
-        <source>MainWindow</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/ui/main_window.ui" line="47"/>
+        <location filename="../src/ui/main_window.ui" line="44"/>
         <source>&amp;File</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;File</translation>
     </message>
     <message>
-        <location filename="../src/ui/main_window.ui" line="51"/>
+        <location filename="../src/ui/main_window.ui" line="48"/>
         <source>Open &amp;Recent</source>
-        <translation type="unfinished"></translation>
+        <translation>Apri file &amp;recenti</translation>
     </message>
     <message>
-        <location filename="../src/ui/main_window.ui" line="78"/>
+        <location filename="../src/ui/main_window.ui" line="75"/>
         <source>&amp;Edit</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Modifica</translation>
     </message>
     <message>
-        <location filename="../src/ui/main_window.ui" line="84"/>
+        <location filename="../src/ui/main_window.ui" line="81"/>
         <source>&amp;Image</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Immagine</translation>
     </message>
     <message>
-        <location filename="../src/ui/main_window.ui" line="89"/>
+        <location filename="../src/ui/main_window.ui" line="86"/>
         <source>A&amp;nimation</source>
-        <translation type="unfinished"></translation>
+        <translation>A&amp;nimazione</translation>
     </message>
     <message>
-        <location filename="../src/ui/main_window.ui" line="94"/>
+        <location filename="../src/ui/main_window.ui" line="91"/>
         <source>&amp;Help</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Aiuto</translation>
     </message>
     <message>
-        <location filename="../src/ui/main_window.ui" line="101"/>
+        <location filename="../src/ui/main_window.ui" line="98"/>
         <source>&amp;View</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Vista</translation>
     </message>
     <message>
-        <location filename="../src/ui/main_window.ui" line="105"/>
+        <location filename="../src/ui/main_window.ui" line="102"/>
         <source>&amp;Docks</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
-        <location filename="../src/ui/main_window.ui" line="110"/>
+        <location filename="../src/ui/main_window.ui" line="107"/>
         <source>Tool&amp;bars</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Barre degli strumenti</translation>
     </message>
     <message>
-        <location filename="../src/ui/main_window.ui" line="118"/>
+        <location filename="../src/ui/main_window.ui" line="115"/>
         <source>&amp;Tools</source>
-        <translation type="unfinished"></translation>
+        <translation>S&amp;trumenti</translation>
     </message>
     <message>
-        <location filename="../src/ui/main_window.ui" line="123"/>
+        <location filename="../src/ui/main_window.ui" line="120"/>
         <source>&amp;Settings</source>
-        <translation type="unfinished"></translation>
+        <translation>Impo&amp;stazioni</translation>
     </message>
     <message>
-        <location filename="../src/ui/main_window.ui" line="127"/>
+        <location filename="../src/ui/main_window.ui" line="124"/>
         <source>Pl&amp;ugins</source>
-        <translation type="unfinished"></translation>
+        <translation>Pl&amp;ugin</translation>
     </message>
     <message>
-        <location filename="../src/ui/main_window.ui" line="150"/>
-        <source>toolBar</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/ui/main_window.ui" line="164"/>
+        <location filename="../src/ui/main_window.ui" line="160"/>
         <source>&amp;New</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Nuovo</translation>
     </message>
     <message>
-        <location filename="../src/ui/main_window.ui" line="172"/>
+        <location filename="../src/ui/main_window.ui" line="170"/>
         <source>&amp;Open</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Apri</translation>
     </message>
     <message>
         <location filename="../src/ui/main_window.ui" line="180"/>
         <source>&amp;Save</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Salva</translation>
     </message>
     <message>
-        <location filename="../src/ui/main_window.ui" line="188"/>
+        <location filename="../src/ui/main_window.ui" line="190"/>
         <source>Save &amp;As...</source>
-        <translation type="unfinished"></translation>
+        <translation>S&amp;alva con nome...</translation>
     </message>
     <message>
-        <location filename="../src/ui/main_window.ui" line="196"/>
+        <location filename="../src/ui/main_window.ui" line="200"/>
         <source>Save A&amp;ll</source>
-        <translation type="unfinished"></translation>
+        <translation>Sa&amp;lva tutti</translation>
     </message>
     <message>
-        <location filename="../src/ui/main_window.ui" line="207"/>
+        <location filename="../src/ui/main_window.ui" line="213"/>
         <source>&amp;Print...</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/ui/main_window.ui" line="215"/>
-        <source>&amp;Close</source>
-        <translation type="unfinished"></translation>
+        <translation>Stam&amp;pa...</translation>
     </message>
     <message>
         <location filename="../src/ui/main_window.ui" line="223"/>
+        <source>&amp;Close</source>
+        <translation>&amp;Chiudi</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/main_window.ui" line="233"/>
         <source>&amp;Quit</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
-        <location filename="../src/ui/main_window.ui" line="231"/>
+        <location filename="../src/ui/main_window.ui" line="241"/>
         <source>&amp;No Recent Files</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Nessun file recente</translation>
     </message>
     <message>
-        <location filename="../src/ui/main_window.ui" line="239"/>
+        <location filename="../src/ui/main_window.ui" line="251"/>
         <source>Clos&amp;e All</source>
-        <translation type="unfinished"></translation>
+        <translation>C&amp;hiudi tutti</translation>
     </message>
     <message>
-        <location filename="../src/ui/main_window.ui" line="242"/>
+        <location filename="../src/ui/main_window.ui" line="254"/>
         <source>Ctrl+Shift+W</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
-        <location filename="../src/ui/main_window.ui" line="250"/>
+        <location filename="../src/ui/main_window.ui" line="264"/>
         <source>&amp;About...</source>
-        <translation type="unfinished"></translation>
+        <translation>Inform&amp;azioni...</translation>
     </message>
     <message>
-        <location filename="../src/ui/main_window.ui" line="255"/>
+        <location filename="../src/ui/main_window.ui" line="269"/>
         <source>About &amp;Qt...</source>
-        <translation type="unfinished"></translation>
+        <translation>Informazioni su &amp;Qt...</translation>
     </message>
     <message>
-        <location filename="../src/ui/main_window.ui" line="263"/>
+        <location filename="../src/ui/main_window.ui" line="279"/>
         <source>&amp;Preferences...</source>
-        <translation type="unfinished"></translation>
+        <translation>Im&amp;postazioni...</translation>
     </message>
     <message>
-        <location filename="../src/ui/main_window.ui" line="271"/>
+        <location filename="../src/ui/main_window.ui" line="289"/>
         <source>Reloa&amp;d</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Ricarica</translation>
     </message>
     <message>
         <location filename="../src/ui/main_window_p.hpp" line="124"/>
         <source>New Image</source>
-        <translation type="unfinished"></translation>
+        <translation>Nuova immagine</translation>
     </message>
     <message>
         <location filename="../src/ui/main_window_p.hpp" line="308"/>
         <source>Select Color</source>
-        <translation type="unfinished">Seleziona colore</translation>
+        <translation>Seleziona colore</translation>
     </message>
     <message>
         <location filename="../src/ui/main_window_p.hpp" line="309"/>
         <source>Palette</source>
-        <translation type="unfinished"></translation>
+        <translation>Tavolozza</translation>
     </message>
     <message>
         <location filename="../src/ui/main_window_p.hpp" line="310"/>
         <source>Edit Palette</source>
-        <translation type="unfinished"></translation>
+        <translation>Modifica tavolozza</translation>
     </message>
     <message>
         <location filename="../src/ui/main_window_p.hpp" line="311"/>
         <source>Current Color</source>
-        <translation type="unfinished"></translation>
+        <translation>Colore corrente</translation>
     </message>
     <message>
         <location filename="../src/ui/main_window_p.hpp" line="312"/>
         <source>Action History</source>
-        <translation type="unfinished"></translation>
+        <translation>Storico delle azioni</translation>
     </message>
     <message>
         <location filename="../src/ui/main_window_p.hpp" line="313"/>
         <source>Tool Options</source>
-        <translation type="unfinished"></translation>
+        <translation>Opzioni strumento</translation>
     </message>
     <message>
         <location filename="../src/ui/main_window_p.hpp" line="314"/>
         <source>Layers</source>
-        <translation type="unfinished"></translation>
+        <translation>Livelli</translation>
     </message>
     <message>
         <location filename="../src/ui/main_window_p.hpp" line="315"/>
         <source>Log</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/ui/main_window_p.hpp" line="406"/>
         <source>Zoom</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/ui/main_window_p.hpp" line="407"/>
         <source>%</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
-        <location filename="../src/ui/main_window_p.hpp" line="638"/>
+        <location filename="../src/ui/main_window_p.hpp" line="639"/>
         <source>%1 *</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/ui/main_window.cpp" line="118"/>
         <source>Open Image</source>
-        <translation type="unfinished"></translation>
+        <translation>Apri immagine</translation>
     </message>
     <message>
         <location filename="../src/ui/main_window.cpp" line="183"/>
         <source>Save Image</source>
-        <translation type="unfinished"></translation>
+        <translation>Salva Immagine</translation>
     </message>
     <message>
         <location filename="../src/ui/main_window.cpp" line="209"/>
         <source>Unknown format</source>
-        <translation type="unfinished"></translation>
+        <translation>Formato sconosciuto</translation>
     </message>
     <message>
         <location filename="../src/ui/main_window.cpp" line="234"/>
         <source>Error saving %1: %2</source>
-        <translation type="unfinished"></translation>
+        <translation>Errore durante il salvataggio di %1: %2</translation>
     </message>
     <message>
         <location filename="../src/ui/main_window.cpp" line="248"/>
         <source>Unknown format for %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Formato sconosciuto per %1</translation>
     </message>
     <message>
         <location filename="../src/ui/main_window.cpp" line="262"/>
+        <location filename="../src/ui/main_window.cpp" line="401"/>
+        <location filename="../src/ui/main_window.cpp" line="410"/>
         <source>Error opening %1: %2</source>
-        <translation type="unfinished"></translation>
+        <translation>Errore durante l&apos;apertura di %1: %2</translation>
     </message>
     <message>
         <location filename="../src/ui/main_window.cpp" line="282"/>
         <source>Close file</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/ui/main_window.cpp" line="283"/>
-        <source>&quot;%1&quot; has been modified.
-Doyou want to save the changes</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/ui/main_window.cpp" line="401"/>
-        <location filename="../src/ui/main_window.cpp" line="410"/>
-        <source>Error opening file %1: %2</source>
-        <translation type="unfinished"></translation>
+        <translation>Chiudi file</translation>
     </message>
     <message>
         <location filename="../src/ui/main_window.cpp" line="402"/>
         <source>Format not supported</source>
-        <translation type="unfinished"></translation>
+        <translation>Formato non supportato</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/main_window.cpp" line="283"/>
+        <source>&quot;%1&quot; has been modified.
+Do you want to save the changes?</source>
+        <translation>&quot;%1&quot; è stato modificato.
+Vuoi salvare le modifiche?</translation>
     </message>
     <message>
         <location filename="../src/ui/main_window.cpp" line="415"/>
         <source>Reload from file</source>
-        <translation type="unfinished"></translation>
+        <translation>Ricarica dal file</translation>
     </message>
 </context>
 <context>
@@ -948,19 +932,19 @@ Doyou want to save the changes</source>
 <context>
     <name>cayman::Application</name>
     <message>
-        <location filename="../src/cayman/application.cpp" line="175"/>
+        <location filename="../src/cayman/application.cpp" line="177"/>
         <source>Error on loading translation file %1 for language %2 (%3)</source>
-        <translation type="unfinished"></translation>
+        <translation>Errore durante il caricamento del file di traduzione %1 per la lingua %2 (%3)</translation>
     </message>
     <message>
-        <location filename="../src/cayman/application.cpp" line="197"/>
+        <location filename="../src/cayman/application.cpp" line="199"/>
         <source>Translation for %1 is not available</source>
-        <translation type="unfinished"></translation>
+        <translation>La traduzione per %1 non è disponibile</translation>
     </message>
     <message>
-        <location filename="../src/cayman/application.cpp" line="209"/>
+        <location filename="../src/cayman/application.cpp" line="211"/>
         <source>Error while switching to language %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Errore durante il passaggio alla lingua %1</translation>
     </message>
 </context>
 <context>
@@ -1091,7 +1075,7 @@ Doyou want to save the changes</source>
     <message>
         <location filename="../src/plugin/plugin.cpp" line="142"/>
         <source>Exception during plugin creation: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Eccezione durante la creazione del plugin: %1</translation>
     </message>
 </context>
 <context>
@@ -1109,7 +1093,7 @@ Doyou want to save the changes</source>
     <message>
         <location filename="../src/plugin/library_plugin.cpp" line="73"/>
         <source>Could not create plugin from %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Impossible creare un plugin da %1</translation>
     </message>
 </context>
 <context>

@@ -169,9 +169,10 @@ void Application::initLanguages()
         if ( !trans->load(qm) )
         {
             Message(Msg::Stream|Msg::Error) <<
-            /*: %1 is the file name,
-             *  %2 is the human-readable language code
-             *  %3 is the ISO language code
+            /*:
+             * %1 is the file name,
+             * %2 is the human-readable language code
+             * %3 is the ISO language code
              */
             tr("Error on loading translation file %1 for language %2 (%3)")
                 .arg(qm).arg(language).arg(code);

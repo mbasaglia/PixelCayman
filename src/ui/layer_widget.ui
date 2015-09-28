@@ -10,9 +10,6 @@
     <height>300</height>
    </rect>
   </property>
-  <property name="windowTitle">
-   <string>Form</string>
-  </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <property name="leftMargin">
     <number>0</number>
@@ -56,9 +53,7 @@
         <string>New Layer</string>
        </property>
        <property name="icon">
-        <iconset theme="list-add">
-         <normaloff/>
-        </iconset>
+        <iconset theme="list-add"/>
        </property>
       </widget>
      </item>
@@ -68,9 +63,7 @@
         <string>Remove Layer</string>
        </property>
        <property name="icon">
-        <iconset theme="list-remove">
-         <normaloff/>
-        </iconset>
+        <iconset theme="list-remove"/>
        </property>
       </widget>
      </item>
@@ -93,9 +86,7 @@
         <string>Move to Top</string>
        </property>
        <property name="icon">
-        <iconset theme="go-top">
-         <normaloff/>
-        </iconset>
+        <iconset theme="go-top"/>
        </property>
       </widget>
      </item>
@@ -105,9 +96,7 @@
         <string>Move Up</string>
        </property>
        <property name="icon">
-        <iconset theme="go-up">
-         <normaloff/>
-        </iconset>
+        <iconset theme="go-up"/>
        </property>
       </widget>
      </item>
@@ -117,9 +106,7 @@
         <string>Move Down</string>
        </property>
        <property name="icon">
-        <iconset theme="go-down">
-         <normaloff/>
-        </iconset>
+        <iconset theme="go-down"/>
        </property>
       </widget>
      </item>
@@ -129,9 +116,7 @@
         <string>Move to Bottom</string>
        </property>
        <property name="icon">
-        <iconset theme="go-bottom">
-         <normaloff/>
-        </iconset>
+        <iconset theme="go-bottom"/>
        </property>
       </widget>
      </item>

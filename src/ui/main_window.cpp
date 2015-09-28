@@ -280,7 +280,7 @@ bool MainWindow::closeTab(int tab, bool prompt)
     {
          int reply = QMessageBox::question(this,
             tr("Close file"),
-            tr("\"%1\" has been modified.\nDoyou want to save the changes")
+            tr("\"%1\" has been modified.\nDo you want to save the changes?")
                 .arg(p->documentName(widget->document())),
             QMessageBox::Yes|QMessageBox::No|QMessageBox::Cancel,
             QMessageBox::Yes
@@ -398,7 +398,7 @@ bool MainWindow::documentReload()
     if ( !format || !format->canOpen() )
     {
         cayman::Message(Msg::AllOutput|Msg::Error,
-            tr("Error opening file %1: %2")
+            tr("Error opening %1: %2")
                 .arg(filename).arg(tr("Format not supported")));
         return false;
     }
@@ -407,7 +407,7 @@ bool MainWindow::documentReload()
     if ( !new_doc )
     {
         cayman::Message(Msg::AllOutput|Msg::Error,
-            tr("Error opening file %1: %2")
+            tr("Error opening %1: %2")
                 .arg(filename).arg(format->errorString()));
         return false;
     }

@@ -635,6 +635,7 @@ void MainWindow::Private::updateTitle()
 
     QString title = documentName(current_view->document());
     if ( !current_view->document()->undoStack().isClean() )
+        //: Title of the main window when the document has unsaved changes
         title = tr("%1 *").arg(title);
     parent->setWindowTitle(title);
 

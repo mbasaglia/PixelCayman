@@ -103,7 +103,7 @@ private:
 
     void error(const QString& message)
     {
-        throw XmlError(tr("XML error %1: %4")
+        throw XmlError(tr("XML error %1: %2")
             .arg(file_name).arg(message));
     }
 

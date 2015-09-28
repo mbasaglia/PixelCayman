@@ -61,6 +61,7 @@ LayerWidget::LayerWidget()
 
     auto delegate_blend_mode = new EnumComboDelegate(this);
     delegate_blend_mode->setNames(misc::composition_names);
+    //: Custom/unrecognized layer blend mode name
     delegate_blend_mode->setUnknownValueName(tr("Custom"));
     tree_view->setItemDelegateForColumn(::model::LayerTree::BlendMode, delegate_blend_mode);
 
