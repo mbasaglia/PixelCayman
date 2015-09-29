@@ -75,8 +75,16 @@ signals:
      */
     void edited();
 
+protected:
+    /**
+     * \brief Called when the document becomes the owner of this element
+     */
+    virtual void parentDocumentSet(Document* doc){}
+
 private:
     Metadata metadata_;
+
+    friend class Document;
 };
 
 } // namespace document

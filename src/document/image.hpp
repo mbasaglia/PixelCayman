@@ -85,7 +85,12 @@ public:
     void apply(Visitor& visitor) override;
     Document* parentDocument() const override;
 
+protected:
+    void parentDocumentSet(Document* doc) override;
+
 private:
+    void setColors();
+
     QImage image_;
     Frame* frame_;
     Layer* layer_;

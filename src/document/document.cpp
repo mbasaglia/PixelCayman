@@ -26,23 +26,38 @@
 
 namespace document {
 
+
+Document::Document(const Metadata& metadata)
+    : LayerContainer(metadata)
+{
+    auto lambda = [this]
+    {
+        color_table = palette_.colorTable();
+        emit paletteChanged(palette_);
+    };
+    connect(&palette_, &color_widgets::ColorPalette::colorsChanged, this, lambda);
+    connect(&palette_, &color_widgets::ColorPalette::colorsUpdated, this, lambda);
+}
+
 Document::Document(const QSize& size,
                    const QString& file_name,
                    const QColor& background,
                    const Metadata& metadata)
-    : LayerContainer(metadata),
-      image_size(size),
-      file_name(file_name)
+    : Document(metadata)
 {
+    image_size = size;
+    this->file_name = file_name;
     Layer* layer = new Layer(this, tr("Layer"));
     layer->addFrameImage(background);
     insertLayerRaw(layer, -1);
 }
 
 Document::Document(const QImage& image, const QString& file_name)
-    : image_size(image.size()),
-      file_name(file_name)
+    : Document()
 {
+    image_size = image.size();
+    this->file_name = file_name;
+    /// \todo If \p image has a color table, initialize the palette
     /// \todo Read exif metadata (maybe with Exiv2?)
     Layer* layer = new Layer(this, QFileInfo(file_name).baseName());
     layer->addFrameImage(image);
@@ -107,6 +122,8 @@ void Document::registerElement(DocumentElement* element, const QMetaObject& meta
         element->setObjectName(classname.toLower()
             +"_"+QString::number(quintptr(element)));
     }
+
+    element->parentDocumentSet(this);
 }
 
 void Document::stealElement(DocumentElement* element)
@@ -153,6 +170,30 @@ void Document::onRemoveLayer(Layer* layer)
 void Document::setImageSize(const QSize& size)
 {
     image_size = size;
+}
+
+const color_widgets::ColorPalette& Document::palette() const
+{
+    return palette_;
+}
+
+color_widgets::ColorPalette& Document::palette()
+{
+    return palette_;
+}
+
+bool Document::indexedColors() const
+{
+    return indexed_colors;
+}
+
+void Document::setIndexedColors(bool uses_palette)
+{
+    if ( uses_palette != indexed_colors )
+    {
+        emit indexedColorsChanged(indexed_colors = uses_palette);
+        emit paletteChanged(palette_);
+    }
 }
 
 } // namespace document

@@ -30,6 +30,7 @@ Image::Image(Layer* layer, const QImage& image,  Frame* frame)
     : image_(image), frame_(frame), layer_(layer)
 {
     layer->parentDocument()->registerElement(this);
+    setColors();
 }
 
 Image::Image(Layer* layer, const QSize& size, const QColor& color,  Frame* frame)
@@ -37,6 +38,7 @@ Image::Image(Layer* layer, const QSize& size, const QColor& color,  Frame* frame
 {
     image_.fill(color);
     layer->parentDocument()->registerElement(this);
+    setColors();
 }
 
 Image::~Image()
@@ -107,6 +109,28 @@ void Image::endPainting()
         parentDocument()->pushCommand(command_);
         command_ = nullptr;
     }
+}
+
+void Image::setColors()
+{
+    /// \todo undo command
+    if ( parentDocument()->indexedColors() )
+    {
+        image_.setColorTable(parentDocument()->colorTable());
+        if ( image_.format() != QImage::Format_Indexed8 )
+            image_.convertToFormat(QImage::Format_Indexed8 ,
+                Qt::AutoColor|Qt::DiffuseDither|Qt::DiffuseAlphaDither);
+    }
+    else
+    {
+        if ( image_.format() != QImage::Format_Indexed8 )
+            image_.convertToFormat(QImage::Format_ARGB32);
+    }
+}
+
+void Image::parentDocumentSet(Document* doc)
+{
+    connect(doc, &Document::paletteChanged, this, &Image::setColors);
 }
 
 } // namespace document

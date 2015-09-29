@@ -25,6 +25,7 @@
 #include "animation.hpp"
 #include "layer.hpp"
 #include "format_settings.hpp"
+#include "color_palette.hpp"
 
 namespace document {
 
@@ -36,6 +37,20 @@ class Document : public LayerContainer
     Q_OBJECT
 
     Q_PROPERTY(QString fileName READ fileName WRITE setFileName NOTIFY fileNameChanged)
+
+    /**
+     * \brief Palette for the document
+     *
+     * Has an effect only if indexedColors is true
+     */
+    Q_PROPERTY(color_widgets::ColorPalette palette READ palette NOTIFY paletteChanged)
+
+    /**
+     * \brief Whether the document should be using indexed colors
+     *
+     * The colors are defined by palette
+     */
+    Q_PROPERTY(bool indexedColors READ indexedColors WRITE setIndexedColors NOTIFY indexedColorsChanged)
 
 public:
     /**
@@ -54,7 +69,7 @@ public:
     /**
      * \brief Build a document with no layers and an invalid size
      */
-    Document(){}
+    Document(const Metadata& metadata = {});
 
     ~Document();
 
@@ -147,8 +162,23 @@ public:
         return format_settings;
     }
 
+    color_widgets::ColorPalette& palette();
+    const color_widgets::ColorPalette& palette() const;
+    /**
+     * \brief Cached color table
+     */
+    const QVector<QRgb>& colorTable() const
+    {
+        return color_table;
+    }
+
+    bool indexedColors() const;
+    void setIndexedColors(bool uses_palette);
+
 signals:
     void fileNameChanged(const QString& fileName);
+    void indexedColorsChanged(bool indexedColors);
+    void paletteChanged(const color_widgets::ColorPalette& palette);
 
 protected:
     void onInsertLayer(Layer* layer) override;
@@ -162,6 +192,9 @@ private:
     QString             file_name;
     QUndoStack          undo_stack;
     FormatSettings      format_settings;
+    color_widgets::ColorPalette palette_;
+    bool                indexed_colors = false;
+    QVector<QRgb>       color_table;
 };
 
 } // namespace document
