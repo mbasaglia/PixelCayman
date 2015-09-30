@@ -34,6 +34,7 @@ macro(data_file file)
 endmacro()
 
 data_file(icons/pixel-cayman)
+data_file(icons/flags)
 
 add_custom_target(data ALL DEPENDS ${DATA_TARGETS})
 

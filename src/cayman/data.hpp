@@ -84,7 +84,7 @@ public:
     /**
      * \brief Icon from the cayman theme
      */
-    QIcon caymanIcon(const QString& name, int max_size = 0);
+    QIcon caymanIcon(const QString& name, int max_size = 0, const QString& icon_set = "pixel-cayman");
 
 private:
     Data();

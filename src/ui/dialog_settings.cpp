@@ -25,6 +25,7 @@
 #include <QFileDialog>
 #include "ui_dialog_settings.h"
 #include "cayman/application.hpp"
+#include "cayman/data.hpp"
 
 class DialogSettings::Private : public Ui::DialogSettings
 {
@@ -97,7 +98,15 @@ DialogSettings::DialogSettings(QWidget* parent)
     });
     p->check_warn_unsaved->setChecked(cayman::settings::get<bool>("file/confirm_close"));
     for ( const auto& lang : qApp->availableLanguages() )
-        p->combo_language->addItem(qApp->languageName(lang), lang);
+    {
+        QIcon icon;
+        if ( lang.size() == 5 && lang[2] == '_' )
+            icon = cayman::data().caymanIcon(lang.right(2), 0, "flags");
+        if ( icon.isNull() )
+            icon = cayman::data().caymanIcon("_unknown", 0, "flags");
+
+        p->combo_language->addItem(icon, qApp->languageName(lang), lang);
+    }
     p->combo_language->setCurrentIndex(
         p->combo_language->findData(qApp->currentLanguage())
     );

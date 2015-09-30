@@ -125,13 +125,13 @@ QString Data::tempDir()
     return dir;
 }
 
-QIcon Data::caymanIcon(const QString& name, int max_size)
+QIcon Data::caymanIcon(const QString& name, int max_size, const QString& icon_set)
 {
-    auto it = cached_icons.find(name);
+    auto it = cached_icons.find(icon_set+'/'+name);
     if ( it != cached_icons.end() )
         return *it;
 
-    QString parent_path = readable("icons/pixel-cayman");
+    QString parent_path = readable("icons/"+icon_set);
     if ( parent_path.isEmpty() )
         return {};
 
@@ -150,7 +150,7 @@ QIcon Data::caymanIcon(const QString& name, int max_size)
         parent.cdUp();
     }
     if ( !icon.isNull() )
-        cached_icons[name] = icon;
+        cached_icons[icon_set+'/'+name] = icon;
 
     return icon;
 }
