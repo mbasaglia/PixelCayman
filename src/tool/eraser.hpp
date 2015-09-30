@@ -53,9 +53,11 @@ public:
     }
 
 protected:
-    QColor color(view::GraphicsWidget*) const override
+    QColor color(view::GraphicsWidget* widget) const override
     {
-        return Qt::transparent;
+        if ( !widget->activeLayer() )
+            return Qt::transparent;
+        return widget->activeLayer()->backgroundColor();
     }
 
     QPainter::CompositionMode blend(view::GraphicsWidget*) const override

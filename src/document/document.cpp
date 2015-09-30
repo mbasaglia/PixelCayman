@@ -48,7 +48,8 @@ Document::Document(const QSize& size,
     image_size = size;
     this->file_name = file_name;
     Layer* layer = new Layer(this, tr("Layer"));
-    layer->addFrameImage(background);
+    layer->setBackgroundColor(background);
+    layer->addFrameImage();
     insertLayerRaw(layer, -1);
 }
 

@@ -26,6 +26,7 @@
 #include <QImageReader>
 
 #include "misc/composition_mode.hpp"
+#include "color_names.hpp"
 
 static QMimeType mimeType(const QString &name, const QString& fallback)
 {
@@ -93,6 +94,7 @@ bool SaverXml::enter(document::Layer& layer)
     writer.writeAttribute("visible", QString::number(layer.visible()));
     writer.writeAttribute("locked", QString::number(layer.locked()));
     writer.writeAttribute("blend", misc::composition_to_string(layer.blendMode()));
+    writer.writeAttribute("background", color_widgets::stringFromColor(layer.backgroundColor().alpha()));
     writeMetadata(layer.metadata());
     return true;
 }
@@ -226,6 +228,7 @@ void LoaderXml::layer(const QDomElement& node)
     layer->setVisible(node.attribute("visible", "1").toInt());
     layer->setLocked(node.attribute("locked", "0").toInt());
     layer->setBlendMode(misc::composition_from_string(node.attribute("blend")));
+    layer->setBackgroundColor(color_widgets::colorFromString(node.attribute("background")));
 
     metadata(node);
 

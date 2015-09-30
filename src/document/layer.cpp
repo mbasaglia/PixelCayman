@@ -129,11 +129,16 @@ QList<Image*> Layer::frameImages()
     return frames_;
 }
 
-Image* Layer::addFrameImage(const QColor& background_color)
+Image* Layer::addFrameImage(const QColor& color)
 {
-    Image* image = new Image(this, owner_->imageSize(), background_color);
+    Image* image = new Image(this, owner_->imageSize(), color);
     frames_.push_back(image);
     return image;
+}
+
+Image* Layer::addFrameImage()
+{
+    return addFrameImage(background_color);
 }
 
 Image* Layer::addFrameImage(const QImage& qimage)
@@ -178,6 +183,26 @@ Image* Layer::frameImage(Frame* frame)
         if ( image->frame() == frame )
             return image;
     return nullptr;
+}
+
+QColor Layer::backgroundColor() const
+{
+    return background_color;
+}
+
+void Layer::setBackgroundColor(const QColor& new_background_color)
+{
+    /**
+     * \todo UI to change this, from a context menu in the layer widget
+     */
+    if ( new_background_color != background_color )
+        owner_->pushCommand(command::newSetProperty(
+            tr("Change Layer Background"),
+            background_color,
+            new_background_color,
+            [this](const QColor& color) {
+                emit backgroundColorChanged( background_color = color );
+        }));
 }
 
 } // namespace document

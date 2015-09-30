@@ -62,6 +62,14 @@ class Layer : public LayerContainer
      */
     Q_PROPERTY(QPainter::CompositionMode blendMode READ blendMode WRITE setBlendMode NOTIFY blendModeChanged)
 
+    /**
+     * \brief Background color for the layer
+     *
+     * Color to be used when part of the layer is to be considered without any contents
+     */
+    Q_PROPERTY(QColor backgroundColor READ backgroundColor WRITE setBackgroundColor NOTIFY backgroundColorChanged)
+
+
 public:
     explicit Layer(Document* owner, const QString& name, Layer* parentLayer = nullptr);
     Layer(const Layer&) = delete;
@@ -99,7 +107,9 @@ public:
      * \brief Creates a new frame for this layer
      * \returns The created image, the layer keeps its ownership
      */
-    Image* addFrameImage(const QColor& background_color = Qt::transparent);
+    Image* addFrameImage(const QColor& color);
+
+    Image* addFrameImage();
 
     Image* addFrameImage(const QImage& image);
 
@@ -109,6 +119,8 @@ public:
     QPainter::CompositionMode blendMode() const;
     void setBlendMode(QPainter::CompositionMode blendMode);
 
+    QColor backgroundColor() const;
+    void setBackgroundColor(const QColor& backgroundColor);
     
 signals:
     void nameChanged(const QString& name);
@@ -116,6 +128,7 @@ signals:
     void visibleChanged(bool visible);
     void opacityChanged(qreal opacity);
     void blendModeChanged(QPainter::CompositionMode blendMode);
+    void backgroundColorChanged(const QColor& backgroundColor);
 
 protected:
     void onInsertLayer(Layer* layer) override;
@@ -130,6 +143,7 @@ private:
     Document* owner_;
     Layer* parent_;
     QPainter::CompositionMode blend_mode_ = QPainter::CompositionMode_SourceOver;
+    QColor background_color{ 255, 255, 255, 0 };
 
     friend class Document;
 };
