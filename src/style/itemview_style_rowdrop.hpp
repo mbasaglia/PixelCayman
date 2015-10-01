@@ -50,8 +50,8 @@ public:
                 opt.rect.setLeft(view->visualRect(index).left());
 
                 index = index.sibling(index.row(), view->model()->columnCount(index.parent())-1);
-                opt.rect.setRight(qMin(view->visualRect(index).right()-1,
-                                       view->viewport()->width()-2));
+                opt.rect.setRight(/*qMin(view->visualRect(index).right()-1,*/
+                                       view->viewport()->width()-2/*)*/);
 
                 QProxyStyle::drawPrimitive(element, &opt, painter, widget);
                 return;

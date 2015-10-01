@@ -25,6 +25,9 @@
    </property>
    <item>
     <widget class="TreeViewAcceptSelf" name="tree_view">
+     <property name="contextMenuPolicy">
+      <enum>Qt::CustomContextMenu</enum>
+     </property>
      <property name="acceptDrops">
       <bool>true</bool>
      </property>
@@ -53,7 +56,9 @@
         <string>New Layer</string>
        </property>
        <property name="icon">
-        <iconset theme="list-add"/>
+        <iconset theme="list-add">
+         <normaloff/>
+        </iconset>
        </property>
       </widget>
      </item>
@@ -63,7 +68,9 @@
         <string>Remove Layer</string>
        </property>
        <property name="icon">
-        <iconset theme="list-remove"/>
+        <iconset theme="list-remove">
+         <normaloff/>
+        </iconset>
        </property>
       </widget>
      </item>
@@ -86,7 +93,9 @@
         <string>Move to Top</string>
        </property>
        <property name="icon">
-        <iconset theme="go-top"/>
+        <iconset theme="go-top">
+         <normaloff/>
+        </iconset>
        </property>
       </widget>
      </item>
@@ -96,7 +105,9 @@
         <string>Move Up</string>
        </property>
        <property name="icon">
-        <iconset theme="go-up"/>
+        <iconset theme="go-up">
+         <normaloff/>
+        </iconset>
        </property>
       </widget>
      </item>
@@ -106,7 +117,9 @@
         <string>Move Down</string>
        </property>
        <property name="icon">
-        <iconset theme="go-down"/>
+        <iconset theme="go-down">
+         <normaloff/>
+        </iconset>
        </property>
       </widget>
      </item>
@@ -116,7 +129,9 @@
         <string>Move to Bottom</string>
        </property>
        <property name="icon">
-        <iconset theme="go-bottom"/>
+        <iconset theme="go-bottom">
+         <normaloff/>
+        </iconset>
        </property>
       </widget>
      </item>

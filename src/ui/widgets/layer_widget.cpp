@@ -22,6 +22,7 @@
 #include "layer_widget.hpp"
 
 #include <QInputDialog>
+#include <QMenu>
 
 #include "bool_icon_delegate.hpp"
 #include "slider_delegate.hpp"
@@ -30,6 +31,8 @@
 #include "document/visitor.hpp"
 #include "ui/dialogs/dialog_layer_create.hpp"
 #include "color_delegate.hpp"
+#include "layer_properties_widget.hpp"
+#include "simple_dialog.hpp"
 
 LayerWidget::LayerWidget()
 {
@@ -131,6 +134,25 @@ LayerWidget::LayerWidget()
             auto layer = model.layer(index);
             model.moveRow(parent, index.row(), parent, index.row() + 2);
             tree_view->setCurrentIndex(model.index(layer));
+        }
+    });
+
+    connect(tree_view, &QWidget::customContextMenuRequested, [this](const QPoint& pos){
+        auto index = tree_view->indexAt(pos);
+        if ( auto layer = model.layer(index) )
+        {
+            QMenu menu;
+            QAction properties(QIcon::fromTheme("document-properties"), tr("Properties..."), this);
+            connect(&properties, &QAction::triggered, layer, [this, layer]{
+                auto layer_widget = new LayerPropertiesWidget();
+                layer_widget->populate(*layer);
+                if ( SimpleDialog(this, layer_widget).exec() )
+                {
+                    /// \todo Apply changes
+                }
+            });
+            menu.addAction(&properties);
+            menu.exec(tree_view->mapToGlobal(pos));
         }
     });
 
