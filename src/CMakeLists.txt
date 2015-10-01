@@ -84,6 +84,7 @@ ui/widgets/layer_widget.cpp
 ui/widgets/layer_widget.hpp
 ui/widgets/tool_paint_widget.cpp
 ui/widgets/tool_paint_widget.hpp
+ui/widgets/metadata_widget.hpp
 ui/dialogs/main_window.cpp
 ui/dialogs/main_window.hpp
 ui/dialogs/main_window_p.hpp
