@@ -41,6 +41,7 @@ public:
         Locked,
         Opacity,
         BlendMode,
+        BackgroundColor,
 
         ColumnCount
     };

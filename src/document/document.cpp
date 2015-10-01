@@ -51,6 +51,7 @@ Document::Document(const QSize& size,
     layer->setBackgroundColor(background);
     layer->addFrameImage();
     insertLayerRaw(layer, -1);
+    undo_stack.clear();
 }
 
 Document::Document(const QImage& image, const QString& file_name)

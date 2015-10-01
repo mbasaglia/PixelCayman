@@ -85,6 +85,7 @@ ui/widgets/layer_widget.hpp
 ui/widgets/tool_paint_widget.cpp
 ui/widgets/tool_paint_widget.hpp
 ui/widgets/metadata_widget.hpp
+ui/widgets/layer_properties_widget.hpp
 ui/dialogs/main_window.cpp
 ui/dialogs/main_window.hpp
 ui/dialogs/main_window_p.hpp
@@ -114,6 +115,7 @@ ui/widgets/color_editor.ui
 ui/widgets/current_color.ui
 ui/widgets/layer_widget.ui
 ui/widgets/tool_paint_widget.ui
+ui/widgets/layer_properties_widget.ui
 ui/dialogs/main_window.ui
 ui/dialogs/dialog_layer_create.ui
 ui/dialogs/dialog_document_create.ui

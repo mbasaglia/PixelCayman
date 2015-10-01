@@ -98,6 +98,7 @@ QVariant LayerTree::data(const QModelIndex& index, int role) const
             case Locked:    return layer->locked();
             case Opacity:   return layer->opacity();
             case BlendMode: return layer->blendMode();
+            case BackgroundColor: return layer->backgroundColor();
         }
     }
 
@@ -129,6 +130,9 @@ bool LayerTree::setData(const QModelIndex& index, const QVariant& value, int rol
                 return true;
             case BlendMode:
                 layer->setBlendMode(QPainter::CompositionMode(value.toInt()));
+                return true;
+            case BackgroundColor:
+                layer->setBackgroundColor(value.value<QColor>());
                 return true;
         }
     }

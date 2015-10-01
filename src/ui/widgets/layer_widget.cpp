@@ -29,6 +29,7 @@
 #include "misc/composition_mode.hpp"
 #include "document/visitor.hpp"
 #include "ui/dialogs/dialog_layer_create.hpp"
+#include "color_delegate.hpp"
 
 LayerWidget::LayerWidget()
 {
@@ -64,6 +65,9 @@ LayerWidget::LayerWidget()
     //: Custom/unrecognized layer blend mode name
     delegate_blend_mode->setUnknownValueName(tr("Custom"));
     tree_view->setItemDelegateForColumn(::model::LayerTree::BlendMode, delegate_blend_mode);
+
+    auto delegate_color = new color_widgets::ColorDelegate(this);
+    tree_view->setItemDelegateForColumn(::model::LayerTree::BackgroundColor, delegate_color);
 
     connect(tree_view->selectionModel(), &QItemSelectionModel::currentChanged,
         [this](const QModelIndex& index)
@@ -129,6 +133,10 @@ LayerWidget::LayerWidget()
             tree_view->setCurrentIndex(model.index(layer));
         }
     });
+
+    /// \todo Option to choose which columns are displayed
+    tree_view->hideColumn(::model::LayerTree::BlendMode);
+    tree_view->hideColumn(::model::LayerTree::BackgroundColor);
 }
 
 void LayerWidget::changeEvent(QEvent* event)
