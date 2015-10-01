@@ -58,6 +58,7 @@ src/slider_delegate.hpp
 src/log_view.hpp
 src/labeled_spinbox.hpp
 src/size_widget.hpp
+src/simple_dialog.hpp
 )
 
 qt5_wrap_cpp(SOURCES ${HEADERS})
