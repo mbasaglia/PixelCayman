@@ -21,7 +21,7 @@
  */
 #include <exception>
 
-#include "ui/main_window.hpp"
+#include "ui/dialogs/main_window.hpp"
 #include "cayman/message.hpp"
 #include "cayman/application.hpp"
 

@@ -26,7 +26,7 @@
 #include "view/graphics_widget.hpp"
 #include "misc/draw.hpp"
 #include "misc/math.hpp"
-#include "ui/tool_paint_widget.hpp"
+#include "ui/widgets/tool_paint_widget.hpp"
 #include "registry.hpp"
 #include <QApplication>
 

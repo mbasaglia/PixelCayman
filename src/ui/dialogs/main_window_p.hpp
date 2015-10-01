@@ -30,7 +30,7 @@
 #include <QUndoView>
 #include <QTextStream>
 
-#include "color_editor.hpp"
+#include "ui/widgets/color_editor.hpp"
 #include "color_line_edit.hpp"
 #include "color_palette_model.hpp"
 #include "color_palette_widget.hpp"
@@ -38,9 +38,9 @@
 #include "dialog_about.hpp"
 #include "item/layer_tree.hpp"
 #include "labeled_spinbox.hpp"
-#include "layer_widget.hpp"
+#include "ui/widgets/layer_widget.hpp"
 #include "log_view.hpp"
-#include "menu.hpp"
+#include "ui/menu.hpp"
 #include "cayman/message.hpp"
 #include "misclib/util.hpp"
 #include "plugin/plugin_api.hpp"

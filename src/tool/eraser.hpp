@@ -22,7 +22,7 @@
 #define PIXEL_CAYMAN_TOOL_ERASE_HPP
 
 #include "brush.hpp"
-#include "ui/tool_paint_widget.hpp"
+#include "ui/widgets/tool_paint_widget.hpp"
 
 namespace tool {
 

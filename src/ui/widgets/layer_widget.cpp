@@ -28,7 +28,7 @@
 #include "enum_combo_delegate.hpp"
 #include "misc/composition_mode.hpp"
 #include "document/visitor.hpp"
-#include "dialog_layer_create.hpp"
+#include "ui/dialogs/dialog_layer_create.hpp"
 
 LayerWidget::LayerWidget()
 {
