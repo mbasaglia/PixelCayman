@@ -24,6 +24,7 @@
 #include "plugin.hpp"
 #include "ui/menu.hpp"
 #include "external_tools.hpp"
+#include "cayman/data.hpp"
 
 namespace extools {
 
@@ -96,13 +97,9 @@ private:
         connect(action, &QAction::triggered, [id]{
             ExternalTools::instance().execute(id);
         });
-        /// \todo Have a unified system that can create an icon from:
-        /// * theme
-        /// * resource
-        /// * direct file (absolute or relative to the current directory)
-        /// * data file (relative to a readable data directory)
+
         if ( !tool.icon.isEmpty() )
-            action->setIcon(QIcon::fromTheme(tool.icon));
+            action->setIcon(cayman::data().icon(tool.icon));
 
         if ( ExternalTools::instance().usesDocument(tool) )
         {

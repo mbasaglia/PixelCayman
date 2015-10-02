@@ -84,7 +84,12 @@ public:
     /**
      * \brief Icon from the cayman theme
      */
-    QIcon caymanIcon(const QString& name, int max_size = 0, const QString& icon_set = "pixel-cayman");
+    QIcon caymanIcon(const QString& name, int max_size = 0, const QString& icon_set = "pixel-cayman") const;
+
+    /**
+     * \brief Icon from theme or file
+     */
+    QIcon icon(const QString& name) const;
 
 private:
     Data();
@@ -94,7 +99,7 @@ private:
 
     QStringList read_dirs;
     QString     write_dir;
-    QMap<QString, QIcon> cached_icons;
+    mutable QMap<QString, QIcon> cached_icons;
 };
 
 /**

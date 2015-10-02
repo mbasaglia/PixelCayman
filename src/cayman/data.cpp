@@ -125,7 +125,7 @@ QString Data::tempDir()
     return dir;
 }
 
-QIcon Data::caymanIcon(const QString& name, int max_size, const QString& icon_set)
+QIcon Data::caymanIcon(const QString& name, int max_size, const QString& icon_set) const
 {
     auto it = cached_icons.find(icon_set+'/'+name);
     if ( it != cached_icons.end() )
@@ -153,6 +153,29 @@ QIcon Data::caymanIcon(const QString& name, int max_size, const QString& icon_se
         cached_icons[icon_set+'/'+name] = icon;
 
     return icon;
+}
+
+QIcon Data::icon(const QString& name) const
+{
+    if ( name.isEmpty() )
+        return {};
+
+    if ( name.contains('\\') )
+    {
+        QIcon icon_file(name);
+        if ( icon_file.isNull() )
+        {
+            QString data = readable(name);
+            if ( !data.isNull() )
+                return QIcon(data);
+        }
+        return icon_file;
+    }
+
+    QIcon icon_theme = QIcon::fromTheme(name);
+    if ( icon_theme.isNull() )
+        return caymanIcon(name);
+    return icon_theme;
 }
 
 } // namespace cayman
