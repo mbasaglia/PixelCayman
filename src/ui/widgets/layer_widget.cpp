@@ -146,10 +146,9 @@ LayerWidget::LayerWidget()
             connect(&properties, &QAction::triggered, layer, [this, layer]{
                 auto layer_widget = new LayerPropertiesWidget();
                 layer_widget->populate(*layer);
-                if ( SimpleDialog(this, layer_widget).exec() )
-                {
-                    /// \todo Apply changes
-                }
+                SimpleDialog dlg(this, layer_widget);
+                if ( dlg.exec() )
+                    layer_widget->apply(*layer);
             });
             menu.addAction(&properties);
             menu.exec(tree_view->mapToGlobal(pos));

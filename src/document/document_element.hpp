@@ -61,10 +61,15 @@ public:
         return metadata_;
     }
 
+    /**
+     * \todo Generate command on change
+     */
     Metadata& metadata()
     {
         return metadata_;
     }
+
+    void setMetadata(const Metadata& data);
 
 signals:
     /**
@@ -74,6 +79,8 @@ signals:
      * Intended to be used to signal that the element should be re-drawn
      */
     void edited();
+
+    void metadataChanged(const Metadata& metadata);
 
 protected:
     /**

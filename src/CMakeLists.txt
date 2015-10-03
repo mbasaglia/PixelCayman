@@ -37,6 +37,7 @@ document/command/move_child_layers.hpp
 document/command/set_property.hpp
 document/document.cpp
 document/document_element.hpp
+document/document_element.cpp
 document/document.hpp
 document/format_settings.hpp
 document/frame.hpp

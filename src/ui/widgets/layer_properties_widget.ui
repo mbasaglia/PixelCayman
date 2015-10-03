@@ -82,19 +82,6 @@
          </property>
         </widget>
        </item>
-       <item row="3" column="1">
-        <widget class="QDoubleSpinBox" name="spin_opacity">
-         <property name="suffix">
-          <string>%</string>
-         </property>
-         <property name="decimals">
-          <number>0</number>
-         </property>
-         <property name="maximum">
-          <double>100.000000000000000</double>
-         </property>
-        </widget>
-       </item>
        <item row="4" column="0">
         <widget class="QLabel" name="label_3">
          <property name="text">
@@ -116,6 +103,16 @@
         <widget class="color_widgets::ColorSelector" name="color_background">
          <property name="display_mode" stdset="0">
           <enum>color_widgets::ColorPreview::SplitAlpha</enum>
+         </property>
+        </widget>
+       </item>
+       <item row="3" column="1">
+        <widget class="QSpinBox" name="spin_opacity">
+         <property name="suffix">
+          <string>px</string>
+         </property>
+         <property name="maximum">
+          <number>100</number>
          </property>
         </widget>
        </item>
