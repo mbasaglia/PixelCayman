@@ -115,6 +115,10 @@ Data::Data()
     }
     addDirectory(QCoreApplication::applicationDirPath()+"/../lib/"+QCoreApplication::applicationName());
     addDirectory(QCoreApplication::applicationDirPath()+"/../share/"+QCoreApplication::applicationName());
+
+    connect(qApp, &QObject::destroyed, this, [this]{
+        cached_icons.clear();
+    });
 }
 
 QString Data::tempDir()
@@ -137,10 +141,11 @@ QIcon Data::caymanIcon(const QString& name, int max_size, const QString& icon_se
 
     QIcon icon;
     QDir parent(parent_path);
-    for ( QString size_path : parent.entryList({"*x*"}, QDir::Dirs, QDir::Name) )
+    parent.setFilter(QDir::Dirs|QDir::NoDotAndDotDot);
+    for ( QString size_path : parent.entryList() )
     {
-        if ( max_size > 0 && size_path.split("x")[0].toInt() > max_size )
-            break;
+        if ( max_size > 0 && size_path.contains('x') && size_path.split("x")[0].toInt() > max_size )
+            continue;
         if ( !parent.cd(size_path) )
             continue;
         if ( parent.exists(name+".svg") )

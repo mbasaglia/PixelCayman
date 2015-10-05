@@ -24,14 +24,16 @@
 #include <QStringList>
 #include <QIcon>
 #include <QMap>
+#include <QObject>
 
 namespace cayman {
 
 /**
  * \brief Class managing data file paths
  */
-class Data
+class Data : public QObject
 {
+    Q_OBJECT
 public:
     /**
      * \brief List of directories that can be used to read data files
@@ -93,7 +95,6 @@ public:
 
 private:
     Data();
-    Data(const Data&) = delete;
     ~Data() {};
     friend Data& data();
 

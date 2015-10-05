@@ -49,6 +49,7 @@
 #include "tool/tool.hpp"
 #include "view/graphics_widget.hpp"
 #include "dialog_settings.hpp"
+#include "cayman/data.hpp"
 
 #include "ui_current_color.h"
 #include "ui_main_window.h"
@@ -190,7 +191,7 @@ QDockWidget* MainWindow::Private::createDock(QWidget* widget,
                                              const QString& theme_icon,
                                              const QString& object_name)
 {
-    return createDock(widget, QIcon::fromTheme(theme_icon), object_name);
+    return createDock(widget, cayman::data().icon(theme_icon), object_name);
 }
 
 QDockWidget* MainWindow::Private::createDock(QWidget* widget,
@@ -252,7 +253,7 @@ void MainWindow::Private::initDocks()
 
     // Layers
     layer_widget = new LayerWidget();
-    dock_layers = createDock(layer_widget, "format-list-unordered", "dock_layers");
+    dock_layers = createDock(layer_widget, "layer-list", "dock_layers");
 
     // Tool Options
     dock_tool_options = createDock(nullptr, "preferences-other", "dock_tool_options");

@@ -33,6 +33,7 @@
 #include "color_delegate.hpp"
 #include "layer_properties_widget.hpp"
 #include "simple_dialog.hpp"
+#include "cayman/data.hpp"
 
 LayerWidget::LayerWidget()
 {
@@ -142,7 +143,7 @@ LayerWidget::LayerWidget()
         if ( auto layer = model.layer(index) )
         {
             QMenu menu;
-            QAction properties(QIcon::fromTheme("document-properties"), tr("Properties..."), this);
+            QAction properties(cayman::data().icon("layer-properties"), tr("Properties..."), this);
             connect(&properties, &QAction::triggered, layer, [this, layer]{
                 auto layer_widget = new LayerPropertiesWidget();
                 layer_widget->populate(*layer);
