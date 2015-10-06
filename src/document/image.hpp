@@ -81,6 +81,12 @@ public:
     Layer* layer();
     const Layer* layer() const;
 
+    /**
+     * \brief Resize the image
+     * \param new_rect The new QRect relative to the old one
+     */
+    void resize(const QRect& new_rect);
+
 
     void apply(Visitor& visitor) override;
     Document* parentDocument() const override;

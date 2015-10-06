@@ -98,6 +98,11 @@ Document* Image::parentDocument() const
 
 void Image::beginPainting(const QString& text)
 {
+    if ( command_ )
+    {
+        /// \todo make it so they'll merge
+        endPainting();
+    }
     command_ = new command::ChangeImage(text, this, image_);
 }
 
@@ -132,6 +137,36 @@ void Image::parentDocumentSet(Document* doc)
 {
     connect(doc, &Document::paletteChanged, this, &Image::setColors);
 }
+
+void Image::resize(const QRect& new_rect)
+{
+    if ( new_rect == image_.rect() )
+        return;
+
+    endPainting();
+
+    if ( image_.rect().contains(new_rect) )
+    {
+        parentDocument()->pushCommand(
+            new command::ChangeImage(tr("Resize"), this, image_, image_.copy(new_rect))
+        );
+    }
+    else
+    {
+        QImage new_image(new_rect.size(), image_.format());
+        new_image.fill(layer_->backgroundColor());
+        QPainter painter(&new_image);
+        painter.drawImage(-new_rect.topLeft(), image_);
+        painter.end();
+
+        parentDocument()->pushCommand(
+            new command::ChangeImage(tr("Resize"), this, image_, new_image)
+        );
+    }
+
+    emit edited();
+}
+
 
 } // namespace document
 

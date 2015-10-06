@@ -52,6 +52,11 @@ class Document : public LayerContainer
      */
     Q_PROPERTY(bool indexedColors READ indexedColors WRITE setIndexedColors NOTIFY indexedColorsChanged)
 
+    /**
+     * \todo Maybe it should be renamed to canvas size
+     */
+    Q_PROPERTY(QSize imageSize READ imageSize WRITE setImageSize NOTIFY imageSizeChanged)
+
 public:
     /**
      * \brief Build a document with a single layer of the given size
@@ -179,6 +184,7 @@ signals:
     void fileNameChanged(const QString& fileName);
     void indexedColorsChanged(bool indexedColors);
     void paletteChanged(const color_widgets::ColorPalette& palette);
+    void imageSizeChanged(const QSize& imageSize);
 
 protected:
     void onInsertLayer(Layer* layer) override;

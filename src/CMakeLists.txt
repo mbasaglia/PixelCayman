@@ -48,6 +48,7 @@ document/layer_container.hpp
 document/layer.cpp
 document/layer.hpp
 document/visitor.hpp
+document/visitor/resize_canvas.hpp
 io/bitmap.cpp
 io/bitmap.hpp
 io/formats.cpp
@@ -96,6 +97,7 @@ ui/dialogs/dialog_about.hpp
 ui/dialogs/dialog_about.cpp
 ui/dialogs/dialog_settings.hpp
 ui/dialogs/dialog_settings.cpp
+ui/dialogs/dialog_resize_canvas.hpp
 ui/menu.hpp
 view/graphics_item.hpp
 view/graphics_widget.cpp
@@ -122,6 +124,7 @@ ui/dialogs/dialog_layer_create.ui
 ui/dialogs/dialog_document_create.ui
 ui/dialogs/dialog_about.ui
 ui/dialogs/dialog_settings.ui
+ui/dialogs/dialog_resize_canvas.ui
 )
 qt5_wrap_ui(SOURCES ${UI_FILES})
 #endif()

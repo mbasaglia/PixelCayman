@@ -50,6 +50,8 @@
 #include "view/graphics_widget.hpp"
 #include "dialog_settings.hpp"
 #include "cayman/data.hpp"
+#include "dialog_resize_canvas.hpp"
+#include "document/visitor/resize_canvas.hpp"
 
 #include "ui_current_color.h"
 #include "ui_main_window.h"
@@ -337,6 +339,19 @@ void MainWindow::Private::initMenus()
     action_redo->setIcon(QIcon::fromTheme("edit-redo"));
     action_redo->setShortcut(QKeySequence::Redo);
     menu_edit->insertAction(action_after_undo_redo, action_redo);
+
+    // Image
+    connect(action_resize_canvas, &QAction::triggered, [this]{
+        if ( !current_view )
+            return;
+        DialogResizeCanvas dlg(parent);
+        dlg.setOriginal(current_view->document()->imageSize());
+        if ( dlg.exec() )
+        {
+            document::visitor::ResizeCanvas visitor(dlg.result());
+            current_view->document()->apply(visitor);
+        }
+    });
 
     // Plugins
     for ( auto* plugin : ::plugin::registry().plugins() )

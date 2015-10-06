@@ -24,6 +24,7 @@
 #include "document.hpp"
 
 #include <QStack>
+#include <QCoreApplication>
 
 namespace document {
 
@@ -32,6 +33,7 @@ namespace document {
  */
 class Visitor
 {
+    Q_DECLARE_TR_FUNCTIONS(Visitor)
 public:
     virtual ~Visitor() {}
 

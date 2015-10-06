@@ -77,18 +77,20 @@
     <addaction name="separator"/>
    </widget>
    <widget class="QMenu" name="menu_image">
-    <property name="enabled">
-     <bool>false</bool>
-    </property>
     <property name="title">
      <string>&amp;Image</string>
     </property>
     <widget class="QMenu" name="menu_color">
+     <property name="enabled">
+      <bool>false</bool>
+     </property>
      <property name="title">
       <string>&amp;Color</string>
      </property>
      <property name="icon">
-      <iconset theme="format-fill-color"/>
+      <iconset theme="format-fill-color">
+       <normaloff/>
+      </iconset>
      </property>
      <addaction name="action_full_color"/>
      <addaction name="action_indexed"/>
@@ -329,15 +331,22 @@
   </action>
   <action name="action_resize_canvas">
    <property name="icon">
-    <iconset theme="transform-scale"/>
+    <iconset theme="transform-scale">
+     <normaloff/>
+    </iconset>
    </property>
    <property name="text">
     <string>&amp;Resize Canvas...</string>
    </property>
   </action>
   <action name="action_scale">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
    <property name="icon">
-    <iconset theme="transform-scale"/>
+    <iconset theme="transform-scale">
+     <normaloff/>
+    </iconset>
    </property>
    <property name="text">
     <string>&amp;Scale...</string>

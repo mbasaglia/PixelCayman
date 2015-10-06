@@ -23,6 +23,7 @@
 #include "document.hpp"
 #include "visitor.hpp"
 #include <QFileInfo>
+#include "command/set_property.hpp"
 
 namespace document {
 
@@ -171,7 +172,12 @@ void Document::onRemoveLayer(Layer* layer)
 
 void Document::setImageSize(const QSize& size)
 {
-    image_size = size;
+    if ( image_size != size )
+        pushCommand(command::newSetProperty(
+            tr("Change document size"), image_size, size,
+            [this](const QSize& size) {
+                emit imageSizeChanged( image_size = size );
+        }));
 }
 
 const color_widgets::ColorPalette& Document::palette() const
