@@ -199,7 +199,7 @@ private:
     QUndoStack          undo_stack;
     FormatSettings      format_settings;
     color_widgets::ColorPalette palette_;
-    bool                indexed_colors = false;
+    bool                indexed_colors_ = false;
     QVector<QRgb>       color_table;
 };
 

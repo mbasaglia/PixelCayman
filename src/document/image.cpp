@@ -121,15 +121,23 @@ void Image::setColors()
     /// \todo undo command
     if ( parentDocument()->indexedColors() )
     {
+        auto cmd = new command::ChangeImage(tr("Convert Image"), this, image_);
         image_.setColorTable(parentDocument()->colorTable());
         if ( image_.format() != QImage::Format_Indexed8 )
             image_.convertToFormat(QImage::Format_Indexed8 ,
                 Qt::AutoColor|Qt::DiffuseDither|Qt::DiffuseAlphaDither);
+        cmd->setAfterImage(image_);
+        parentDocument()->pushCommand(cmd);
     }
     else
     {
         if ( image_.format() != QImage::Format_Indexed8 )
+        {
+            auto cmd = new command::ChangeImage(tr("Convert Image"), this, image_);
             image_.convertToFormat(QImage::Format_ARGB32);
+            cmd->setAfterImage(image_);
+            parentDocument()->pushCommand(cmd);
+        }
     }
 }
 

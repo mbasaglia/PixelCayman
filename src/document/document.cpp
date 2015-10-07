@@ -192,14 +192,16 @@ color_widgets::ColorPalette& Document::palette()
 
 bool Document::indexedColors() const
 {
-    return indexed_colors;
+    return indexed_colors_;
 }
 
 void Document::setIndexedColors(bool uses_palette)
 {
-    if ( uses_palette != indexed_colors )
+    if ( uses_palette != indexed_colors_ )
     {
-        emit indexedColorsChanged(indexed_colors = uses_palette);
+        /// \todo undo command
+        indexed_colors_ = uses_palette;
+        emit indexedColorsChanged(indexed_colors_);
         emit paletteChanged(palette_);
     }
 }
