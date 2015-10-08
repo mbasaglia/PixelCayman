@@ -118,7 +118,6 @@ void Image::endPainting()
 
 void Image::setColors()
 {
-    /// \todo undo command
     if ( parentDocument()->indexedColors() )
     {
         auto cmd = new command::ChangeImage(tr("Convert Image"), this, image_);
