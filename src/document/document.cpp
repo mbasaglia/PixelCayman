@@ -199,10 +199,12 @@ void Document::setIndexedColors(bool uses_palette)
 {
     if ( uses_palette != indexed_colors_ )
     {
-        /// \todo undo command
-        indexed_colors_ = uses_palette;
-        emit indexedColorsChanged(indexed_colors_);
-        emit paletteChanged(palette_);
+        pushCommand(command::newSetProperty(
+            tr("Toggle indexed colors"), indexed_colors_, uses_palette,
+            [this](bool uses_palette) {
+                emit indexedColorsChanged( indexed_colors_ = uses_palette );
+                emit paletteChanged(palette_);
+        }));
     }
 }
 
