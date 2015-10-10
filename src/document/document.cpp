@@ -69,7 +69,7 @@ Document::Document(const QImage& image, const QString& file_name)
 
 Document::~Document()
 {
-    // layers/animations are cleaned uoìp by QObject
+    // layers/animations are cleaned up by QObject
 }
 
 QString Document::fileName() const
