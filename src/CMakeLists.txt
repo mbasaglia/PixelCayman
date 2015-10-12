@@ -95,6 +95,7 @@ ui/dialogs/dialog_layer_create.hpp
 ui/dialogs/dialog_document_create.hpp
 ui/dialogs/dialog_about.hpp
 ui/dialogs/dialog_about.cpp
+ui/dialogs/dialog_indexed_colors.hpp
 ui/dialogs/dialog_settings.hpp
 ui/dialogs/dialog_settings.cpp
 ui/dialogs/dialog_resize_canvas.hpp
@@ -125,6 +126,7 @@ ui/dialogs/dialog_document_create.ui
 ui/dialogs/dialog_about.ui
 ui/dialogs/dialog_settings.ui
 ui/dialogs/dialog_resize_canvas.ui
+ui/dialogs/dialog_indexed_colors.ui
 )
 qt5_wrap_ui(SOURCES ${UI_FILES})
 #endif()
