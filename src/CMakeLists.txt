@@ -49,6 +49,7 @@ document/layer.cpp
 document/layer.hpp
 document/visitor.hpp
 document/visitor/resize_canvas.hpp
+document/visitor/gather_palette.hpp
 io/bitmap.cpp
 io/bitmap.hpp
 io/formats.cpp
