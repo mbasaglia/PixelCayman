@@ -396,6 +396,7 @@ void MainWindow::Private::initMenus()
     document_actions->addAction(action_close);
     document_actions->addAction(action_close_all);
     document_actions->addAction(action_print);
+    document_actions->addAction(action_resize_canvas);
 }
 
 void MainWindow::Private::initStatusBar()
