@@ -81,9 +81,6 @@
      <string>&amp;Image</string>
     </property>
     <widget class="QMenu" name="menu_color">
-     <property name="enabled">
-      <bool>false</bool>
-     </property>
      <property name="title">
       <string>&amp;Color</string>
      </property>
@@ -92,8 +89,6 @@
        <normaloff/>
       </iconset>
      </property>
-     <addaction name="action_full_color"/>
-     <addaction name="action_indexed"/>
     </widget>
     <addaction name="menu_color"/>
     <addaction name="action_resize_canvas"/>
@@ -308,25 +303,6 @@
    </property>
    <property name="text">
     <string>Reloa&amp;d</string>
-   </property>
-  </action>
-  <action name="action_full_color">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
-   <property name="checked">
-    <bool>true</bool>
-   </property>
-   <property name="text">
-    <string>&amp;Full Color</string>
-   </property>
-  </action>
-  <action name="action_indexed">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
-   <property name="text">
-    <string>&amp;Indexed</string>
    </property>
   </action>
   <action name="action_resize_canvas">

@@ -79,6 +79,7 @@ void MainWindow::changeEvent(QEvent* event)
         p->retranslateUi(this);
         p->current_color_selector.retranslateUi(p->dock_current_color->widget());
         p->translateDocks();
+        p->translateMenus();
         p->translateStatusBar();
     }
 

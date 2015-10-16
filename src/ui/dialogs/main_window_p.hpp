@@ -52,6 +52,7 @@
 #include "cayman/data.hpp"
 #include "dialog_resize_canvas.hpp"
 #include "document/visitor/resize_canvas.hpp"
+#include "cayman/application.hpp"
 
 #include "ui_current_color.h"
 #include "ui_main_window.h"
@@ -61,6 +62,10 @@ class MainWindow::Private : public Ui_MainWindow
 public:
     Private(MainWindow* parent) : parent(parent) {}
 
+    int addDocument(document::Document* doc, bool set_current);
+    void setCurrentTab(int tab);
+    void setCurrentView(view::GraphicsWidget* widget);
+
     QDockWidget* createDock(QWidget* widget, const QString& theme_icon,
                             const QString& object_name);
     QDockWidget* createDock(QWidget* widget, const QIcon& icon,
@@ -68,6 +73,7 @@ public:
     void initDocks();
     void translateDocks();
     void initMenus();
+    void translateMenus();
     void initStatusBar();
     void translateStatusBar();
     void clearSettings(bool window_state = true);
@@ -128,10 +134,6 @@ public:
         }
     }
 
-    int addDocument(document::Document* doc, bool set_current);
-    void setCurrentTab(int tab);
-    void setCurrentView(view::GraphicsWidget* widget);
-
     void updateTitle();
 
     view::GraphicsWidget* current_view = nullptr;
@@ -173,6 +175,10 @@ public:
     QMetaObject::Connection log_view_connection;
 
     LabeledSpinBox* zoomer;
+
+    QActionGroup* group_action_color;
+    QAction* action_color_rgba;
+    QAction* action_color_indexed;
 
     QStringList recent_files;
     int         recent_files_max = 0;
@@ -353,6 +359,28 @@ void MainWindow::Private::initMenus()
         }
     });
 
+    group_action_color = new QActionGroup(parent);
+    group_action_color->setExclusive(true);
+    action_color_rgba = new QAction(group_action_color);
+    action_color_indexed = new QAction(group_action_color);
+    for ( auto action : group_action_color->actions() )
+    {
+        action->setCheckable(true);
+        menu_color->addAction(action);
+    }
+    connect(action_color_indexed, &QAction::triggered, [this](bool on){
+        if ( !current_view || current_view->document()->indexedColors() == on )
+            return;
+
+        if ( !on )
+        {
+            current_view->document()->setIndexedColors(false);
+            return;
+        }
+
+        /// \todo Show dialog
+    });
+
     // Plugins
     for ( auto* plugin : ::plugin::registry().plugins() )
     {
@@ -397,7 +425,17 @@ void MainWindow::Private::initMenus()
     document_actions->addAction(action_close_all);
     document_actions->addAction(action_print);
     document_actions->addAction(action_resize_canvas);
+    document_actions->addAction(menu_color->menuAction());
+
+    translateMenus();
 }
+
+void MainWindow::Private::translateMenus()
+{
+    action_color_rgba->setText(tr("Full &Color"));
+    action_color_indexed->setText(tr("&Indexed"));
+}
+
 
 void MainWindow::Private::initStatusBar()
 {
@@ -597,21 +635,29 @@ void MainWindow::Private::setCurrentView(view::GraphicsWidget* widget)
         disconnect(layer_widget, nullptr, current_view, nullptr);
         disconnect(current_view, nullptr, layer_widget, nullptr);
         plugin::api().setCurrentDocument(nullptr);
+        for ( QAction* action : group_action_color->actions() )
+            action->setChecked(false);
     }
 
     current_view = widget;
 
     if ( widget )
     {
+        auto document = widget->document();
         widget->setCurrentTool(current_tool);
         current_color_selector.color->setColor(widget->color());
         Private::linkColor(widget, current_color_selector.color);
-        widget->document()->undoStack().setActive(true);
-        layer_widget->setDocument(widget->document());
+        document->undoStack().setActive(true);
+        layer_widget->setDocument(document);
         connect(layer_widget, &LayerWidget::activeLayerChanged,
                 widget, &view::GraphicsWidget::setActiveLayer);
         connect(widget, &view::GraphicsWidget::activeLayerChanged,
                 layer_widget, &LayerWidget::setActiveLayer);
+
+        if ( document->indexedColors() )
+            action_color_indexed->setChecked(true);
+        else
+            action_color_rgba->setChecked(true);
 
         auto set_zoom = [this, widget](qreal factor) {
             if ( widget == current_view )
@@ -623,7 +669,7 @@ void MainWindow::Private::setCurrentView(view::GraphicsWidget* widget)
         };
         connect(widget, &view::GraphicsWidget::zoomFactorChanged, set_zoom);
         set_zoom(widget->zoomFactor());
-        plugin::api().setCurrentDocument(widget->document());
+        plugin::api().setCurrentDocument(document);
     }
     else
     {
