@@ -60,6 +60,12 @@ public:
         return current_language;
     }
 
+signals:
+    /**
+     * \brief Emitted when the language changes
+     */
+    void languageChanged(const QString& code);
+
 protected:
     bool event(QEvent* event) override;
 

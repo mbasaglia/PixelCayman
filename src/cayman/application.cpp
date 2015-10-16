@@ -204,6 +204,7 @@ bool Application::setLanguage(const QString& code)
     {
         removeTranslator(translators[current_language]);
         current_language = it.key();
+        emit languageChanged(current_language);
         return true;
     }
 
