@@ -190,6 +190,11 @@ color_widgets::ColorPalette& Document::palette()
     return palette_;
 }
 
+void Document::setPalette(const color_widgets::ColorPalette& palette)
+{
+    palette_ = palette;
+}
+
 bool Document::indexedColors() const
 {
     return indexed_colors_;

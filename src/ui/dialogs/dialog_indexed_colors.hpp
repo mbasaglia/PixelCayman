@@ -34,6 +34,15 @@ public:
     : QDialog(parent)
     {
         setupUi(this);
+        /// \todo use a proxy model to display the palettes
+        /// Passed in ctor is a color palette model
+        /// then it provides an optional extra palette for the current document
+        /// modifying this palette shall not edit the document directly
+    }
+
+    const color_widgets::ColorPalette& palette() const
+    {
+        return palette_widget->currentPalette();
     }
 
 protected:

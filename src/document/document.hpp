@@ -169,6 +169,8 @@ public:
 
     color_widgets::ColorPalette& palette();
     const color_widgets::ColorPalette& palette() const;
+    void setPalette(const color_widgets::ColorPalette& palette);
+
     /**
      * \brief Cached color table
      */

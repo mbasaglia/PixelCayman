@@ -52,6 +52,7 @@
 #include "ui/menu.hpp"
 #include "ui/widgets/color_editor.hpp"
 #include "ui/widgets/layer_widget.hpp"
+#include "ui/dialogs/dialog_indexed_colors.hpp"
 #include "view/graphics_widget.hpp"
 
 #include "ui_current_color.h"
@@ -378,6 +379,12 @@ void MainWindow::Private::initMenus()
             return;
         }
 
+        DialogIndexedColors dlg(parent);
+        if ( dlg.exec() )
+        {
+            current_view->document()->setPalette(dlg.palette());
+            current_view->document()->setIndexedColors(true);
+        }
         /// \todo Show dialog
     });
 
