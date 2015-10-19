@@ -28,11 +28,13 @@ namespace view {
 
 /**
  * \brief Class to render a document on a graphics view
- * \todo option for fullAlpha and frame
+ * \todo option for the frame
  */
 class GraphicsItem : public QGraphicsObject
 {
     Q_OBJECT
+    Q_PROPERTY(bool fullAlpha READ fullAlpha WRITE setFullAlpha NOTIFY fullAlphaChanged)
+
 public:
     GraphicsItem( ::document::Document* document )
         : document_(document)
@@ -47,7 +49,7 @@ public:
 
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *, QWidget *) override
     {
-        ::document::visitor::Paint renderer(nullptr, painter);
+        ::document::visitor::Paint renderer(nullptr, painter, full_alpha);
         document_->apply(renderer);
     }
 
@@ -55,6 +57,20 @@ public:
     {
         return document_;
     }
+
+	bool fullAlpha() const
+	{
+		return full_alpha;
+	}
+
+	void setFullAlpha(bool fullAlpha)
+	{
+		if ( fullAlpha != full_alpha )
+			emit fullAlphaChanged(full_alpha = fullAlpha);
+	}
+
+signals:
+	void fullAlphaChanged(bool fullAlpha);
 
 private slots:
     void updateSlot()
@@ -64,6 +80,7 @@ private slots:
 
 private:
     ::document::Document* document_;
+	bool full_alpha = true;
 };
 
 } // namespace view
