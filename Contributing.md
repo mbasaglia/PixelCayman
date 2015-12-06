@@ -8,7 +8,7 @@ Issue Tracker
 
 If you find a bug, or have a suggestion for a new feature you can report it
 in the [issue tracker](https://github.com/mbasaglia/PixelCayman/issues) or
-on IRC (#PixelCaymen on FreeNode, highlight Melanosuchus).
+on IRC (#PixelCayman on FreeNode, highlight Melanosuchus).
 
 Non-Technical Contributions
 ---------------------------
