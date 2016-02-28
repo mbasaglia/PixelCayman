@@ -75,7 +75,6 @@ add_subdirectory(submodules/Qt-Extended-TabWidget)
 add_subdirectory(submodules/ConfirmCloseDialog)
 add_subdirectory(submodules/MiscWidgets)
 
-
 file(GLOB_RECURSE ALL_SOURCES
     "src/*.cpp"
     "src/*.hpp"
@@ -86,7 +85,7 @@ file(GLOB_RECURSE ALL_SOURCES
     "submodules/*/include/*.hpp"
 )
 # Doxygen target
-find_package(Doxygen)
+find_package(Doxygen QUIET)
 if(DOXYGEN_FOUND)
     set(DOXYGEN_OUTPUT "\"${CMAKE_BINARY_DIR}/doc\"")
 

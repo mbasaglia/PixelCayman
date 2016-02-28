@@ -13,4 +13,8 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-add_subdirectory(test)
+#Test module is optional
+find_package(Boost QUIET)
+if(BOOST_FOUND)
+	add_subdirectory(test)
+endif(BOOST_FOUND)
